@@ -1,0 +1,43 @@
+\chapter{System Model}
+\label{sec:sysmod}
+
+Following some calculus:
+
+\section{Motor Orientation}
+We assume perfect spherical shape. That reduces the degree of freedom for the motor placement from 6 to 3. We therefore describe the motor placement by a rotation about a arbitrary axis $\mathbf{n}$
+\begin{equation}
+\mathbf{n} = \left(n_x, n_y, n_z\right)^\top
+\end{equation}
+and an rotation angle $\varphi$.
+With the skew symmetric cross matrix
+\begin{equation}
+\textbf{a}^\times = \left[
+\begin{array}{ccc}
+0 & a_3 & -a_2 \\
+-a_3 & 0 & a_1 \\
+a_2 & -a_1 & 0
+\end{array} \right]
+\end{equation}
+We can represent this rotation with the Gibbs-Rodriquez (XXX ???) parameters.
+\begin{equation}
+\boldsymbol{\lambda} = \mathbf{n}\tan{\left(\frac{\varphi}{2}\right)}
+\end{equation}
+Whereas this is a minimal representation (which always include singularity - here at $\varphi=\pi / 2$) we can also use non-minimal representation to overcome singularities. We therefore use the quaternion, as initially suggested by Hamilton.
+\begin{equation}
+\mathbf{q} = \left( \begin{array}{c} 
+q_0 \\ \mathbf{q}_{1:3} 
+\end{array} \right) \qquad
+q_0 = \cos\left(\frac{\varphi}{2}\right) \qquad
+\mathbf{q}_{1:3} = \mathbf{n}\sin\left(\frac{\varphi}{2}\right)
+\end{equation}
+
+\subsection{Rotation Matrix (or Direction Cosine Matrix)}
+\begin{equation}
+\mathbf{C} = \mathbf{R} = \mathbf{I} + \frac{2}{1+\boldsymbol{\lambda}^\top \boldsymbol{\lambda}}
+\left(\boldsymbol{\lambda}^\times + \left(\boldsymbol{\lambda}^\times\right)^2\right)
+\end{equation}
+
+
+\begin{equation}
+\mathbf{C} = \mathbf{R} = \mathbf{I} + 2 q_0 \mathbf{q}_{1:3}^\times + 2 \left(\mathbf{q}_{1:3}^\times\right)^2
+\end{equation}

@@ -34,16 +34,35 @@ q_0 = \cos\left(\frac{\varphi}{2}\right) \qquad
 \subsection{Rotation Matrix (or Direction Cosine Matrix)}
 For Gibbs-Rodriguez parameters
 \begin{equation}
-\mathbf{C} = \mathbf{R} = \mathbf{I} + \frac{2}{1+\boldsymbol{\lambda}^\top \boldsymbol{\lambda}}
+\mathbf{C} (= \mathbf{R}) = \mathbf{I} + \frac{2}{1+\boldsymbol{\lambda}^\top \boldsymbol{\lambda}}
 \left(\boldsymbol{\lambda}^\times + \left(\boldsymbol{\lambda}^\times\right)^2\right)
 \end{equation}
 and for quaternions
 \begin{equation}
-\mathbf{C} = \mathbf{R} = \mathbf{I} + 2 q_0 \mathbf{q}_{1:3}^\times + 2 \left(\mathbf{q}_{1:3}^\times\right)^2
+\mathbf{C} (= \mathbf{R}) = \mathbf{I} + 2 q_0 \mathbf{q}_{1:3}^\times + 2 \left(\mathbf{q}_{1:3}^\times\right)^2
 \end{equation}
-In some cases (e.g. gradient based optimization) the Jacobian might be necessary. The Jacobian of the Rotation Matrix must therefore be derived with respect to the parameters. For the quaternion parametrization the relation is quadratic, therefore the Jacobians (which are linear) are easily derived.
-It is also possible to get an algebraic expression for the Jacobians using Gibbs-Rodriguez parameters.
+In some cases (e.g. gradient based optimization) the Jacobian might be necessary. The Jacobian of the Rotation Matrix must therefore be derived with respect to the parameters. For the quaternion parametrization the relation is quadratic, therefore the Jacobians are linear.
+\begin{equation}
+\frac{\partial \mathbf{C}}{\partial q_0} = 2 \left[ 
+\begin{array}{ccc}
+ q_0 & -q_3 &  q_2 \\
+ q_3 &  q_0 & -q_1 \\
+-q_2 & -q_1 &  q_0
+\end{array} \right]
+\end{equation}
+\begin{equation}
+\frac{\partial \mathbf{C}}{\partial q_1} = 2 \left[ 
+\begin{array}{ccc}
+q_1 & q_2 &   q_3 \\
+q_2 & -q_1 & -q_0 \\
+q_3 & q_0 &  -q_1
+\end{array} \right]
+\end{equation}
+...
 
+It is also possible to get an algebraic expression for the Jacobians using Gibbs-Rodriguez parameters and use it for gradient based optimization algorithms.
+
+...
 \subsection{Input-Output dynamics}
 The dynamics of the blimp system is given by its differential equations in the world or blimp coordinates respectively:
 \begin{equation}
@@ -54,7 +73,7 @@ The dynamics of the blimp system is given by its differential equations in the w
 \label{eqn_dyn_orientation}
 \dot{\mathbf{q}}_w^{w,b} = \frac{1}{2} \mathbf{q}_w^{w,b} \otimes \left[
 \begin{array}{c}
-0 \\ \boldsymbol{\omega}_b^b
+	0 \\ \boldsymbol{\omega}_b^b
 \end{array} \right]
 \end{equation}
 \begin{equation}

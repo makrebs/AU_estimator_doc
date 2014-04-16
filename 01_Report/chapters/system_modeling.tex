@@ -32,12 +32,109 @@ q_0 = \cos\left(\frac{\varphi}{2}\right) \qquad
 \end{equation}
 
 \subsection{Rotation Matrix (or Direction Cosine Matrix)}
+For Gibbs-Rodriguez parameters
 \begin{equation}
 \mathbf{C} = \mathbf{R} = \mathbf{I} + \frac{2}{1+\boldsymbol{\lambda}^\top \boldsymbol{\lambda}}
 \left(\boldsymbol{\lambda}^\times + \left(\boldsymbol{\lambda}^\times\right)^2\right)
 \end{equation}
-
-
+and for quaternions
 \begin{equation}
 \mathbf{C} = \mathbf{R} = \mathbf{I} + 2 q_0 \mathbf{q}_{1:3}^\times + 2 \left(\mathbf{q}_{1:3}^\times\right)^2
 \end{equation}
+In some cases (e.g. gradient based optimization) the Jacobian might be necessary. The Jacobian of the Rotation Matrix must therefore be derived with respect to the parameters. For the quaternion parametrization the relation is quadratic, therefore the Jacobians (which are linear) are easily derived.
+It is also possible to get an algebraic expression for the Jacobians using Gibbs-Rodriguez parameters.
+
+\subsection{Input-Output dynamics}
+The dynamics of the blimp system is given by its differential equations in the world or blimp coordinates respectively:
+\begin{equation}
+\label{eqn_dyn_angular_velocity}
+\dot{\boldsymbol{\omega}}_b^b = \mathbf{J}_b^{-1} \mathbf{M}_b  - \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b
+\end{equation}
+\begin{equation}
+\label{eqn_dyn_orientation}
+\dot{\mathbf{q}}_w^{w,b} = \frac{1}{2} \mathbf{q}_w^{w,b} \otimes \left[
+\begin{array}{c}
+0 \\ \boldsymbol{\omega}_b^b
+\end{array} \right]
+\end{equation}
+\begin{equation}
+\label{eqn_dyn_velocity}
+\dot{\mathbf{v}}_w^b = \mathbf{C}_{w,b}\mathbf{\mathcal{M}}_b^{-1} \mathbf{F}_b
+\end{equation}
+\begin{equation}
+\label{eqn_dyn_position}
+\dot{\mathbf{p}}_w^{w,b} = \mathbf{v}_w^b
+\end{equation}
+
+The gyro measures the angular velocity in the IMU frame. It can be modelled as
+\begin{equation}
+\mathbf{y}_{g} = \mathbf{C}_{i,b} \boldsymbol{\omega}_b^b + \mathbf{w}_g
+\end{equation}
+where $\mathbf{w}_g$ denotes the gyro measurement noise (gaussian.. mean and variance..).
+
+\subsection{Optimization Problem}
+One approach to state the minimization problem is to use the sum-of-squares of the difference between the measured and the estimated angular acceleration of the blimp as in equation \eqref{eqn_minimize_problem_alpha}. As described below, the estimated angular velocity is dependent on the gyro measurements $\mathbf{y}_g$ as a consequence of the body dynamics as stated in \eqref{eqn_dyn_angular_velocity}.
+
+\begin{equation}
+\label{eqn_minimize_problem_alpha}
+S = \sum_j{ \left( \frac{\mathbf{C}_{i,b}^{-1} \Delta \mathbf{y}_g}{\Delta t} - \hat{\boldsymbol{\alpha}}_b^b \right)_j^2 }
+\end{equation}
+\begin{equation}
+\label{eqn_minimize_problem_alpha}
+S = \sum_j{ \left( \frac{\mathbf{C}_{i,b}^{-1} \Delta \mathbf{y}_g}{\Delta t} - \hat{\boldsymbol{\alpha}}_b^b \right)_j^2 }
+\end{equation}
+
+where the estimated angular velocity of the blimp is
+\begin{equation}
+\hat{\boldsymbol{\alpha}}_b^b = \hat{\mathbf{J}}_b^{-1} \hat{\mathbf{M}}_b  - \hat{\boldsymbol{\omega}}_b^b \times \hat{\mathbf{J}}_b \hat{\boldsymbol{\omega}}_b^b
+\end{equation}
+In a first approach, we assume that we know the inertia tensor $\mathbf{J}$. For a second approach, this should be depending on the estimated motor positions. The estimated angular velocity can be approached by the gyro measurement, transformed into blimp coordinates. Then we get
+\begin{equation}
+\hat{\boldsymbol{\alpha}}_b^b = \mathbf{J}_b^{-1} \hat{\mathbf{M}}_b  - \left( \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \times \mathbf{J}_b \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right)
+\end{equation}
+
+The estimated moment acting on the blimp is
+\begin{equation}
+\label{eqn_est_moment_reduction}
+\begin{aligned}
+\hat{\mathbf{M}}_b &= \sum_{k=1}^N { \hat{\mathbf{C}}_{b,m_k} \left(
+\left[ \begin{array}{c}
+0 \\ 0 \\ - \hat{r}
+\end{array} \right]
+\times 
+\left[ \begin{array}{c}
+F^{m_k}_x \\ F^{m_k}_y \\ 0
+\end{array} \right]
+\right)} \\
+&= \hat{r} \cdot \underbrace{ \left[
+\begin{array}{ccc}
+\hat{\mathbf{C}}_{b,m_1} & \cdots \hat{\mathbf{C}}_{b,m_N}
+\end{array}
+\right] }_{\hat{\mathcal{C}}_{b,m}}
+\underbrace{ \left[
+\begin{array}{ccccccc}
+ F^{m_1}_y & - F^{m_1}_x & 0 & \cdots &F^{m_N}_y & -  F^{m_N}_x & 0 
+\end{array}
+\right]^\top }_{\mathbf{u}}
+\end{aligned}
+\end{equation}
+
+With the introduced short term notation in equation \eqref{eqn_est_moment_reduction} let us now introduce the time suffix $j$. Then we get for every time step $j$
+\begin{equation}
+\hat{\mathbf{M}}_{b,j} = \hat{r} \cdot \hat{\mathcal{C}}_{b,m} \mathbf{u}_j
+\end{equation}
+and we can merge that to a single equation with the stacked moments $\hat{\mathcal{M}}_b$ and stacked inputs $\mathcal{U}$:
+\begin{equation}
+\hat{\mathcal{M}}_b = \hat{r}\cdot \left[ \begin{array}{ccc}
+\hat{\mathcal{C}}_{b,m} & & \\ & \ddots & \\ & & \hat{\mathcal{C}}_{b,m}
+\end{array} \right]
+\mathcal{U}
+\end{equation}
+Finally, we can rewrite the objective function for the minimization problem as
+\begin{equation}
+S = \sum_j{ \left( \frac{\mathbf{C}_{i,b}^{-1} \Delta \mathbf{y}_g}{\Delta t} - \hat{\boldsymbol{\alpha}}_b^b \right)_j^2 }
+= \left(\hat{\mathcal{M}}_b - \right)^\top 
+  \left(\hat{\mathcal{M}}_b - \right)
+\end{equation}
+
+% dfdf

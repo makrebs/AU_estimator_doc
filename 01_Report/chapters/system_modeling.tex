@@ -77,23 +77,36 @@ One approach to state the minimization problem is to use the sum-of-squares of t
 
 \begin{equation}
 \label{eqn_minimize_problem_alpha}
-S = \sum_j{ \left( \frac{\mathbf{C}_{i,b}^{-1} \Delta \mathbf{y}_g}{\Delta t} - \hat{\boldsymbol{\alpha}}_b^b \right)_j^2 }
-\end{equation}
-\begin{equation}
-\label{eqn_minimize_problem_alpha}
-S = \sum_j{ \left( \frac{\mathbf{C}_{i,b}^{-1} \Delta \mathbf{y}_g}{\Delta t} - \hat{\boldsymbol{\alpha}}_b^b \right)_j^2 }
+S = \sum_{j=1}^n {\mathbf{r}_j^\top \mathbf{r}_j} = \sum_{j=1}^n {
+\left( \frac{\mathbf{C}_{i,b}^{-1} \Delta \mathbf{y}_g}{\Delta t} - \hat{\boldsymbol{\alpha}}_b^b \right)_j^\top
+\left( \frac{\mathbf{C}_{i,b}^{-1} \Delta \mathbf{y}_g}{\Delta t} - \hat{\boldsymbol{\alpha}}_b^b \right)_j }
 \end{equation}
 
-where the estimated angular velocity of the blimp is
+where $j$ indicates the time stamps. The estimated angular velocity of the blimp is
 \begin{equation}
+\label{eqn_est_alpha_1}
 \hat{\boldsymbol{\alpha}}_b^b = \hat{\mathbf{J}}_b^{-1} \hat{\mathbf{M}}_b  - \hat{\boldsymbol{\omega}}_b^b \times \hat{\mathbf{J}}_b \hat{\boldsymbol{\omega}}_b^b
 \end{equation}
 In a first approach, we assume that we know the inertia tensor $\mathbf{J}$. For a second approach, this should be depending on the estimated motor positions. The estimated angular velocity can be approached by the gyro measurement, transformed into blimp coordinates. Then we get
 \begin{equation}
-\hat{\boldsymbol{\alpha}}_b^b = \mathbf{J}_b^{-1} \hat{\mathbf{M}}_b  - \left( \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \times \mathbf{J}_b \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right)
+\label{eqn_est_alpha_2}
+\hat{\boldsymbol{\alpha}}_b^b = \mathbf{J}_b^{-1} \hat{\mathbf{M}}_b  - \left( \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right) \times \left( \mathbf{J}_b \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right)
 \end{equation}
 
-The estimated moment acting on the blimp is
+Inserting \eqref{eqn_est_alpha_2} into the objective function \eqref{eqn_minimize_problem_alpha} yields
+
+\begin{equation}
+\label{eqn_objective_short}
+\begin{aligned}
+\mathbf{r}_j &= \left(
+\underbrace{
+\frac{\mathbf{C}_{i,b}^{-1} \Delta \mathbf{y}_g}{\Delta t} + \left( \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right) \times \left(\mathbf{J}_b \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right)}_\mathcal{Y}
+ - \mathbf{J}_b^{-1} \hat{\mathbf{M}}_b \right)_j \\
+ &= \left( \mathcal{Y} - \hat{r} \mathbf{J}_b^{-1} \hat{\mathcal{C}}_{b,m} \mathbf{u} \right)_j
+\end{aligned}
+\end{equation}
+
+where estimated moment acting on the blimp $\hat{\mathbf{M}}_b$ has been substituted by
 \begin{equation}
 \label{eqn_est_moment_reduction}
 \begin{aligned}
@@ -119,22 +132,43 @@ F^{m_k}_x \\ F^{m_k}_y \\ 0
 \end{aligned}
 \end{equation}
 
-With the introduced short term notation in equation \eqref{eqn_est_moment_reduction} let us now introduce the time suffix $j$. Then we get for every time step $j$
 \begin{equation}
 \hat{\mathbf{M}}_{b,j} = \hat{r} \cdot \hat{\mathcal{C}}_{b,m} \mathbf{u}_j
 \end{equation}
-and we can merge that to a single equation with the stacked moments $\hat{\mathcal{M}}_b$ and stacked inputs $\mathcal{U}$:
+
+Now we stack the time steps to a single vector. This can be done as follows with the stacked measurements $\mathcal{Y}$ and the stacked inputs $\mathcal{U}$
+
 \begin{equation}
-\hat{\mathcal{M}}_b = \hat{r}\cdot \left[ \begin{array}{ccc}
-\hat{\mathcal{C}}_{b,m} & & \\ & \ddots & \\ & & \hat{\mathcal{C}}_{b,m}
+\label{eqn_obj_stacked}
+\mathbf{r} = \mathcal{Y} - \hat{r} \left[ \begin{array}{ccc}
+\mathbf{J}_b^{-1} \hat{\mathcal{C}}_{b,m} & & \\ 
+& \ddots & \\ 
+& & \mathbf{J}_b^{-1} \hat{\mathcal{C}}_{b,m}
 \end{array} \right]
 \mathcal{U}
 \end{equation}
-Finally, we can rewrite the objective function for the minimization problem as
 \begin{equation}
-S = \sum_j{ \left( \frac{\mathbf{C}_{i,b}^{-1} \Delta \mathbf{y}_g}{\Delta t} - \hat{\boldsymbol{\alpha}}_b^b \right)_j^2 }
-= \left(\hat{\mathcal{M}}_b - \right)^\top 
-  \left(\hat{\mathcal{M}}_b - \right)
+\mathcal{Y} = \left[ \begin{array}{ccc}
+\mathcal{Y}_1^\top & \cdots & \mathcal{Y}_n^\top
+\end{array} \right]^\top
+\end{equation}
+\begin{equation}
+\mathcal{U} = \left[ \begin{array}{ccc}
+\mathbf{u}_1^\top & \cdots & \mathbf{u}_n^\top
+\end{array} \right]^\top
 \end{equation}
 
-% dfdf
+%\begin{equation}
+%\hat{\mathcal{M}}_b = \hat{r}\cdot \left[ \begin{array}{ccc}
+%\hat{\mathcal{C}}_{b,m} & & \\ & \ddots & \\ & & \hat{\mathcal{C}}_{b,m}
+%\end{array} \right]
+%\mathcal{U}
+%\end{equation}
+%Finally, we can rewrite the objective function for the minimization problem as
+%\begin{equation}
+%S = \sum_j{ \left( \frac{\mathbf{C}_{i,b}^{-1} \Delta \mathbf{y}_g}{\Delta t} - \hat{\boldsymbol{\alpha}}_b^b \right)_j^2 }
+%= \left(\hat{\mathcal{M}}_b - \right)^\top 
+%  \left(\hat{\mathcal{M}}_b - \right)
+%\end{equation}
+
+So far, no assumption concerning the optimization parameters has been made. The optimization parameters are $\hat{r}$ and $\hat{\mathcal{C}}_{b,m}$. These are $p\cdot N+1$ parameters, where $N$ is the number of motors and $p = {3,4}$ the number of parameters for the rotation. It is also possible to split the problem into single problems, where always only one motor is active at the same time. Then the number of parameters drops to $p+1$.

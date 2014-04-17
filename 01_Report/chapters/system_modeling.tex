@@ -61,8 +61,13 @@ q_3 & q_0 &  -q_1
 ...
 
 It is also possible to get an algebraic expression for the Jacobians using Gibbs-Rodriguez parameters and use it for gradient based optimization algorithms.
-
-...
+\begin{equation}
+\frac{\partial \mathbf{C}}{\partial \lambda_3} = \left(\begin{array}{ccc} \frac{4\, {\lambda_3}\, \left({{\lambda_2}}^2 + {{\lambda_3}}^2\right)}{{\sigma}^2} - \frac{4\, {\lambda_3}}{\sigma} & \frac{4\, {\lambda_3}\, \left({\lambda_3} - {\lambda_1}\, {\lambda_2}\right)}{{\sigma}^2} - \frac{2}{\sigma} & \frac{2\, {\lambda_1}}{\sigma} - \frac{4\, {\lambda_3}\, \left({\lambda_2} + {\lambda_1}\, {\lambda_3}\right)}{{\sigma}^2}\\ \frac{2}{\sigma} - \frac{4\, {\lambda_3}\, \left({\lambda_3} + {\lambda_1}\, {\lambda_2}\right)}{{\sigma}^2} & \frac{4\, {\lambda_3}\, \left({{\lambda_1}}^2 + {{\lambda_3}}^2\right)}{{\sigma}^2} - \frac{4\, {\lambda_3}}{\sigma} & \frac{2\, {\lambda_2}}{\sigma} + \frac{4\, {\lambda_3}\, \left({\lambda_1} - {\lambda_2}\, {\lambda_3}\right)}{{\sigma}^2}\\ \frac{2\, {\lambda_1}}{\sigma} + \frac{4\, {\lambda_3}\, \left({\lambda_2} - {\lambda_1}\, {\lambda_3}\right)}{{\sigma}^2} & \frac{2\, {\lambda_2}}{\sigma} - \frac{4\, {\lambda_3}\, \left({\lambda_1} + {\lambda_2}\, {\lambda_3}\right)}{{\sigma}^2} & \frac{4\, {\lambda_3}\, \left({{\lambda_1}}^2 + {{\lambda_2}}^2\right)}{{\sigma}^2} \end{array}\right)
+\end{equation}
+where
+\begin{equation}
+\sigma = {\lambda_1}^2 + {\lambda_2}^2 + {\lambda_3}^2 + 1
+\end{equation}
 \subsection{Input-Output dynamics}
 The dynamics of the blimp system is given by its differential equations in the world or blimp coordinates respectively:
 \begin{equation}

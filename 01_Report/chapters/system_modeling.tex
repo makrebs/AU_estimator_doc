@@ -196,3 +196,20 @@ Now we stack the time steps to a single vector. This can be done as follows with
 %\end{equation}
 
 So far, no assumption concerning the optimization parameters has been made. The optimization parameters are $\hat{r}$ and $\hat{\mathcal{C}}_{b,m}$. These are $p\cdot N+1$ parameters, where $N$ is the number of motors and $p = {3,4}$ the number of parameters for the rotation. It is also possible to split the problem into single problems, where always only one motor is active at the same time. Then the number of parameters drops to $p+1$.
+
+\subsection{Optimization Problem (parameterized)}
+If we use quaternion parametrization, we get
+\begin{equation}
+\mathbf{J}_b^{-1}\mathbf{M}_b = 
+\left[\begin{array}{c}
+-G_{11} \sigma_1(\xi,\theta) + G_{12} \sigma_2(\xi,\theta) - G_{13} \sigma_3(\xi,\theta) \\
+-G_{21} \sigma_1(\xi,\theta) + G_{22} \sigma_2(\xi,\theta) - G_{23} \sigma_3(\xi,\theta) \\
+-G_{31} \sigma_1(\xi,\theta) + G_{32} \sigma_2(\xi,\theta) - G_{33} \sigma_3(\xi,\theta) \\
+\end{array}\right]
+\end{equation}
+where
+\begin{align*}
+\sigma_1(\xi,\theta) &= - r\, {\xi_1}\, \left(2\, {\theta_1}\, {\theta_4} - 2\, {\theta_2}\, {\theta_3}\right) + r\, {\xi_2}\, \left(2\, {{\theta_3}}^2 + 2\, {{\theta_4}}^2 - 1\right) \\
+\sigma_2(\xi,\theta) &= r\, {\xi_1}\, \left(2\, {{\theta_2}}^2 + 2\, {{\theta_4}}^2 - 1\right) + r\, {\xi_2}\, \left(2\, {\theta_1}\, {\theta_4} + 2\, {\theta_2}\, {\theta_3}\right) \\
+\sigma_3(\xi,\theta) &= r\, {\xi_1}\, \left(2\, {\theta_1}\, {\theta_2} + 2\, {\theta_3}\, {\theta_4}\right) + r\, {\xi_2}\, \left(2\, {\theta_1}\, {\theta_3} - 2\, {\theta_2}\, {\theta_4}\right)
+\end{align*}

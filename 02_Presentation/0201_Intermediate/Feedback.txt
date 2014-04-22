@@ -1,0 +1,11 @@
+Intermediate Presentation
+Feedback Kostas:
+- Start missed some fancy applications (any shapes, auto init at startup, ...)
+- Input pattern is difficult part (airplane timedomain inputs took 50 years of research)
+
+General Opinion Siegwart:
+- Is it more accurate than the true positions?
+- Is it possible to attach AUs arbitrary on hull?
+- 
+
+- It was not good to mention that because of the direction of rotation of the AU we exclude the second solution (Maybe simply say that with initial possition that's is no problem; and with appropriate modeling solution will be unique)

@@ -13,12 +13,12 @@ With the skew symmetric cross matrix
 \begin{equation}
 \textbf{a}^\times = \left[
 \begin{array}{ccc}
-0 & a_3 & -a_2 \\
--a_3 & 0 & a_1 \\
-a_2 & -a_1 & 0
+0 & -a_3 & a_2 \\
+a_3 & 0 & -a_1 \\
+-a_2 & a_1 & 0
 \end{array} \right]
 \end{equation}
-We can represent this rotation with the Gibbs-Rodriquez (XXX ???) parameters.
+we can represent this rotation with the Gibbs-Rodriguez parameters as
 \begin{equation}
 \boldsymbol{\lambda} = \mathbf{n}\tan{\left(\frac{\varphi}{2}\right)}
 \end{equation}
@@ -34,12 +34,12 @@ q_0 = \cos\left(\frac{\varphi}{2}\right) \qquad
 \subsection{Rotation Matrix (or Direction Cosine Matrix)}
 For Gibbs-Rodriguez parameters
 \begin{equation}
-\mathbf{C} (= \mathbf{R}) = \mathbf{I} + \frac{2}{1+\boldsymbol{\lambda}^\top \boldsymbol{\lambda}}
+\mathbf{C} = \mathbf{I} + \frac{2}{1+\boldsymbol{\lambda}^\top \boldsymbol{\lambda}}
 \left(\boldsymbol{\lambda}^\times + \left(\boldsymbol{\lambda}^\times\right)^2\right)
 \end{equation}
 and for quaternions
 \begin{equation}
-\mathbf{C} (= \mathbf{R}) = \mathbf{I} + 2 q_0 \mathbf{q}_{1:3}^\times + 2 \left(\mathbf{q}_{1:3}^\times\right)^2
+\mathbf{C} = \mathbf{I} + 2 q_0 \mathbf{q}_{1:3}^\times + 2 \left(\mathbf{q}_{1:3}^\times\right)^2
 \end{equation}
 In some cases (e.g. gradient based optimization) the Jacobian might be necessary. The Jacobian of the Rotation Matrix must therefore be derived with respect to the parameters. For the quaternion parametrization the relation is quadratic, therefore the Jacobians are linear.
 \begin{equation}
@@ -109,12 +109,12 @@ S = \sum_{j=1}^n {\mathbf{r}_j^\top \mathbf{r}_j} = \sum_{j=1}^n {
 where $j$ indicates the time stamps. The estimated angular velocity of the blimp is
 \begin{equation}
 \label{eqn_est_alpha_1}
-\hat{\boldsymbol{\alpha}}_b^b = \hat{\mathbf{J}}_b^{-1} \hat{\mathbf{M}}_b  - \hat{\boldsymbol{\omega}}_b^b \times \hat{\mathbf{J}}_b \hat{\boldsymbol{\omega}}_b^b
+\hat{\boldsymbol{\alpha}}_b^b = \hat{\mathbf{J}}_b^{-1} \left( \hat{\mathbf{M}}_b  - \hat{\boldsymbol{\omega}}_b^b \times \hat{\mathbf{J}}_b \hat{\boldsymbol{\omega}}_b^b \right)
 \end{equation}
 In a first approach, we assume that we know the inertia tensor $\mathbf{J}$. For a second approach, this should be depending on the estimated motor positions. The estimated angular velocity can be approached by the gyro measurement, transformed into blimp coordinates. Then we get
 \begin{equation}
 \label{eqn_est_alpha_2}
-\hat{\boldsymbol{\alpha}}_b^b = \mathbf{J}_b^{-1} \hat{\mathbf{M}}_b  - \left( \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right) \times \left( \mathbf{J}_b \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right)
+\hat{\boldsymbol{\alpha}}_b^b = \mathbf{J}_b^{-1} \left( \hat{\mathbf{M}}_b  - \left( \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right) \times \left( \mathbf{J}_b \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right) \right)
 \end{equation}
 
 Inserting \eqref{eqn_est_alpha_2} into the objective function \eqref{eqn_minimize_problem_alpha} yields
@@ -124,7 +124,7 @@ Inserting \eqref{eqn_est_alpha_2} into the objective function \eqref{eqn_minimiz
 \begin{aligned}
 \mathbf{r}_j &= \left(
 \underbrace{
-\frac{\mathbf{C}_{i,b}^{-1} \Delta \mathbf{y}_g}{\Delta t} + \left( \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right) \times \left(\mathbf{J}_b \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right)}_\mathcal{Y}
+\frac{\mathbf{C}_{i,b}^{-1} \Delta \mathbf{y}_g}{\Delta t} + \mathbf{J}_b^{-1} \left( \left( \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right) \times \left(\mathbf{J}_b \mathbf{C}_{i,b}^{-1} \mathbf{y}_g \right) \right)}_\mathcal{Y}
  - \mathbf{J}_b^{-1} \hat{\mathbf{M}}_b \right)_j \\
  &= \left( \mathcal{Y} - \hat{r} \mathbf{J}_b^{-1} \hat{\mathcal{C}}_{b,m} \mathbf{u} \right)_j
 \end{aligned}
@@ -213,3 +213,38 @@ where
 \sigma_2(\xi,\theta) &= r\, {\xi_1}\, \left(2\, {{\theta_2}}^2 + 2\, {{\theta_4}}^2 - 1\right) + r\, {\xi_2}\, \left(2\, {\theta_1}\, {\theta_4} + 2\, {\theta_2}\, {\theta_3}\right) \\
 \sigma_3(\xi,\theta) &= r\, {\xi_1}\, \left(2\, {\theta_1}\, {\theta_2} + 2\, {\theta_3}\, {\theta_4}\right) + r\, {\xi_2}\, \left(2\, {\theta_1}\, {\theta_3} - 2\, {\theta_2}\, {\theta_4}\right)
 \end{align*}
+
+\subsection{Observability}
+Lets state the system equations again. Note it is a \textit{control-affine} system (or \textit{input-linear}. \\
+State equations
+\begin{equation}
+\dot{\mathbf{x}} = 
+\left[ \begin{array}{c}
+\dot{\boldsymbol{\omega}} \\
+\dot{\mathbf{q}} \\
+\dot{\mathbf{J}}
+\end{array} \right]
+= \mathbf{f}(\mathbf{x}, \mathbf{u}) =
+\left[ \begin{array}{c}
+r \mathbf{J}^{-1} \mathbf{C}(\mathbf{q}) \mathbf{u} - \mathbf{J}^{-1}(\boldsymbol{\omega} \times \mathbf{J} \boldsymbol{\omega} ) \\
+0 \\
+0
+\end{array} \right]
+\end{equation}
+Measurement equations
+\begin{equation}
+\mathbf{y} = \mathbf{h}(x) = \boldsymbol{\omega}
+\end{equation}
+
+Now some hints about differentiating:
+\begin{align}
+\frac{\partial}{\partial \mathbf{a}} \left( \mathbf{a} \times \mathbf{b} \right)
+& = - \mathbf{b} ^\times \\
+\frac{\partial}{\partial \mathbf{a}} \left( \mathbf{b} \times \mathbf{a} \right)
+& = \mathbf{b} ^\times
+\end{align}
+We will especially use
+\begin{align}
+\frac{\partial}{\partial \mathbf{a}} \left( \mathbf{a} \times \textbf{M} \mathbf{a} \right)
+& = \mathbf{a}^\times \mathbf{M} - (\mathbf{M} \mathbf{a})^\times
+\end{align}

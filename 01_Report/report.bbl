@@ -1,17 +1,14 @@
 \begin{thebibliography}{1}
 
-\bibitem{Raibert1986LeggedRobotsThatBalance}
-M.~Raibert, {\em {Legged Robots That Balance}}.
-\newblock Cambridge, MA: MIT Press, 1986.
+\bibitem{Doniec}
+M.~Doniec, C.~Detweiler, and D.~Rus, ``Estimation of thruster configurations
+  for reconfigurable modular underwater robots,'' in {\em Experimental
+  Robotics} (O.~Khatib, V.~Kumar, and G.~Sukhatme, eds.), vol.~79 of {\em
+  Springer Tracts in Advanced Robotics}, pp.~655--666, Springer Berlin
+  Heidelberg, 2014.
 
-\bibitem{Vukobratovic2004ZeroMomentPoint}
-M.~Vukobratovi\'{c} and B.~Borovac, ``{Zero-moment point — thirty five years
-  of its life},'' {\em International Journal of Humanoid Robotics}, vol.~1,
-  no.~01, pp.~157--173, 2004.
-
-\bibitem{Pratt1995SEA}
-G.~A. Pratt and M.~M. Williamson, ``{Series elastic actuators},'' in {\em
-  IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
-  pp.~3137--3181, 1995.
+\bibitem{Seber}
+G.~A.~F. Seber and C.~J. Wild.
+\newblock Wiley-Interscience paperback series, 2003.
 
 \end{thebibliography}

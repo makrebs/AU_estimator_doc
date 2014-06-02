@@ -7,6 +7,24 @@ M.~Doniec, C.~Detweiler, and D.~Rus, ``Estimation of thruster configurations
   Springer Tracts in Advanced Robotics}, pp.~655--666, Springer Berlin
   Heidelberg, 2014.
 
+\bibitem{Shuster1991}
+M.~D. Shuster, D.~S. Pitone, and G.~J. Bierman, ``{Batch Estimation of
+  Spacecraft Sensor Alignments I. Relative Alignment Estimation},'' {\em
+  Journal of Astronautical Sciences}, vol.~39, pp.~519--546, 1991.
+
+\bibitem{Bloesch2013}
+M.~Bloesch, M.~Hutter, C.~Gehring, M.~A. Hoepflinger, and R.~Siegwart,
+  ``{Kinematic Batch Calibration for Legged Robots},'' in {\em 2013 IEEE
+  International Conference on Robotics and Automation (ICRA)}, pp.~2542--2547.
+
+\bibitem{Skye2013}
+M.~Burri, L.~Gasser, M.~Kach, M.~Krebs, S.~Laube, A.~Ledergerber, D.~Meier,
+  R.~Michaud, L.~Mosimann, L.~Muri, C.~Ruch, A.~Schaffner, N.~Vuilliomenet,
+  J.~Weichart, K.~Rudin, S.~Leutenegger, J.~Alonso-Mora, R.~Siegwart, and
+  P.~Beardsley, ``Design and control of a spherical omnidirectional blimp,'' in
+  {\em Intelligent Robots and Systems (IROS), 2013 IEEE/RSJ International
+  Conference on}, pp.~1873--1879, Nov 2013.
+
 \bibitem{Seber}
 G.~A.~F. Seber and C.~J. Wild.
 \newblock Wiley-Interscience paperback series, 2003.

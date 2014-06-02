@@ -2,9 +2,22 @@
 \label{chap:introduction}
 
 \section{Motivation}
+Blimps are often used as advertising vehicle. Especially eye-catching are special shaped blimps, e.g. blimps that have the shape of a mascot, car or any other commercial product (see figure \ref{fig:blimps}). An alternative are conventionally shaped blimp showing imprints or banners. The arrangement of the actuators for those different shaped blimps varies a lot and needs in general manual adjustment of the control algorithm. Using some adequate sensors, it would be useful to determine the effect of an actuator on the movement of the blimp automatically. With such an algorithm, the blimp hull can be manufactured independently on the actuation which just can be attached to the blimp and the controller figures out the effect of its actuators by its own.
+
+\begin{figure}[hbtp]
+\label{fig:blimps}
+\centering
+\includegraphics[width=.4\linewidth]{images/CustomBull_Lg.jpg}
+\includegraphics[width=.4\linewidth]{images/CustomCar.jpg}
+\caption{Special shaped blimps are used for advertising \cite{rcblimps}.}
+\end{figure}
+
 
 \section{Configuration Estimation}
-... about Skye and the vision of automatic control allocation for arbitrary blimps. Cite \cite{Doniec} (underwater robot), \cite{Shuster1991} (spacecraft, QUEST, rotation vector), \citep{Bloesch2013} (legged robot), XXX (Camera IMU)
+This work is on estimation of the actuation configuration for a multi-actuated blimp. It is motivated on our work on Skye, a spherical and omnidirectional blimp. Its design and control is described in detail in \citep{Skye2013} and briefly summarized below. \\
+Various work on thruster configuration estimation can be found for underwater robot systems. Doniec \textit{et al.} \citep{Doniec} propose black box model approach. They calculate an inverse model of the thrusters, i.e. a mapping from a desired rotation and position change of the robot to the thruster commands. After about 40 seconds of random walk, the inverse model is computed as the Moore-Penrose pseudoinverse of the collected input/output data. Van de Ven \textit{et al.} show an overview of neural network control of underwater vehicles \cite{VandeVen2005}. \\ For our work, we are using a gray box model for the actuation configuration. A similar batch approach has been chosen by Shuster \textit{et al.} for spacecraft sensor alignment estimation \citep{Shuster1991}. They determine the rotation vector between multiple star tracker devices. Bloesch \textit{et al.} formulate a nonlinear least squares problem to estimate kinematic parameters of a legged robot \citep{Bloesch2013}. In depth studies using batch optimization have been made for camera-IMU calibration XXXXXXXXX 
+! Find citation in AMR book or elsewhere!
+
 
 \section{System Overview}
 ... Some details about Skye. Sensors, actuators, ... \cite{Skye2013}

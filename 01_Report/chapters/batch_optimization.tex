@@ -58,33 +58,55 @@ The latter term influences the rotation axis such that the free body will asympt
 For a homogeneous sphere, the inertia tensor is diagonal with all its diagonal elements equal and the cross product in \eqref{eq:angular_accel} is therefore zero (because $\boldsymbol{\omega}$ and $\mathbf{J}\boldsymbol{\omega}$ are parallel).
 As Skye itself is not as perfect symmetric than a sphere (compare section \ref{sub:par_inertia}) the nutation term will be considered although it is much smaller than the active moment.
 \\
-As shown in \eqref{eq:moments}, the active moment consists of an actuation term $\mathbf{M}^{actuation}$, a gravitation term $\mathbf{M}^{gravitation}$, and an aerodynamic term $\mathbf{M}^{aero}$.
+As shown in \eqref{eq:moments}, the active moment consists of an actuation term $\mathbf{M}^{actuation}$, a gravitation term $\mathbf{M}^{gravity}$, and an aerodynamic term $\mathbf{M}^{aero}$.
 
 \begin{equation}
 \label{eq:moments}
-\mathbf{M}_b = \underbrace{\sum_{k=1}^N  \left[  \mathbf{C}_{b,m_k} \left( \mathbf{p}^{m_k,cog}_{m_k} \times \mathbf{F}_{m_k} \right)  \right]}_{\mathbf{M}^{actuation}}
+\mathbf{M}_b = \underbrace{\sum_{k=1}^N  \left[  \mathbf{C}_{b,m_k} \left( \mathbf{p}^{m_k,cog}_{m_k} \times \mathbf{F}^k_{m_k} \right)  \right]}_{\mathbf{M}^{actuation}}
 -
 \underbrace{
  \left( \mathbf{p}^{cob,cog}_b \times (\mathbf{C}_{b,w}m\mathbf{g}_w) \right)
 }_{\mathbf{M}^{gravity}}
--
-\underbrace{
-c_D^{rot} \rho_{air} \frac{\boldsymbol{\omega}}{\|\boldsymbol{\omega}\|} \|\boldsymbol{\omega}\|^2
-}_{\mathbf{M}^{aero}}
++
+\mathbf{M}^{aero}
 \end{equation}
 
-For the actuation term, the moment is first calculated in the separate motor coordinate frames $m_k$ and then transformed by the rotation matrix $C_{b,m_k}$ to blimp coordinates $b$.
-The position vector $\mathbf{p}^{m_k,cog}_{m_k}$ is expressed in motor coordinates too.
-As discussed in section \ref{sub:par_position}, this simplifies the equation a lot, if one assumes the motors to be placed on a sphere. The motors forces $\mathbf{F}_{m_k}$  
+For the actuation term, the moment
+(cross product between position vector $\mathbf{p}^{cog,m_k}$ from COG to thruster's point of action and motor force $\mathbf{F}^k$)
+is first calculated in the local motor coordinate frames $m_k$ and then transformed by the rotation matrix $\mathbf{C}_{b,m_k}$ to blimp coordinates $b$ for each motor $k=1,...,N$.
+
+The gravity term includes the offset $\mathbf{p^{cob,cog}}$ between COG and COB and 
+the gravitation force $m\mathbf{g}$ which is transformed by the rotation matrix $\mathbf{C}_{b,w}$ from world coordinates $w$ to blimp coordinates $b$.
+
+The aerodynamic term can be modelled as a aerodynamic friction. According to Kundu, the wall shear stress is can be expressed in terms of the dimensionless skin friction coefficient \cite{Kundu2012}
+\begin{equation*}
+\tau_{wall} = 
+\frac{1}{2} c_f \rho_{air} v^2
+\end{equation*}
+If only rotational movement of the blimp is considered, integrating the wall shear stress over the sphere leads to a moment counter acting the rotation with magnitude
+\begin{align*}
+\| \mathbf{M}^{aero} \|
+&= \int_A \xi \tau_{wall} dA \\
+&= \frac{1}{2} c_f \rho_{air} \int_A \xi (\xi \omega)^2 dA \\
+&= \frac{1}{2} c_f \rho_{air} \omega^2 \int_{-r}^{r} (r^2-z^2)^{\frac{3}{2}} \sqrt{r^2-z^2} 2\pi dz \\
+&= \frac{1}{2} c_f \rho_{air} \omega^2 \frac{32\pi}{15} r^5
+\end{align*}
 
 
-\begin{figure}[hbtp]
-\label{fig:frames}
-\centering
-\includegraphics[width=.4\linewidth]{images/motor_frame.png}
-\includegraphics[width=.4\linewidth]{images/blimp_frame.png}
-\caption{\textbf{Left}: Motor coordinate frame $b$. When the thruster is not rotated, it directs in $\mathbf{e}^x_{m_k}$ direction. $\mathbf{e}^z_{m_k}$ directs to the bottom. \textbf{Right}: Blimp coordinate frame $m_k$. $\mathbf{e}^x_{b}$ directs to the camera which is mounted at the front. $\mathbf{e}^x_{b}$ directs to the bottom.}
-\end{figure}
+%The position vector $\mathbf{p}^{m_k,cog}_{m_k}$ is expressed in motor coordinates too.
+%As shown in section \ref{sub:par_position}, this simplifies the equation a lot if the motors are placed on a sphere. The motors forces $\mathbf{F}_{m_k}$ have only nonzero components in x and y direction (see figure \ref{fig:frames})
+%
+%\begin{equation}
+%\mathbf{F}_{m_k} = \left[ \begin{array}{c}
+%F_k\cos(\varphi_k) \\
+%F_k\sin(\varphi_k) \\
+%0
+%\end{array} \right]
+%\end{equation}
+%
+%and the thrust $F_k$ and angle $\varphi_k$ are accurately known for the selected data samples (compare section \ref{sub:data_selection}).
+
+
 
 \section{Parameterization}
 As introduced in section \ref{}... we want ... and we must ... because they are unsure/hard to measure

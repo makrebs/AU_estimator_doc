@@ -41,6 +41,14 @@ In depth studies using batch optimization have been made for camera-IMU calibrat
 
 
 \section{System Overview}
-... Some details about Skye. Sensors, actuators \cite{Schaffner2012}, ... \cite{Skye2013}
+... Some details about Skye. Sensors, actuators, frames \cite{Schaffner2012}, ... \cite{Skye2013}
 \\
-... Tell about Inputs (WHERE SHOULD THIS BE PLACED?)
+
+
+\begin{figure}[hbtp]
+\label{fig:frames}
+\centering
+\includegraphics[width=.4\linewidth]{images/motor_frame.png}
+\includegraphics[width=.4\linewidth]{images/blimp_frame.png}
+\caption{\textbf{Left}: Motor coordinate frame $b$. When the thruster is not rotated, it directs in $\mathbf{e}^x_{m_k}$ direction. $\mathbf{e}^z_{m_k}$ directs to the bottom. \textbf{Right}: Blimp coordinate frame $m_k$. $\mathbf{e}^x_{b}$ directs to the camera which is mounted at the front. $\mathbf{e}^x_{b}$ directs to the bottom.}
+\end{figure}

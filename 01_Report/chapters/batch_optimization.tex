@@ -43,9 +43,9 @@ It consists on the differential equations for the angular velocity $\boldsymbol{
 Skye is assumed as one rigid body.
 Active forces and moments with respect to its center of gravity are concentrated as $\mathbf{F}$ and $\mathbf{M}$ respectively.
 The total mass $\mathbf{\mathcal{M}}$ includes the rigid mass, helium mass as well as the virtual mass compensating for the inertia of the surrounding fluid.
-The moment of inertia (or inertia tensor) $\mathbf{J}$ does not contain a virtual part as we focus on sphere like blimps.
+The moment of inertia (or inertia tensor) $\mathbf{J}$ does not contain a virtual part as long as we focus on sphere like blimps.
 \\
-For the batch optimization, we content ourself with the angular acceleration $\boldsymbol{\alpha}$ as outlined in chapter \ref{chap:design_evaluation} and will have a closer look to the corresponding equation now.
+For the batch optimization, we content ourself with the angular acceleration $\boldsymbol{\alpha}$ as outlined in chapter \ref{chap:design_evaluation} and will have a closer look at the corresponding equation now.
 
 \begin{equation}
 \label{eq:angular_accel}
@@ -75,23 +75,26 @@ For the actuation term, the moment
 (cross product between position vector $\mathbf{p}^{cog,m_k}$ from COG to thruster's point of action and motor force $\mathbf{F}^k$)
 is first calculated in the local motor coordinate frames $m_k$ and then transformed by the rotation matrix $\mathbf{C}_{b,m_k}$ to blimp coordinates $b$ for each motor $k=1,...,N$.
 
-The gravity term includes the offset $\mathbf{p^{cob,cog}}$ between COG and COB and 
+The gravity term includes the offset $\mathbf{p}^{cob,cog}$ from COG to COB and 
 the gravitation force $m\mathbf{g}$ which is transformed by the rotation matrix $\mathbf{C}_{b,w}$ from world coordinates $w$ to blimp coordinates $b$.
 
-The aerodynamic term can be modelled as a aerodynamic friction. According to Kundu, the wall shear stress is can be expressed in terms of the dimensionless skin friction coefficient \cite{Kundu2012}
+The aerodynamic term can be modelled as aerodynamic friction. According to Kundu, the wall shear stress is often expressed in terms of the dimensionless skin friction coefficient $c_f$ as \cite{Kundu2012}
 \begin{equation*}
 \tau_{wall} = 
-\frac{1}{2} c_f \rho_{air} v^2
+\frac{1}{2} c_f \rho_{air} v^2 .
 \end{equation*}
+
 If only rotational movement of the blimp is considered, integrating the wall shear stress over the sphere leads to a moment counter acting the rotation with magnitude
 \begin{align*}
 \| \mathbf{M}^{aero} \|
 &= \int_A \xi \tau_{wall} dA \\
 &= \frac{1}{2} c_f \rho_{air} \int_A \xi (\xi \omega)^2 dA \\
 &= \frac{1}{2} c_f \rho_{air} \omega^2 \int_{-r}^{r} (r^2-z^2)^{\frac{3}{2}} \sqrt{r^2-z^2} 2\pi dz \\
-&= \frac{1}{2} c_f \rho_{air} \omega^2 \frac{32\pi}{15} r^5
+&= \frac{1}{2} c_f \rho_{air} \omega^2 \frac{32}{15} \pi r^5
 \end{align*}
 
+Nevertheless, this does not consider the drag of all components which are attached on the hull (e.g. actuation units or handles) which will have a large effect on the aerodynamics.
+Measurements showed that the aerodynamic drag is more than a magnitude smaller than the usual actuation moments ($c_f \approx 0.02; \|\mathbf{M}^{aero}(\omega = \unit[0.8]{rad/s})\| \approx \unit[0.2]{Nm}$). Therefore we neglect this term and do not further bother about its direction.
 
 %The position vector $\mathbf{p}^{m_k,cog}_{m_k}$ is expressed in motor coordinates too.
 %As shown in section \ref{sub:par_position}, this simplifies the equation a lot if the motors are placed on a sphere. The motors forces $\mathbf{F}_{m_k}$ have only nonzero components in x and y direction (see figure \ref{fig:frames})

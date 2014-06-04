@@ -88,7 +88,7 @@ is first calculated in the local motor coordinate frames $m_k$ and then transfor
 The gravity term includes the offset $\mathbf{p}^{cob,cog}$ from COG to COB and 
 the gravitation force $m\mathbf{g}$ which is transformed by the rotation matrix $\mathbf{C}_{b,w}$ from world coordinates $w$ to blimp coordinates $b$.
 
-The aerodynamic term can be modelled as aerodynamic friction. According to Kundu, the wall shear stress is often expressed in terms of the dimensionless skin friction coefficient $c_f$ as \cite{Kundu2012}
+The aerodynamic term can be modelled as aerodynamic friction. According to Kundu, the wall shear stress is often expressed in terms of the dimensionless skin friction coefficient $c_f$ as \citet{Kundu2012}
 \begin{equation*}
 \tau_{wall} = 
 \frac{1}{2} c_f \rho_{air} v^2 .
@@ -120,13 +120,22 @@ Measurements showed that the aerodynamic drag is more than a magnitude smaller t
 %and the thrust $F_k$ and angle $\varphi_k$ are accurately known for the selected data samples (compare section \ref{sub:data_selection}).
 
 \section{Parameterization}
-For the angular acceleration introduced above, we formulate the parameterized system model as
+For the angular acceleration model introduced above, we formulate the parameterized system model as
 
-\begin{equation}
+\begin{eqnarray}
 \label{eq:sys_mod}
-\boldsymbol{\alpha}_b^b = \mathbf{J}_b^{-1} \left( \mathbf{M}_b  - \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right)
-\end{equation}
+\lefteqn{
+\mathbf{f}(\mathbf{x}, \boldsymbol{\theta}) = {}} \\
+& & {} \mathbf{J}_b^{-1} \left( 
+\sum_{k=1}^N  \left[  \mathbf{C}_{b,m_k} \left( \mathbf{p}^{m_k,cog}_{m_k} \times \mathbf{F}^k_{m_k} \right)  \right]
+-
+\left( \mathbf{p}^{cob,cog}_b \times (\mathbf{C}_{b,w}m\mathbf{g}_w) \right)
+- \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right) \nonumber
+\end{eqnarray}
 
+Every variable in \eqref{eq:sys_mod} must either be measurable, known or a parameter
+\footnote{Here we use only constants for known and parameterized variables. For time dependent variables, e.g. spline functions can be used CITE FURGALE.}.
+In order to find a unique solution for the parameter set, the problem needs to be observable.
 
 
 As introduced in section \ref{}... we want ... and we must ... because they are unsure/hard to measure

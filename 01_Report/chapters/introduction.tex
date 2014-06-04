@@ -14,7 +14,7 @@ This procedure is illustrated in figure \ref{fig:motivation}.
 \centering
 \includegraphics[width=.4\linewidth]{images/CustomBull_Lg.jpg}
 \includegraphics[width=.4\linewidth]{images/CustomCar.jpg}
-\caption{Special shaped blimps are used for advertising \cite{rcblimps}.}
+\caption{Special shaped blimps are used for advertising \citet{rcblimps}.}
 \end{figure}
 
 \begin{figure}[hbtp]
@@ -30,12 +30,12 @@ This work is on estimation of the actuation configuration for a multi-actuated b
 It is motivated on our work on Skye, a spherical and omnidirectional blimp.
 Its design and control is described in detail in \citep{Skye2013} and briefly summarized below. \\
 Various work on thruster configuration estimation can be found for underwater robot systems.
-Doniec \textit{et al.} \citep{Doniec} propose black box model approach.
+\citet{Doniec} propose black box model approach.
 They calculate an inverse model of the thrusters, i.e. a mapping from a desired rotation and position change of the robot to the thruster commands. After about 40 seconds of random walk, the inverse model is computed as the Moore-Penrose pseudoinverse of the collected input/output data.
-Van de Ven \textit{et al.} show an overview of neural network control of underwater vehicles \cite{VandeVen2005}. \\ 
+\citet{VandeVen2005} show an overview of neural network control of underwater vehicles. \\ 
 For our work, we are using a gray box model for the actuation configuration.
-A similar batch approach has been chosen by Shuster \textit{et al.} for spacecraft sensor alignment estimation \citep{Shuster1991}.
-They determine the rotation vector between multiple star tracker devices. Bloesch \textit{et al.} formulate a nonlinear least squares problem to estimate kinematic parameters of a legged robot \citep{Bloesch2013}.
+A similar batch approach has been chosen by \citep{Shuster1991} for spacecraft sensor alignment estimation.
+They determine the rotation vector between multiple star tracker devices. \citet{Bloesch2013} formulated a nonlinear least squares problem to estimate kinematic parameters of a legged robot.
 In depth studies using batch optimization have been made for camera-IMU calibration XXXXXXXXX 
 ! Find citation in AMR book or elsewhere!
 

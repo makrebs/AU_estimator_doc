@@ -26,7 +26,7 @@ Then we will show how we solved the minimization problem and what results we can
 
 \section{System Model}
 \label{sec:system_model}
-A system model for Skye has been stated by Weichart in \cite{Weichart2012} and is summarized in table \ref{tab:sys_mod}.
+A system model for Skye has been stated by \citet{Weichart2012} and is summarized in table \ref{tab:sys_mod}.
 
 \begin{table}[htb!]
 \centering
@@ -88,7 +88,7 @@ is first calculated in the local motor coordinate frames $m_k$ and then transfor
 The gravity term includes the offset $\mathbf{p}^{cob,cog}$ from COG to COB and 
 the gravitation force $m\mathbf{g}$ which is transformed by the rotation matrix $\mathbf{C}_{b,w}$ from world coordinates $w$ to blimp coordinates $b$.
 
-The aerodynamic term can be modelled as aerodynamic friction. According to Kundu, the wall shear stress is often expressed in terms of the dimensionless skin friction coefficient $c_f$ as \citet{Kundu2012}
+The aerodynamic term can be modelled as aerodynamic friction. According to \citet{Kundu2012}, the wall shear stress is usually expressed in terms of the dimensionless skin friction coefficient $c_f$ as 
 \begin{equation*}
 \tau_{wall} = 
 \frac{1}{2} c_f \rho_{air} v^2 .
@@ -133,26 +133,129 @@ For the angular acceleration model introduced above, we formulate the parameteri
 - \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right) \nonumber
 \end{eqnarray}
 
-Every variable in \eqref{eq:sys_mod} must either be measurable, known or a parameter
-\footnote{Here we use only constants for known and parameterized variables. For time dependent variables, e.g. spline functions can be used CITE FURGALE.}.
-In order to find a unique solution for the parameter set, the problem needs to be observable.
+Every variable in \eqref{eq:sys_mod} must either be a measurement, a known value or a parameter\footnote{In this work we only use time invariant variables. As shown by \citet{Furgale2012}, continuous time variables could be added using spline functions.}. 
+In our system model we can specify the variables as shown in table \ref{tab:params}.
 
+\begin{table}[htb!]
+\label{tab:params}
+\centering
+\begin{tabular}{lll}
+\hline
+Motor position & $\mathbf{p}^{m_k,cog}_{m_k}$ & param* \\
+Motor orientation & $\mathbf{C}_{b,m_k}$ & param \\
+Blimp COG offset & $\mathbf{p}^{cob,cog}_b$ & param \\
+Blimp inertia tensor & $\mathbf{J}_b$ & param \\
+Input force & $\mathbf{F}_{m_k}^k$ & meas \\
+Blimp orientation & $\mathbf{C}_{b,w}$ & meas \\
+Blimp angular velocity & $\boldsymbol{\omega}$ & meas \\
+Blimp mass & $m$ & known \\
+Gravitation & $\mathbf{g}$ & known \\
+\hline
+\end{tabular}
+\caption{Parameters XXX. mention that POSITION is actually not estimated as a parameter}
+\end{table}
 
-As introduced in section \ref{}... we want ... and we must ... because they are unsure/hard to measure
-\subsection{Observability}
-\label{sub:observability}
-... tell what is (is not) observable. \\ Maybe also show why. \\ Cite \cite{hermann1977}
+Since every additional parameter makes the problem harder to solve, we focus on parameterizing \textit{hard to measure} values. As we will show in section \ref{sub:observability}, a scale error in the 'knowns' $m$ and $\mathbf{g}$ result in a scale error of the COG offset estimate $\mathbf{p}^{cob,cog}$ only.
+\\
 
-\subsection{Orientation}
-\label{sub:par_orientation}
-... Special Orthogonal Group
-... Rodriquez-Gibbs parameters
+There are several ways of how to represent the parameters above.
+We will show our choice in the sections below.
 
-\subsection{Position}
+\subsection{Motor Position}
 \label{sub:par_position}
+In general, the motor position is a vector in the three dimensional space.
+It points from the blimp's COG to the thruster's point of attack.
+\begin{equation*}
+\mathbf{p}^{m_k,cog}
+=
+\left[ \begin{array}{c}
+p^{m_k,cog}_1 \\
+p^{m_k,cog}_2 \\
+p^{m_k,cog}_3
+\end{array} \right]
+\in \mathbb{R}^3
+\end{equation*}
+If we restrict the blimp hull to a perfect sphere, the ideal motor position vector space reduce to those vectors with length $r$.
+The radius $r$ is the distance from the blimp's COG to the thruster's point of attack.
+It is equal for all motors and the motor position expressed in the local motor frame $m_k$ (see figure \ref{fig:frames}) reduces to
+
+\begin{equation}
+\mathbf{p}^{m_k,cog}_{m_k}
+=
+\left[ \begin{array}{c}
+0 \\
+0 \\
+-r
+\end{array} \right]
+\in \mathbb{R}^3
+\end{equation}
+The actual position on the hull is then simply given by the motor orientation, which is explained next.
+The radius $r$ be measured by an appropriate measuring device.
+As we will show in section \ref{sub:observability}, a scale offset of the now 'known' motor position leads to a scale offset of the inertia tensor estimate $\mathbf{J}$ only.
+
+\subsection{Motor Orientation}
+\label{sub:par_orientation}
+Since the motor thrust is known in motor coordinates $m_k$, a transformation into blimp coordinates is necessary to calculate the dynamics of the blimp.
+The coordinate transformation is described by a special orthogonal group in the three dimensional space (SO3).
+The SO3 can either be minimal represented by $3$ parameters 
+(e.g. Euler angles, rotation vector, Gibbs-Rodriquez parameters) 
+or nonminimal represented by $p>3$ parameters and $p-3$ constraints 
+(e.g. quaternions, rotation matrix).
+While minimal representations always suffer from a singularity (there exists one specific rotation that is not described uniquely), nonminimal representations generally do not contain a singularity.
+\\
+
+Here we have to make the trade-off. Either we introduce one specific motor orientation which cannot be fully observed or we will have to solve a constraint optimization problem.
+Unconstraint optimization problems are much less demanding to solve.
+Therefore it is more convenient to choose a parameterization such that the motor orientation is not on the singularity.
+If a rough estimate of the motor orientation can be made, this can be used to introduce an intermediate coordinate frame, such that the true motor orientation will not be on the singularity with very heigh probability.
+Therefore, we go better with minimal representation for this problem\footnote{
+An alternative implementation with nonminmal representation (quaternions) using either hard or soft constraints showed both worse performance than using minimal representation.
+}.
+
+Because of its computationally cheap and for optimization sufficiently smooth formula \eqref{eq:rod_to_C} to get the direction cosine transform, we use Gibbs-Rodriquez parameters $\boldsymbol{\lambda}$. Starting from rotation angle $\varphi$ and rotation axis $\mathbf{n}$, Gibbs-Rodriquez parameters are defined as
+
+\begin{equation}
+\boldsymbol{\lambda} = \mathbf{n} \tan(\varphi/2) 
+\end{equation}
+
+The direction cosine transform is calculated as
+
+\begin{equation}
+\label{eq:rod_to_C}
+\mathbf{C} = \mathbf{I} + \frac{2}{1+\boldsymbol{\lambda}^\top \boldsymbol{\lambda}}
+\left(\boldsymbol{\lambda}^\times + \left(\boldsymbol{\lambda}^\times\right)^2\right)
+\end{equation}
 
 \subsection{Inertia Tensor}
 \label{sub:par_inertia}
+The inertia tensor of a rigid body is calculated as
+\begin{equation}
+\mathbf{J} = \int_V \rho(x,y,z) 
+\left[ \begin{array}{ccc}
+y^2+z^2 & - xy    & - xz \\
+- xy    & z^2+x^2 & - yz \\
+- xz    & - yz    & x^2+y^2
+\end{array} \right] dV
+\end{equation}
+and is always symmetric.
+In its principle frame, the off-diagonal components are zero. We do not restrict the inertia tensor's principle frame to be aligned with the blimp frame $b$.
+Therefore $\mathbf{J}_b$ is represented by six parameters.
+\begin{equation}
+\mathbf{J}_b = 
+\left[ \begin{array}{ccc}
+J_1 & J_4 & J_5 \\
+J_4 & J_2 & J_6 \\
+J_5 & J_6 & J_3
+\end{array} \right]
+\end{equation}
+
+
+\subsection{Observability}
+\label{sub:observability}
+One way to analytically show observability of a system is shown by \citet{hermann1977} using Lie algebra. 
+Here we do not show a proof of observability but rather argue qualitatively which parameters would not observable and are therefore not estimated.
+As we find a solution for the remaining parameters, they obviously must have been observable.
+
 
 \section{Nonlinear Least Squares}
 ... Formulate minimization problem (unconstraint) as least-squares.

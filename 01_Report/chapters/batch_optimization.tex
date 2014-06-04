@@ -2,12 +2,22 @@
 \label{chap:batch}
 
 Figure \ref{fig:batch_opti} gives an overview on how the batch optimization problem is solved.
-On one hand, the real system is fed with some specific inputs and the system behaviour is measured by the IMU.
-On the other hand, virtual IMU measurements are calculated for the same inputs using a parameterized system model.
+On one hand, the real system is fed with some specific inputs and the system behaviour is measured by the available sensors.
+On the other hand, virtual sensor measurements are calculated for the same inputs using a parameterized system model.
 The goal of the batch optimization is to find those parameters of the system model, that minimize the difference between the real and virtual system output.
-In the following, the relevant parts of the batch optimization is explained in detail.
+Concretely, we solve a minimization problem with cost function \cite{Seber}
 
-\begin{figure}[hbtp]
+\begin{equation}
+S(\theta) = \sum_{j=1}^n | y_j - f_j(x_j, \theta) |
+\end{equation}
+
+where $y_j$ are the measurements and $f_j(x_j, \theta)$ are the corresponding model outputs at time step $j$.
+\\
+
+In the following, we will state describe the system model and its parameters.
+Then we will show how we solved the minimization problem and what results we can expect.
+
+\begin{figure}[btp]
 \label{fig:batch_opti}
 \centering
 \includegraphics[width=0.85\textwidth]{images/dummy.png}
@@ -109,9 +119,16 @@ Measurements showed that the aerodynamic drag is more than a magnitude smaller t
 %
 %and the thrust $F_k$ and angle $\varphi_k$ are accurately known for the selected data samples (compare section \ref{sub:data_selection}).
 
-
-
 \section{Parameterization}
+For the angular acceleration introduced above, we formulate the parameterized system model as
+
+\begin{equation}
+\label{eq:sys_mod}
+\boldsymbol{\alpha}_b^b = \mathbf{J}_b^{-1} \left( \mathbf{M}_b  - \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right)
+\end{equation}
+
+
+
 As introduced in section \ref{}... we want ... and we must ... because they are unsure/hard to measure
 \subsection{Observability}
 \label{sub:observability}
@@ -128,10 +145,8 @@ As introduced in section \ref{}... we want ... and we must ... because they are 
 \subsection{Inertia Tensor}
 \label{sub:par_inertia}
 
-\section{Minimization Problem}
-... Formulate minimization problem (unconstraint) as least-squares.
-
 \section{Nonlinear Least Squares}
+... Formulate minimization problem (unconstraint) as least-squares.
 ... Cite \cite{Seber} (Nonlinear Regression) and maybe also \cite{Draper} (Applied Regression Analysis)
 
 \section{Levenberg-Marquardt Algorithm}

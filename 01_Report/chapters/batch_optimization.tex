@@ -4,23 +4,23 @@
 Figure \ref{fig:batch_opti} gives an overview on how the batch optimization problem is solved.
 On one hand, the real system is fed with some specific inputs and the system behaviour is measured by the available sensors.
 On the other hand, virtual sensor measurements are calculated for the same inputs using a parameterized system model.
-The goal of the batch optimization is to find those parameters of the system model, that minimize the difference between the real and virtual system output.
-Concretely, we solve a minimization problem with cost function \cite{Seber}
+Our goal is to minimize the difference between the real and virtual system output.
+For that, we formulate a cost function
 
 \begin{equation}
-S(\theta) = \sum_{j=1}^n | y_j - f_j(x_j, \theta) |
+S(\theta) = \sum_{j=1}^n ( y_j - f_j(x_j, \theta) )^2
 \end{equation}
 
-where $y_j$ are the measurements and $f_j(x_j, \theta)$ are the corresponding model outputs at time step $j$.
+where $y_j$ are the measurements and $f_j(x_j, \theta)$ are the corresponding model outputs at time step $j$ and look for the parameters $\theta$ that minimize this function.
 \\
 
-In the following, we will state describe the system model and its parameters.
+In the following, we will describe the system model and its parameters.
 Then we will show how we solved the minimization problem and what results we can expect.
 
 \begin{figure}[btp]
 \label{fig:batch_opti}
 \centering
-\includegraphics[width=0.85\textwidth]{images/dummy.png}
+\includegraphics[width=0.85\textwidth]{images/problem_formulation.pdf}
 \caption{Scheme for optimization of parameterized system model.}
 \end{figure}
 

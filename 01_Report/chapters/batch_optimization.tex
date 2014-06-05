@@ -343,32 +343,42 @@ For being consistent with the literature, we substitute the states $\mathbf{x}_j
 \end{array} \right]
 \end{equation}
 
-and finally get the expression for the ordinary least squares problem
-
+and finally get the expression for the ordinary least squares problem with the residual $\mathbf{r}$ as
 \begin{equation}
-S(\boldsymbol{\theta}) = \| \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) \|^2
+\label{eq:cost_ols}
+S(\boldsymbol{\theta}) = \| \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) \|^2 = \| \mathbf{r} \|^2
 \end{equation}
 
-The least squares solution to a linear problem 
-$\mathbf{y} = \mathbf{X} \boldsymbol{\theta} + \boldsymbol{\varepsilon}$ 
+\paragraph{Linear Regression\\}
+Before we deal with the solution to the nonlinear least squares problem, we briefly review the linear case. See \citet{Draper} for a profound treatment of about linear regression.
+In linear regression, the parameter vector is usually denoted by $\boldsymbol{\beta}$ and the least squares problem for a linear function 
+$\mathbf{y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon}$ 
 with normally distributed error 
 $\boldsymbol{\varepsilon} \sim \mathcal{N}(0,\mathbf{I} \sigma^2)$ 
-can directly been calculated as (see \citep{Draper})
+is
+\begin{equation}
+S(\boldsymbol{\beta}) = \| \mathbf{y} - \mathbf{X}\boldsymbol{\beta} \|^2 = \| \mathbf{r} \|^2
+\end{equation}
+
+The least squares solution for $\boldsymbol{\beta}$ can directly be calculated as
 
 \begin{equation}
-\boldsymbol{\theta} = (\mathbf{X}' \mathbf{X})^{-1} \mathbf{X}' \mathbf{y}
+\label{eq:linear_ls_solution}
+\boldsymbol{\beta} = (\mathbf{X}' \mathbf{X})^{-1} \mathbf{X}' \mathbf{y}
 \end{equation}
 
 where
 \begin{equation}
-\mathbf{V} (\boldsymbol{\theta}) = (\mathbf{X}' \mathbf{X})^{-1} {\sigma}^2
+\label{eq:linear_ls_covariance}
+\mathbf{V} (\boldsymbol{\beta}) = (\mathbf{X}' \mathbf{X})^{-1} {\sigma}^2
 \end{equation}
 
 is the covariance matrix of the estimates. An estimate for ${\sigma}$ is given by
 \begin{equation}
-\hat{\sigma}^2 = \frac{1}{n-p} (\mathbf{y} - \mathbf{X} \boldsymbol{\theta})
+\hat{\sigma}^2 = \frac{1}{n-p} (\mathbf{y} - \mathbf{X} \boldsymbol{\beta})
 \end{equation}
 
+\paragraph{Numerical Methods for Nonlinear Regression\\}
 To find a solution for nonlinear regression, iterative schemes have to be applied \citep{Seber}.
 Linear Taylor expansion of the nonlinear function
 $\mathbf{f}(\boldsymbol{\theta})$ 
@@ -378,9 +388,86 @@ close to
 $\boldsymbol{\theta}_0$
 gives
 \begin{equation}
+\label{eq:linearized_f}
 \mathbf{f}(\boldsymbol{\theta}) \approx
 \mathbf{f}(\boldsymbol{\theta}_0) + \mathbf{F}_0(\boldsymbol{\theta} - \boldsymbol{\theta}_0)
 \end{equation}
+
+where $\mathbf{F}_0$ is the Jacobian of $\mathbf{f}(\boldsymbol{\theta})$ 
+evaluated at $\boldsymbol{\theta}_0$
+\begin{equation}
+\mathbf{F}_0 = \frac{\partial \mathbf{f}(\boldsymbol{\theta})} {\partial \boldsymbol{\theta}'} \bigg|_{\boldsymbol{\theta} = \boldsymbol{\theta}_0}
+\end{equation}
+
+%Inserting \eqref{eq:linearized_f} into the cost function \eqref{eq:cost_ols} yields
+%\begin{align}
+%S(\boldsymbol{\theta})
+%&= \| \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) \|^2 \nonumber\\
+%&\approx \| \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}_0) - \mathbf{F}_0 (\boldsymbol{\theta} - \boldsymbol{\theta}_0) \|^2 \nonumber\\
+%&= \| \mathbf{z} - \mathbf{F}_0 \boldsymbol{\beta} \|^2
+%\end{align}
+%where $\mathbf{z} = \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}_0)$
+%and $\boldsymbol{\beta} = (\boldsymbol{\theta} - \boldsymbol{\theta}_0)$.
+%From linear regression, we know the least squares solution
+%\begin{equation}
+%\boldsymbol{\beta} = (\mathbf{F}' \mathbf{F})^{-1} \mathbf{F}' \mathbf{z}
+%\end{equation}
+
+For the residual vector $\mathbf{r}(\boldsymbol{\beta})$, we get
+\begin{align}
+\mathbf{r}(\boldsymbol{\theta}) 
+&= \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) \nonumber\\
+&\approx \mathbf{r}(\boldsymbol{\theta}) - \mathbf{F}_0(\boldsymbol{\theta} - \boldsymbol{\theta}_0)
+\end{align}
+and the cost function 
+$S(\boldsymbol{\theta}) = \mathbf{r}(\boldsymbol{\theta})' \mathbf{r}(\boldsymbol{\theta})$
+becomes
+
+\begin{equation}
+S(\boldsymbol{\theta}) \approx
+\mathbf{r}(\boldsymbol{\theta}_0)' \mathbf{r}(\boldsymbol{\theta}_0) -
+2 \mathbf{r}(\boldsymbol{\theta}) ' \mathbf{F}_0(\boldsymbol{\theta} - \boldsymbol{\theta}_0) + 
+(\boldsymbol{\theta} - \boldsymbol{\theta}_0)'
+\mathbf{F}_0' \mathbf{F}_0
+(\boldsymbol{\theta} - \boldsymbol{\theta}_0)
+\end{equation}
+Following \citet[chap. 2]{Seber}, the cost is minimized with respect to $\theta$ when
+\begin{equation}
+\boldsymbol{\theta} - \boldsymbol{\theta}_0 = 
+(\mathbf{F}_0' \mathbf{F}_0)^{-1} \mathbf{F}_0' \mathbf{r}(\boldsymbol{\theta}_0)
+\end{equation}
+
+This leads to the Gauss-Newton algorithm, that is
+\begin{equation}
+\boldsymbol{\theta}^{i+1} =
+\boldsymbol{\theta}^{i} + 
+(\mathbf{F}_i' \mathbf{F}_i)^{-1} \mathbf{F}_i' \mathbf{r}(\boldsymbol{\theta}^{i})
+\end{equation}
+
+Another iterative algorithm to find an optimal solution is the steepest descent method.
+The gradient of the cost function 
+$S(\boldsymbol{\theta}) = ( \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) )'
+( \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) )$
+with respect to $\boldsymbol{\theta}$ is
+
+\begin{equation}
+\frac{\partial S(\boldsymbol{\theta})}{\partial \boldsymbol{\theta}} = 
+- \mathbf{F} ( \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) ) = 
+- \mathbf{F}  \mathbf{r}(\boldsymbol{\theta}) 
+\end{equation}
+
+From this follows the steepest descent algorithm, that is
+\begin{equation}
+\boldsymbol{\theta}^{i+1} =
+\boldsymbol{\theta}^{i} +
+\mathbf{F}_i \mathbf{r}(\boldsymbol{\theta}^{i})
+\end{equation}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=1]{images/steepest_descent.pdf}
+\caption{XXXXXXXXXXX mention this somewhere in the text STEEPEST DESCENT for two dimensional function}
+\end{figure}
 
 
 %... Formulate minimization problem (unconstraint) as least-squares.

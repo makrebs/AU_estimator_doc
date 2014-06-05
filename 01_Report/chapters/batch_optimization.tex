@@ -133,32 +133,35 @@ For the angular acceleration model introduced above, we formulate the parameteri
 - \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right) \nonumber
 \end{eqnarray}
 
-Every variable in \eqref{eq:sys_mod} must either be a measurement, a known value or a parameter\footnote{In this work we only use time invariant variables. As shown by \citet{Furgale2012}, continuous time variables could be added using spline functions.}. 
-In our system model we can specify the variables as shown in table \ref{tab:params}.
+Every variable in \eqref{eq:sys_mod} must either be a measurement, a known value or a parameter\footnote{In this work we only use time invariant variables.
+As shown by \citet{Furgale2012}, continuous time variables can be added to batch optimization using spline functions.}. 
+In our system model we can classify the variables as shown in table \ref{tab:params}.
 
 \begin{table}[htb!]
 \label{tab:params}
 \centering
 \begin{tabular}{lll}
 \hline
-Motor position & $\mathbf{p}^{m_k,cog}_{m_k}$ & param* \\
+Motor position & $\mathbf{p}^{m_k,cog}_{m_k}$ & param \\
 Motor orientation & $\mathbf{C}_{b,m_k}$ & param \\
 Blimp COG offset & $\mathbf{p}^{cob,cog}_b$ & param \\
 Blimp inertia tensor & $\mathbf{J}_b$ & param \\
+Blimp mass & $m$ & param \\
 Input force & $\mathbf{F}_{m_k}^k$ & meas \\
 Blimp orientation & $\mathbf{C}_{b,w}$ & meas \\
 Blimp angular velocity & $\boldsymbol{\omega}$ & meas \\
-Blimp mass & $m$ & known \\
-Gravitation & $\mathbf{g}$ & known \\
+Gravitation & $\mathbf{g}_w$ & known \\
 \hline
 \end{tabular}
-\caption{Parameters XXX. mention that POSITION is actually not estimated as a parameter}
+\caption{Classification of all variables of the system model equation. All variables that are not known or measured, are introduced as a parameter.}
 \end{table}
 
-Since every additional parameter makes the problem harder to solve, we focus on parameterizing \textit{hard to measure} values. As we will show in section \ref{sub:observability}, a scale error in the 'knowns' $m$ and $\mathbf{g}$ result in a scale error of the COG offset estimate $\mathbf{p}^{cob,cog}$ only.
+Since every additional parameter makes the problem harder to solve, we must focus on parameterizing \textit{hard to measure} values.
+After an observability analysis in section \ref{sub:observability}, we will present an updated table where unobservable parameters are replaced by \textit{easy to measure} values.
+%As we will show in section \ref{sub:observability}, a scale error in the 'knowns' $m$ and $\mathbf{g}$ result in a scale error of the COG offset estimate $\mathbf{p}^{cob,cog}$ only.
 \\
 
-There are several ways of how to represent the parameters above.
+There are several ways of how to represent the parameters.
 We will show our choice in the sections below.
 
 \subsection{Motor Position}
@@ -180,6 +183,7 @@ The radius $r$ is the distance from the blimp's COG to the thruster's point of a
 It is equal for all motors and the motor position expressed in the local motor frame $m_k$ (see figure \ref{fig:frames}) reduces to
 
 \begin{equation}
+\label{eq:motor_position}
 \mathbf{p}^{m_k,cog}_{m_k}
 =
 \left[ \begin{array}{c}
@@ -191,7 +195,7 @@ It is equal for all motors and the motor position expressed in the local motor f
 \end{equation}
 The actual position on the hull is then simply given by the motor orientation, which is explained next.
 The radius $r$ be measured by an appropriate measuring device.
-As we will show in section \ref{sub:observability}, a scale offset of the now 'known' motor position leads to a scale offset of the inertia tensor estimate $\mathbf{J}$ only.
+As we will show in section \ref{sub:observability}, a scale offset of the now 'known' motor position leads to a scale offset of the estimates about the inertia tensor $\mathbf{J}$ and COG offset $\mathbf{p}^{cob,cog}$.
 
 \subsection{Motor Orientation}
 \label{sub:par_orientation}
@@ -254,7 +258,57 @@ J_5 & J_6 & J_3
 \label{sub:observability}
 One way to analytically show observability of a system is shown by \citet{hermann1977} using Lie algebra. 
 Here we do not show a proof of observability but rather argue qualitatively which parameters would not observable and are therefore not estimated.
-As we find a solution for the remaining parameters, they obviously must have been observable.
+As we find an optimal solution for the remaining parameters, we can assume that they are observable.
+\\
+For convenience, we state the parameterized system model \eqref{eq:sys_mod} again.
+
+\begin{eqnarray*}
+\lefteqn{
+\mathbf{f}(\mathbf{x}, \boldsymbol{\theta}) = {}} \\
+& & {} \mathbf{J}_b^{-1} \left( 
+\sum_{k=1}^N  \left[  \mathbf{C}_{b,m_k} \left( \mathbf{p}^{m_k,cog}_{m_k} \times \mathbf{F}^k_{m_k} \right)  \right]
+-
+\left( \mathbf{p}^{cob,cog}_b \times (\mathbf{C}_{b,w}m\mathbf{g}_w) \right)
+- \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right)
+\end{eqnarray*}
+
+The first important observation is, that the scale of the inertia tensor $\mathbf{J}$ is only jointly observable with the scale of the position vectors of the motors $\mathbf{p}^{m_k,cog}$ and the COG offset $\mathbf{p}^{cob,cog}$.
+If all those parameters have to be estimated, there exist infinite many solutions where the estimates are $\hat{\mathbf{p}}^{m_k,cog} = \gamma \mathbf{p}^{m_k,cog}$, 
+$\hat{\mathbf{p}}^{cob,cog} = \gamma \mathbf{p}^{cob,cog}$ and 
+$\hat{\mathbf{J}}           = \frac{1}{\gamma} \mathbf{J}$
+for any real number $\gamma$.
+The problem becomes observable, when the scale of one of those parameters is fixed, i.e. either the norm of one vector or the determinant of the tensor is assumed to be known.
+Note that this scale can be chosen arbitrary with no impact on the motor orientation $\mathbf{C}_{b,m_k}$.
+
+Because we simplified the motor position in \eqref{eq:motor_position} with the scalar radius $r$, it is sufficient to assume $r$ as known to get a unique solution for all remaining parameters.
+Without this simplification, a constraint optimization problem has to be solved.
+\\
+
+If one has a look at the COG offset term in \eqref{eq:sys_mod}, it can be seen that the same scaling problem exists between $\mathbf{p}^{cob,cog}$ and $m$.
+Here again, a wrong estimate of the fixed value $m$
+\footnote{In contrast to the COG offset $\mathbf{C}_{b,m_k}$, the mass $m$ can easily be measured on scales. Therefore we assume the scalar $m$ as known.}
+would only result in a scale error of the jointly observable parameter $\mathbf{p}^{cob,cog}$ without impact on the remaining parameters.
+\\
+For completeness, the updated classification of the variables from table \ref{tab:params} is shown in table \ref{tab:params_updated}.
+
+\begin{table}[htb!]
+\label{tab:params_updated}
+\centering
+\begin{tabular}{lll}
+\hline
+Motor orientation & $\mathbf{C}_{b,m_k}$ & param \\
+Blimp COG offset & $\mathbf{p}^{cob,cog}_b$ & param \\
+Blimp inertia tensor & $\mathbf{J}_b$ & param \\
+Input force & $\mathbf{F}_{m_k}^k$ & meas \\
+Blimp orientation & $\mathbf{C}_{b,w}$ & meas \\
+Blimp angular velocity & $\boldsymbol{\omega}$ & meas \\
+Gravitation & $\mathbf{g}_w$ & known \\
+Blimp mass & $m$ & known \\
+Motor POA radius & $r$ & known \\
+\hline
+\end{tabular}
+\caption{dfdf}
+\end{table}
 
 
 \section{Nonlinear Least Squares}

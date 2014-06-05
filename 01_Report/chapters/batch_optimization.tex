@@ -440,11 +440,16 @@ Following \citet[chap. 2]{Seber}, the cost is minimized with respect to $\theta$
 This leads to the Gauss-Newton algorithm, that is
 \begin{equation}
 \boldsymbol{\theta}^{i+1} =
-\boldsymbol{\theta}^{i} + 
-(\mathbf{F}_i' \mathbf{F}_i)^{-1} \mathbf{F}_i' \mathbf{r}(\boldsymbol{\theta}^{i})
+\boldsymbol{\theta}^{i} + \boldsymbol{\delta}_i
 \end{equation}
 
-Another iterative algorithm to find an optimal solution is the steepest descent method.
+where
+\begin{equation}
+\label{eq:gauss_newton_step}
+\boldsymbol{\delta}_i = (\mathbf{F}_i' \mathbf{F}_i)^{-1} \mathbf{F}_i' \mathbf{r}(\boldsymbol{\theta}^{i})
+\end{equation}
+
+Another iterative algorithm to find an optimal solution is the steepest-descent method.
 The gradient of the cost function 
 $S(\boldsymbol{\theta}) = ( \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) )'
 ( \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) )$
@@ -456,7 +461,7 @@ with respect to $\boldsymbol{\theta}$ is
 - \mathbf{F}  \mathbf{r}(\boldsymbol{\theta}) 
 \end{equation}
 
-From this follows the steepest descent algorithm, that is
+From this follows the steepest-descent algorithm, that is
 \begin{equation}
 \boldsymbol{\theta}^{i+1} =
 \boldsymbol{\theta}^{i} +
@@ -465,8 +470,8 @@ From this follows the steepest descent algorithm, that is
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=1]{images/steepest_descent.pdf}
-\caption{XXXXXXXXXXX mention this somewhere in the text STEEPEST DESCENT for two dimensional function}
+\includegraphics[width = 0.6 \textwidth]{images/steepest_descent.pdf}
+\caption{XXXXXXXXXXX mention this somewhere in the text steepest-descent for two dimensional function}
 \end{figure}
 
 
@@ -474,9 +479,34 @@ From this follows the steepest descent algorithm, that is
 %... Cite \cite{Seber} (Nonlinear Regression) and maybe also \cite{Draper} (Applied Regression Analysis)
 
 \section{Levenberg-Marquardt Algorithm}
-... Again cite \cite{Seber} or directly Levenberg or Marquardt
+Based on ideas by Levenberg, \citet{Marquardt1963} presented the Levenberg-Marquardt Algorithm (LMA).
+As stated by \citeauthor{Marquardt1963},
+steepest-descent methods (SD) have \textit{slow convergence after the first few iterations},
+and Taylor series based methods, i.e. Gauss-Newton method (GN) suffer by \textit{divergence of successive iterates}.
+The LMA performs an optimum interpolation between GN and SD
+and is therefore more robust than GN and has faster convergence than SD.
+Using the notation introduced in the section above, LMA modifies the Gauss-Newton step \eqref{eq:gauss_newton_step} to
 
-\section{Jacobians / Derivatives}
+\begin{equation}
+\label{eq:lma_step}
+\boldsymbol{\theta}^{i+1} =
+\boldsymbol{\theta}^{i} + 
+(\mathbf{F}_i' \mathbf{F}_i + \lambda_i \mathbf{I})^{-1} \mathbf{F}_i' \mathbf{r}(\boldsymbol{\theta}^{i})
+\end{equation}
+
+where $\lambda_i$ is a weighting factor between the GN and SD.
+There exist several possibilities to choose $\lambda_i$.
+Some implementations also use in \eqref{eq:lma_step} the diagonal values of $\mathbf{F}_i' \mathbf{F}_i$ instead of $\mathbf{I}$, such that the method in not influenced by rescaling of $\boldsymbol{\theta}$.
+\\
+
+Because of its convergence rate and robustness, LMA is an appropriate algorithm for many nonlinear least square problems.
+As described in chapter \ref{chap:implementation}, we will use the \textsc{Matlab} implementation of the LMA to solve our problem.
+
+
+\section{System Model Jacobian}
+In this section, we will derive the Jacobian for our system model \eqref{eq:sys_mod}.
+
+
 ... show how equations can be differentiated (for later use in LMA)
 
 \section{Confidence Region}

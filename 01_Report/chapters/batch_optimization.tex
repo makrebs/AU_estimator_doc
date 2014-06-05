@@ -5,17 +5,17 @@ Figure \ref{fig:batch_opti} gives an overview on how the batch optimization prob
 On one hand, the real system is fed with some specific inputs and the system behaviour is measured by the available sensors.
 On the other hand, virtual sensor measurements are calculated for the same inputs using a parameterized system model.
 Our goal is to minimize the difference between the real and virtual system output.
-For that, we formulate a cost function
-
-\begin{equation}
-S(\theta) = \sum_{j=1}^n ( y_j - f_j(x_j, \theta) )^2
-\end{equation}
-
-where $y_j$ are the measurements and $f_j(x_j, \theta)$ are the corresponding model outputs at time step $j$ and look for the parameters $\theta$ that minimize this function.
 \\
 
+%For that, we formulate a cost function
+%\begin{equation}
+%S(\theta) = \sum_{j=1}^n ( y_j - f_j(x_j, \theta) )^2
+%\end{equation}
+%where $y_j$ are the measurements and $f_j(x_j, \theta)$ are the corresponding model outputs at time step $j$ and look for the parameters $\theta$ that minimize this function.
+%\\
+
 In the following, we will describe the system model and its parameters.
-Then we will show how we solved the minimization problem and what results we can expect.
+Then we show a solution to the problem as a nonlinear least squares formulation and derive an analytical solution for the parameter certainty.
 
 \begin{figure}[btp]
 \label{fig:batch_opti}
@@ -55,7 +55,7 @@ Active forces and moments with respect to its center of gravity are concentrated
 The total mass $\mathbf{\mathcal{M}}$ includes the rigid mass, helium mass as well as the virtual mass compensating for the inertia of the surrounding fluid.
 The moment of inertia (or inertia tensor) $\mathbf{J}$ does not contain a virtual part as long as we focus on sphere like blimps.
 \\
-For the batch optimization, we content ourself with the angular acceleration $\boldsymbol{\alpha}$ as outlined in chapter \ref{chap:design_evaluation} and will have a closer look at the corresponding equation now.
+For the optimization, we content ourself with the angular acceleration $\boldsymbol{\alpha}$ as outlined in chapter \ref{chap:design_evaluation} and will have a closer look at the corresponding equation now.
 
 \begin{equation}
 \label{eq:angular_accel}
@@ -312,8 +312,78 @@ Motor POA radius & $r$ & known \\
 
 
 \section{Nonlinear Least Squares}
-... Formulate minimization problem (unconstraint) as least-squares.
-... Cite \cite{Seber} (Nonlinear Regression) and maybe also \cite{Draper} (Applied Regression Analysis)
+As outlined above, our goal is to minimize the error between the measured and modelled angular acceleration.
+For normally distributed system model errors, the maximum-likelihood estimate of the parameters \citep{Seber} is equivalent to find the solution to the least squares problem.
+In general, the cost function $S(\boldsymbol{\theta})$ for the ordinary nonlinear least squares problem is
+
+\begin{equation}
+S(\boldsymbol{\theta}) = \sum_{i=1}^n ( y_i - f_i(\mathbf{x}_i, \boldsymbol{\theta}) )^2
+\end{equation}
+which is the squared sum of the residual between observation $y_i$ and function value $f_i(\mathbf{x}_i, \boldsymbol{\theta})$ for $n$ distinct observations.
+For our problem, we group the observations to the three dimensional angular acceleration measurement vector $\mathbf{y}_j$ and the corresponding system model function $\mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})$ from \eqref{eq:sys_mod}
+
+\begin{equation}
+S(\boldsymbol{\theta}) = \sum_{j=1}^{n/3} \| \mathbf{y}_j - \mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta}) \|^2
+\end{equation}
+
+and we have $n/3$ distinct angular acceleration measurements $\mathbf{y}_j$ at time step $j$.
+For being consistent with the literature, we substitute the states $\mathbf{x}_j$ into the function $\mathbf{f}_j(\boldsymbol{\theta})$, and use from now on
+\begin{equation}
+\mathbf{f}(\boldsymbol{\theta}) = \left[ \begin{array}{c}
+\mathbf{f}(\mathbf{x}_1, \boldsymbol{\theta}) \\
+\vdots \\
+\mathbf{f}(\mathbf{x}_{n/3}, \boldsymbol{\theta})
+\end{array} \right]
+, \qquad
+\mathbf{y} = \left[ \begin{array}{c}
+\mathbf{y}_1 \\
+\vdots \\
+\mathbf{y}_{n/3} 
+\end{array} \right]
+\end{equation}
+
+and finally get the expression for the ordinary least squares problem
+
+\begin{equation}
+S(\boldsymbol{\theta}) = \| \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) \|^2
+\end{equation}
+
+The least squares solution to a linear problem 
+$\mathbf{y} = \mathbf{X} \boldsymbol{\theta} + \boldsymbol{\varepsilon}$ 
+with normally distributed error 
+$\boldsymbol{\varepsilon} \sim \mathcal{N}(0,\mathbf{I} \sigma^2)$ 
+can directly been calculated as (see \citep{Draper})
+
+\begin{equation}
+\boldsymbol{\theta} = (\mathbf{X}' \mathbf{X})^{-1} \mathbf{X}' \mathbf{y}
+\end{equation}
+
+where
+\begin{equation}
+\mathbf{V} (\boldsymbol{\theta}) = (\mathbf{X}' \mathbf{X})^{-1} {\sigma}^2
+\end{equation}
+
+is the covariance matrix of the estimates. An estimate for ${\sigma}$ is given by
+\begin{equation}
+\hat{\sigma}^2 = \frac{1}{n-p} (\mathbf{y} - \mathbf{X} \boldsymbol{\theta})
+\end{equation}
+
+To find a solution for nonlinear regression, iterative schemes have to be applied \citep{Seber}.
+Linear Taylor expansion of the nonlinear function
+$\mathbf{f}(\boldsymbol{\theta})$ 
+for 
+$\boldsymbol{\theta}$
+close to 
+$\boldsymbol{\theta}_0$
+gives
+\begin{equation}
+\mathbf{f}(\boldsymbol{\theta}) \approx
+\mathbf{f}(\boldsymbol{\theta}_0) + \mathbf{F}_0(\boldsymbol{\theta} - \boldsymbol{\theta}_0)
+\end{equation}
+
+
+%... Formulate minimization problem (unconstraint) as least-squares.
+%... Cite \cite{Seber} (Nonlinear Regression) and maybe also \cite{Draper} (Applied Regression Analysis)
 
 \section{Levenberg-Marquardt Algorithm}
 ... Again cite \cite{Seber} or directly Levenberg or Marquardt

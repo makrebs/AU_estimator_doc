@@ -324,6 +324,7 @@ which is the squared sum of the residual between observation $y_i$ and function 
 For our problem, we group the observations to the three dimensional angular acceleration measurement vector $\mathbf{y}_j$ and the corresponding system model function $\mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})$ from \eqref{eq:sys_mod}
 
 \begin{equation}
+\label{eq:cost_f_x_theta}
 S(\boldsymbol{\theta}) = \sum_{j=1}^{n/3} \| \mathbf{y}_j - \mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta}) \|^2
 \end{equation}
 
@@ -505,9 +506,85 @@ As described in chapter \ref{chap:implementation}, we will use the \textsc{Matla
 
 \section{System Model Jacobian}
 In this section, we will derive the Jacobian for our system model \eqref{eq:sys_mod}.
+In general, the Jacobian $\mathbf{F}(\boldsymbol{\theta})$ has dimension $n \times p$, where $n$ is the number of observations and $p$ is the number of parameters.
+Analogue to our notation in \eqref{eq:cost_f_x_theta}, we first can formulate the Jacobian $\mathbf{F}(\mathbf{x}_j\boldsymbol{\theta}) \in \mathbb{R}^{3\times p}$ directly for the system model \eqref{eq:sys_mod} and then form the Jacobian for the batch optimization as
+\begin{equation}
+\mathbf{F}(\boldsymbol{\theta}) = \left[ \begin{array}{c}
+\mathbf{F}(\mathbf{x}_1, \boldsymbol{\theta}) \\
+\vdots \\
+\mathbf{F}(\mathbf{x}_{n/3}, \boldsymbol{\theta})
+\end{array} \right]
+\end{equation}
+
+The columns of the Jacobian
+\begin{equation}
+\mathbf{F}(\mathbf{x}_j, \boldsymbol{\theta}) = 
+\frac{\partial \mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})} {\partial \boldsymbol{\theta}'}
+, \qquad j=1,...,\frac{n}{3}
+\end{equation}
+
+consist of the derivatives of $\mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})$
+with respect to the appropriate parameter.
+In the following, we use the shorthand notation $\mathbf{f}$
+instead of $\mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})$.
+
+\paragraph{Derivative w.r.t Motor Orientation\\}
+As stated in section \ref{sub:par_orientation}, the motor orientation is parameterized by Gibbs-Rodriquez parameters. The derivative of the direction cosine transform \eqref{eq:rod_to_C} has been calculated with \textsc{Mupad} and is stated in appendix \ref{sec:app_dwrt_rodriquez}.
+
+The derivative of the system model w.r.t. the Gibbs-Rodriquez parameters $\boldsymbol{\lambda} = (\lambda_1, \lambda_2, \lambda_3)'$ is
+
+\begin{equation}
+\frac{\partial \mathbf{f}}{\partial \lambda_i} =
+\mathbf{J}_b^{-1} 
+\left( \frac{\partial \mathbf{C}_{b,m_k}}{\partial \lambda_i} \right)
+\left( \mathbf{p}^{m_k,cog}_{m_k} \times \mathbf{F}^k_{m_k} \right)
+, \qquad i = 1,2,3
+\end{equation}
+
+\paragraph{Derivative w.r.t. Motor Position\\}
+Using the rules for derivative of the cross product in appendix \ref{sec:app_d_cross_product}, the derivative of the system model w.r.t. the motor position $\mathbf{p}^{m_k,cog}_{m_k}$ is
+\begin{equation}
+\frac{\partial \mathbf{f}}{\partial (\mathbf{p}^{m_k,cog}_{m_k})'} =
+- \mathbf{J}_b^{-1} 
+\mathbf{C}_{b,m_k}
+\left( \mathbf{F}^k_{m_k} \right) ^\times
+, \qquad k = 1,...,N
+\end{equation}
+
+If the motor position is substituted by the radius $r$ (see \eqref{eq:motor_position}), the derivative of the system model w.r.t the POA radius $r$ is simply
+
+\begin{equation}
+\frac{\partial \mathbf{f}}{\partial r} =
+\mathbf{J}_b^{-1} 
+\mathbf{C}_{b,m_k}
+\left(
+\left[ \begin{array}{c}
+0 \\
+0 \\
+-1
+\end{array} \right]
+\times
+\mathbf{F}^k_{m_k} \right)
+, \qquad k = 1,...,N
+\end{equation}
+
+\paragraph{Derivative w.r.t. Center of Gravity\\}
+The derivative of the system model w.r.t. the COG offset $\mathbf{p}^{cob,cog}_{b}$ is
+\begin{equation}
+\frac{\partial \mathbf{f}}{\partial (\mathbf{p}^{cob,cog}_{b})'} =
+\mathbf{J}_b^{-1} 
+\left( \mathbf{C}_{b,w} m \mathbf{g}_w \right) ^\times
+\end{equation}
+
+\paragraph{Derivative w.r.t. Inertia Tensor\\}
+The derivative of the system model w.r.t. the inertia tensor parameters $\mathbf{p}^{cob,cog}_{b}$ is
+\begin{equation}
+\end{equation}
 
 
-... show how equations can be differentiated (for later use in LMA)
+%... show how equations can be differentiated (for later use in LMA)
+
+
 
 \section{Confidence Region}
 ... of parameters

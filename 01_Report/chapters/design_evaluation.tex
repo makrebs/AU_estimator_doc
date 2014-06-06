@@ -1,6 +1,34 @@
 \chapter{Problem Evaluation}
 \label{chap:problem_evaluation}
 
-...Title is \textsc{Estimation of Actuation Configuration for a Multi-Actuated Blimp}
-...inside System Identification methods, why did we pick batch optimization
-...why did we restrict to Gyro / angular acceleration
+The main goal of this work is the \textit{Estimation of Actuation Configuration for a Multi-Actuated Blimp}.
+The need for a good estimate of the actuation configuration is mainly given by the calculation of the allocation part for the controller.
+Additional value can be achieved by estimating further properties, e.g. the offset between COG and COB.
+If this offset is known, it is possible to calculate the required taring weight apportionment to get any desired COG offset\footnote{
+In the simulation (see \cref{sec:simulation}), such an algorithm is already implemented to place the taring weights.
+}.
+\\
+
+There exist various methods within system identification.
+% DOES SYSTEM IDENTIFICATION INCLUDE ONLINE EXTIMATION?
+Online estimation techniques are preferred for dynamically changing properties (state estimation).
+Offline estimation is preferred for estimating constant properties (parameter estimation).
+The actuation configuration is assumed to be constant.
+Therefore we will use offline estimation in this work.
+Nevertheless, a combined (online) estimator for parameters and states would be interesting but goes beyond the scope of this thesis. \\
+Offline estimation means that we collect a batch of data and calculate the estimate of the actuation configuration out of this data.
+If the parameters change slowly over time, it is also possible to repeat the batch optimization after some time to consider these changes.
+\\
+
+For the offline estimation of the actuation configurations, we assume the system states to be known.
+That means we use the available information about the states from the state estimator which is already implemented on the system.\\
+For bulky, but rotation symmetric systems as blimps, aerodynamic effects have much more influence on the translational movements than on the rotational movements.
+Effects like flow separation, drag crisis or the inertia of the surrounding fluid mainly influence the translational movements.
+On rotational movements, aerodynamic effects have a much smaller impact.
+Since it is a difficult task to model aerodynamic effects and this would lead to many more unknown parameters, we decided to restrict ourself on the investigation of the rotational movement.
+We will see below that this approach is greatly capable of estimating the actuation configuration.
+Nevertheless, we designed our estimator such that it would be possible to extend it by considering translational movements too.
+
+%...Title is \textsc{Estimation of Actuation Configuration for a Multi-Actuated Blimp}
+%...inside System Identification methods, why did we pick batch optimization
+%...why did we restrict to Gyro / angular acceleration

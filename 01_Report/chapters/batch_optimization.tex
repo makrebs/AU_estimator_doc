@@ -243,14 +243,16 @@ y^2+z^2 & - xy    & - xz \\
 \end{array} \right] dV
 \end{equation}
 and is always symmetric.
-In its principle frame, the off-diagonal components are zero. We do not restrict the inertia tensor's principle frame to be aligned with the blimp frame $b$.
-Therefore $\mathbf{J}_b$ is represented by six parameters.
+In its principle frame, the off-diagonal components are zero.
+We do not restrict the inertia tensor's principle frame to be aligned with the blimp frame $b$.
+Therefore $\mathbf{J}_b$ is represented by six parameters $\boldsymbol{\vartheta} = (\vartheta_1, \hdots, \vartheta_6)'$.
+XXXX SEE APPENDIX XY FOR ALTERNATIVE PARAMETERIZATION
 \begin{equation}
 \mathbf{J}_b = 
 \left[ \begin{array}{ccc}
-J_1 & J_4 & J_5 \\
-J_4 & J_2 & J_6 \\
-J_5 & J_6 & J_3
+\vartheta_1 & \vartheta_4 & \vartheta_5 \\
+\vartheta_4 & \vartheta_2 & \vartheta_6 \\
+\vartheta_5 & \vartheta_6 & \vartheta_3
 \end{array} \right]
 \end{equation}
 
@@ -287,8 +289,9 @@ Without this simplification, a constraint optimization problem has to be solved.
 
 If one has a look at the COG offset term in \eqref{eq:sys_mod}, it can be seen that the same scaling problem exists between $\mathbf{p}^{cob,cog}$ and $m$.
 Here again, a wrong estimate of the fixed value $m$
-\footnote{In contrast to the COG offset $\mathbf{C}_{b,m_k}$, the mass $m$ can easily be measured on scales. Therefore we assume the scalar $m$ as known.}
-would only result in a scale error of the jointly observable parameter $\mathbf{p}^{cob,cog}$ without impact on the remaining parameters.
+
+would only result in a scale error of the jointly observable parameter $\mathbf{p}^{cob,cog}$ without impact on the remaining parameters\footnote{
+In contrast to the COG offset $\mathbf{p}^{cob,cog}_{b}$ the mass $m$ can easily be measured on scales. Therefore we assume the scalar $m$ as known.}.
 \\
 For completeness, the updated classification of the variables from table \ref{tab:params} is shown in table \ref{tab:params_updated}.
 
@@ -528,6 +531,17 @@ with respect to the appropriate parameter.
 In the following, we use the shorthand notation $\mathbf{f}$
 instead of $\mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})$.
 
+We state again the system model from \eqref{eq:sys_mod} and calculate the derivative w.r.t. the parameters as following.
+\begin{equation*}
+\mathbf{f}
+= \mathbf{J}_b^{-1} \left( 
+\sum_{k=1}^N  \left[  \mathbf{C}_{b,m_k} \left( \mathbf{p}^{m_k,cog}_{m_k} \times \mathbf{F}^k_{m_k} \right)  \right]
+-
+\left( \mathbf{p}^{cob,cog}_b \times (\mathbf{C}_{b,w}m\mathbf{g}_w) \right)
+- \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right)
+\end{equation*}
+
+
 \paragraph{Derivative w.r.t Motor Orientation\\}
 As stated in section \ref{sub:par_orientation}, the motor orientation is parameterized by Gibbs-Rodriquez parameters. The derivative of the direction cosine transform \eqref{eq:rod_to_C} has been calculated with \textsc{Mupad} and is stated in appendix \ref{sec:app_dwrt_rodriquez}.
 
@@ -572,20 +586,57 @@ If the motor position is substituted by the radius $r$ (see \eqref{eq:motor_posi
 The derivative of the system model w.r.t. the COG offset $\mathbf{p}^{cob,cog}_{b}$ is
 \begin{equation}
 \frac{\partial \mathbf{f}}{\partial (\mathbf{p}^{cob,cog}_{b})'} =
+-
 \mathbf{J}_b^{-1} 
 \left( \mathbf{C}_{b,w} m \mathbf{g}_w \right) ^\times
 \end{equation}
 
 \paragraph{Derivative w.r.t. Inertia Tensor\\}
-The derivative of the system model w.r.t. the inertia tensor parameters $\mathbf{p}^{cob,cog}_{b}$ is
+The derivative of the system model w.r.t. the inertia tensor parameters $\boldsymbol{\vartheta}$ is
 \begin{equation}
+\frac{\partial \mathbf{f}}{\partial \boldsymbol{\vartheta}'} =
+-
+\left(
+\frac{\partial \mathbf{J}_b^{-1}}{\partial \boldsymbol{\vartheta}'}
+\boldsymbol{\omega} ^\times \mathbf{J}_b \boldsymbol{\omega}
++
+\mathbf{J}_b^{-1}
+\boldsymbol{\omega} ^\times \frac{\partial \mathbf{J}_b}{\partial \boldsymbol{\vartheta}'} \boldsymbol{\omega}
+\right)
 \end{equation}
-
-
-%... show how equations can be differentiated (for later use in LMA)
-
+According to the chain rule, the derivative of the inverse tensor has been calculated with \textsc{Mupad} and is stated in XXX APPENDIX XY. In XXX APPENDIX XY you can find another, analytically nicer parameterization of $\mathbf{J}$ with its derivative which has not been implemented for this work though.
 
 
 \section{Confidence Region}
-... of parameters
-... error propagation \cite{Siegwart}
+For having a rough idea about the certainty of the parameters found by batch optimization, the covariance matrix of the estimates for nonlinear least squares is calculated.
+According to \citet[chap. 2]{Seber} the covariance can be calculated using first order Taylor series equivalent to the linear case \eqref{eq:linear_ls_covariance} as
+
+\begin{equation}
+\label{eq:nlls_covariance}
+\mathbf{V}(\boldsymbol{\theta}) = (\mathbf{F}(\boldsymbol{\theta})'\mathbf{F}(\boldsymbol{\theta})) ^{-1} \sigma^2
+\end{equation}
+where an estimate for $\sigma$ is given by
+\begin{equation}
+\hat{\sigma}^2 = \frac{1}{n-p} \mathbf{r}(\boldsymbol{\theta})' \mathbf{r}(\boldsymbol{\theta})
+\end{equation}
+
+To calculate the covariance of the estimated variables, we use the error propagation law as given by \citet[eq. 4.15]{Siegwart}
+
+\begin{equation}
+\label{eq:error_propagation_law}
+\mathbf{V}_Y = \mathbf{G}_X \mathbf{V}_X \mathbf{G}_X'
+\end{equation}
+where
+\begin{itemize}
+\item[] $\mathbf{V}_X =$ covariance matrix of the input uncertainties;
+\item[] $\mathbf{V}_Y =$ covariance matrix of the propagated uncertainties for the outputs;
+\item[] $\mathbf{G}_X  $ is the Jacobian matrix of any function $\mathbf{g}$ w.r.t. $X$;
+\end{itemize}
+
+Note that \eqref{eq:linear_ls_covariance} is basically the inverse formulation of \eqref{eq:error_propagation_law} where $\mathbf{V}_Y = \mathbf{I} \sigma^2$.
+\\
+
+Using the estimate of the parameter covariance \eqref{eq:nlls_covariance} and the error propagation law \eqref{eq:error_propagation_law}, we can calculate the covariance (and hence further statistics as confidence region) of our estimates.
+
+GIVE AN EXAMPLE.. e.g. tangential position (co-)variance estimate
+

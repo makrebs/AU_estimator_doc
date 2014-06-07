@@ -79,11 +79,6 @@ This sensor measures angular velocities around all three axes of rotation as wel
 As will be explained later we use mainly the gyro sensor. To get an understanding of the performance of this sensor we measured the noise of the sensor to be about $3.2 \cdot 10^{-4}rad/s$ RMS.
 
 \subsection{Allocation}
-The unique thing about Skye is the way controlled flight is achieved. 
-Figure~\ref{fig:system_loop_3} shows the control loop of Skye.
-Because the actuators of Skye have 8DOF and the flying body has only 6DOF of control, the mapping between the controller output and the actuator inputs is not a unique mapping. (??cite vue??)
-This mapping is solved with lagrange with the cost-function set to optimize power consumption of the actuators. See (??ref??) for more details.\\
-For this work, the important part about the allocation is that it is derived from the positions and orientations of the motors.
 
 \begin{figure}[hbtp]
 \label{fig:system_loop_3}
@@ -91,4 +86,10 @@ For this work, the important part about the allocation is that it is derived fro
 \includegraphics[width=.9\linewidth]{images/system_loop_3.pdf}
 \caption{\textbf{Left}: Skye control loop}
 \end{figure}
+
+The unique thing about Skye is the way controlled flight is achieved. 
+Figure~\ref{fig:system_loop_3} shows the control loop of Skye.
+Because the actuators of Skye have 8DOF and the flying body has only 6DOF of control, the mapping between the controller output and the actuator inputs is not a unique mapping. (??cite vue??)
+This mapping is solved with lagrange with the cost-function set to optimize power consumption of the actuators. See (??ref??) for more details.\\
+For this work, the important part about the allocation is that it is derived from the positions and orientations of the motors.
 

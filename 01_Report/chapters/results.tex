@@ -26,10 +26,10 @@ Split large datasets into multiple datasets ('normal' size) s.t. we have some st
 To test our optimization framework, we defined five test cases.
 \begin{itemize}
 \item[Default] A simulation of Skye blimp that is comparable to the real Skye system. All 21 parameters as listed in \cref{tab:params_updated} are estimated.
-\item[1 AU] As default, but only one of the AUs of Skye is estimated (AU #4). For the remaining ones, the true configuration is used. 12 parameters estimated.
+\item[1 AU] As default, but only one of the AUs of Skye is estimated (AU 4). The remaining AUs are not powered at all. 12 parameters estimated.
 \item[5 AU] Different Skye blimp with 5 AUs. Configuration for all AUs estimated. 24 parameters.
-\item[No Drag] As default, but simulation without aerodynamic drag.
-\item[COG] As default, but with large additional weight at camera position. COG to COB offset is 1cm and yields a moment in the same magnitude as the actuation moment.
+\item[No Drag] As default, but simulation without aerodynamic drag. This is used to see how much drag influences the result accuracy.
+\item[COG] As default, but with large additional weight at AU4 position. COG to COB offset is 10cm and yields a moment in the same magnitude as the actuation moment. This is used to estimate the error introduced by large COG shifts.
 \end{itemize}
 \subsection{Estimation Confidence}
 ...Show estimate STD

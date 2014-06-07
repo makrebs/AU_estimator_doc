@@ -22,10 +22,13 @@ DRAW DISTANCE AND ANGLE INTO IMAGE. INCREASE RESOLUTION. CORRECT COORDINATE LABE
 \label{fig:tangential_frame}
 \end{figure}
 
-BLA BLA BLA
-We recorded one large dataset.
-Same inputs to simulation.
-Split large datasets into multiple datasets ('normal' size) s.t. we have some statistics.
+\section{Data used to generate Results}
+To be able to generate meaningful results we recorded a long data set with Skye which contains about 850 seconds of undisturbed data samples.
+To improve the accuracy of statistical results bootstrapping is applied to this large dataset.
+Moving block bootstrapping is applied because the dataset consists of time series data. (??cite??)
+The block stride is selected such that the dataset is divided in about 16 blocks.
+Using 16 samples to calculate standard deviation values for the results 
+According to margin of error (??cite??) calculations, the certainty that the actual standard deviation lies within 25\% of the standard deviation of the results from 16 blocks is 95\%.
 
 \section{Simulation}
 To test our optimization framework, we defined five test cases.

@@ -165,9 +165,23 @@ After taring is done, the changed mass of the taring weights cause the tree to r
 
 \subsection{Aerodynamic Drag}
 \label{sub:aero_drag}
-Aerodynamic drag is calculated in the following manner:\\
-... kugel drag für hülle und alli actuatore als zylinder (formle?!) \\
-zuesätzlich empirisch gefundenes drag moment vu de hülle oberfläche zum real system matche. \\
+The aerodynamic effects are the most difficult part of modelling.
+Aerodynamic drag is usually separated into \textit{form drag}, \textit{wall friction drag}, \textit{interference drag}, \textit{lift-induced drag} and \textit{wave drag} which are listed in decreasing importance for blimp modelling\footnote{
+Wave drag describes compression effects of the fluid and is not relevant for subsonic speed.
+Lift-induced drag is also neglected because blimps we consider blimps as symmetric profiles without considerable angle of attack.
+Interference drag is assumed low, as the actuation units and other components on the blimp are much smaller than the hull and is therefore also neglected.
+}.
+
+We modelled form drag for translational movements and friction drag for rotational movements as quadratic functions w.r.t. to the velocity.
+Further, a virtual mass factor was considered for the hull to consider the inertia of the surrounding fluid.
+Form drag was applied to the hull and the actuation units which are represented by cylinders with appropriate dimension.
+Friction drag was applied to the hull for rotational speed only.
+Together with the form drag of the actuation units, the friction drag of the hull acts as a damping moment on rotational movements.
+Form drag coefficients\footnote{
+Blimps like Skye are close to the drag crisis point of spheres ($Re\approx3e05$). Interpolation according to the actual velocity is used.} and virtual mass factor were introduced according to the literature \citep{Kundu2012}.
+The friction drag coefficient of the hull was determined such that the rotational aerodynamic resistance coincides with some reference measurements.
+NOOOOOOOOOOO THIS HAS NOT BEEN DONE?
+ALSO COMPARE WITH CHAPTER ABOVE.. XXXX
 
 \subsection{Thruster Dynamics}
 \label{sub:thrust_dynamics}

@@ -57,7 +57,7 @@ In \ref{eq:m_actuation} the $\mathbf{M}^{actuation}$ part is repeated for conven
 \mathbf{M}^{actuation} = \sum_{k=1}^N  \left[  \mathbf{C}_{b,m_k} \left( \mathbf{p}^{m_k,cog}_{m_k} \times \mathbf{F}^k_{m_k} \right)  \right]
 \end{equation}
 
-It becomes now clear that if we use the allocation to feed $\mathbf{F}^k_{m_k}$, $\mathbf{C}_{b,m_k}$ and $\mathbf{p}^{m_k,cog}_{m_k}$ is completely unobservable.\\
+It becomes now clear that if we use the allocation to feed $\mathbf{F}^k_{m_k}$, $\mathbf{C}_{b,m_k}$ and $\mathbf{p}^{m_k,cog}_{m_k}$ are completely unobservable.\\
 This leaves us with methods 2. and 3.
 It turns out that fully random method is better than the other one, because method 2 still only excites a limited sub-space of the input space. This is avoided with the fully random inputs provided by method 3.\\
 
@@ -100,7 +100,7 @@ First after importing a raw dataset the regions where thrust transients are to b
 This process is implemented with generous margins to eliminate problems with the batch optimisation. \\
 \begin{figure}[htbp]
 \centering
-\includegraphics[width = \textwidth]{images/interactive_cut/interactive_cut_long_modified.eps}
+\includegraphics[scale=0.8]{images/interactive_cut/interactive_cut_long_modified.eps}
 \caption{Except of dataset after transient marking}
 \end{figure}
 Then the segments where the blimp has been catched and repositioned need to be cut from the dataset. \\
@@ -111,9 +111,10 @@ Good and bad segments are easily distinguished by looking at the angular acceler
 An undisturbed system shows constant angular accelerations during the periods when the thrusters are active. \\
 \begin{figure}[htbp]
 \centering
-\includegraphics[width = \textwidth]{images/interactive_cut/interactive_cut_detail_modified.eps}
+\includegraphics[scale=0.8]{images/interactive_cut/interactive_cut_detail_modified.eps}
 \caption{Cutting tool displaying one segment of the dataset. 
 \textbf{Grey} regions are discarded, \textbf{green} regions show steady-state response.
+The legend of the thrust and angle plot has been removed for clarity. The important thing about this plot is that the traces with smooth transitions are the angles from the individual actuators and the other traces show the thrust force of each actuator.
 Disturbances can be clearly seen in the greyed out areas.
 The batch optimisation algorithm will use only the data from the green regions.}
 \end{figure}

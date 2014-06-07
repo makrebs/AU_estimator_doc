@@ -13,13 +13,12 @@ Then we can compare the multiple estimates in this \textit{tangential coordinate
 \\
 The error of the actuator arrangement is expressed by an error distance $e_{pos}^k$ for each motor $k$, which is approximated by the euclidean norm in the x-y plane of the tangential frame,
 and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' and estimated motor coordinate systems $\mathbf{e}_{m_k}^x$ and $\mathbf{e}_{t_k}^x$.
-\\
-DRAW DISTANCE AND ANGLE INTO IMAGE. INCREASE RESOLUTION. CORRECT COORDINATE LABELS.
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[scale=1]{images/tangential_frame.png}
-\caption{The \textit{tangential frame} is the coordinate frame of the motor at its \textit{true} position. If the true position is not known, an estimate is used. In any case, its $\lbrace \mathbf{e}^x_{m_k} , \mathbf{e}^y_{m_k} \rbrace$ plane will be tangential to the spherical hull such that an error of the arrangement can be approximated by the euclidean norm in the tangential coordinate frame.}
+\caption{The \textit{tangential frame} is the coordinate frame of the motor at its \textit{true} position. If the true position is not known, an estimate is used. In any case, its $\lbrace \mathbf{e}^x_{m_k} , \mathbf{e}^y_{m_k} \rbrace$ plane will be tangential to the spherical hull such that an error of the arrangement can be approximated by the euclidean norm in the tangential coordinate frame.
+DRAW DISTANCE AND ANGLE INTO IMAGE. INCREASE RESOLUTION. CORRECT COORDINATE LABELS.}
 \label{fig:tangential_frame}
 \end{figure}
 
@@ -58,6 +57,25 @@ To test our optimization framework, we defined five test cases.
 \caption{Influence of the data set length on the mean position estimate error of the four AUs $e_{pos}$.}
 \label{fig:result_inputlength}
 \end{figure}
+
+The confidence about the parameter estimates can be calculated as stated in \cref{sec:confidence_region}.
+Nevertheless, the statistics can also been accessed by repeat the batch optimization using independent realizations.
+\Cref{fig:result_95pc_confidence} shows the resulting position estimate for multiple realizations.
+It can be seen that the 95\% confidence region calculated according to \cref{eq:nlls_covariance} (dashed line) well matches the 95\% confidence region calculated as $1.96$ times the standard deviation of the multiple realizations.
+When calculating the standard deviation by \cref{eq:nlls_covariance}, it is crucial that the data for the batch optimization is independently drawn.
+For us, that means that no more than one datapoint sample must be considered with the same input vector.
+If multiple datapoints with the same input vector are drawn, the calculated standard deviation gets overconfident.
+Hence, the results in \cref{fig:result_95pc_confidence} were calculated with only one datapoint per input vector\footnote{
+We splitted our dataset into 34 subsets with 36 different input vectors each. Only one sample per input vector was used for the batch optimization.}.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width = \textwidth]{images/results/confidence_95_interval.eps}
+\caption{Distribution of motor position estimates. $\mathbf{+}$: Realization. \textbf{solid}: 95\% confidence interval. \textbf{dashed}: 95\% confidence interval by residual.}
+\label{fig:result_95pc_confidence}
+\end{figure}
+
+
 
 An important observation can be made about the influence of the dataset length on the estimate error.
 \Cref{fig:result_inputlength} shows the change of error with increasing length of the dataset.

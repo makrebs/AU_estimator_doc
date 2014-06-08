@@ -4,7 +4,7 @@
 \Cref{fig:batch_opti} gives an overview on the batch optimization problem formulation.
 On one hand, the real system is fed with some specific inputs and the system behaviour is measured by the available sensors.
 On the other hand, virtual sensor measurements are calculated for the same inputs using a parameterized system model.
-Our goal is to minimize the difference between the real and virtual system output.
+The optimization algorithm has to be designed such that it estimates the parameters such that the difference between the real and virtual system output gets minimal.
 \\
 
 %For that, we formulate a cost function
@@ -15,7 +15,7 @@ Our goal is to minimize the difference between the real and virtual system outpu
 %\\
 
 In the following, we will describe the system model and its parameters.
-Then we show a solution to the problem as a nonlinear least squares formulation and derive an analytical solution for the parameter certainty.
+Then we show a solution to the problem as a nonlinear least squares formulation and derive an analytical estimate for the parameter certainty.
 
 \begin{figure}[btp]
 \centering
@@ -26,7 +26,7 @@ Then we show a solution to the problem as a nonlinear least squares formulation 
 
 \section{System Model}
 \label{sec:system_model}
-A system model for Skye has been stated by \citet{Weichart2012} and is summarized in table \ref{tab:sys_mod}.
+A system model for Skye has been stated in \citep{Weichart2012} and is summarized in table \ref{tab:sys_mod}.
 
 \begin{table}[htb!]
 \centering
@@ -50,7 +50,7 @@ $\begin{array}{ll}
 \end{table}
 
 It consists on the differential equations for the angular velocity $\boldsymbol{\omega}$, orientation quaternion $\mathbf{q}$, velocity $\mathbf{v}$, and position $\mathbf{p}$.
-Skye is assumed as one rigid body.
+Skye is assumed as a rigid body.
 Active forces and moments with respect to its center of gravity are concentrated as $\mathbf{F}$ and $\mathbf{M}$ respectively.
 The total mass $\mathbf{\mathcal{M}}$ includes the rigid mass, helium mass as well as the virtual mass compensating for the inertia of the surrounding fluid.
 The moment of inertia (or inertia tensor) $\mathbf{J}$ does not contain a virtual part as long as we focus on sphere like blimps.
@@ -62,13 +62,13 @@ For the optimization, we content ourself with the angular acceleration $\boldsym
 \boldsymbol{\alpha}_b^b = \mathbf{J}_b^{-1} \left( \mathbf{M}_b  - \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right)
 \end{equation}
 
-The change of angular velocity is given by the active moments $\mathbf{M}$ as well as the nutation term $\boldsymbol{\omega} \times \mathbf{J} \boldsymbol{\omega}$.
+The change of angular velocity is given by the active moment $\mathbf{M}$ as well as the nutation term $\boldsymbol{\omega} \times \mathbf{J} \boldsymbol{\omega}$.
 \\
-The latter term influences the rotation axis such that the free body will asymptotically end in a rotation around its smallest or or largest principle inertia axis.
-For a homogeneous sphere, the inertia tensor is diagonal with all its diagonal elements equal and the cross product in \eqref{eq:angular_accel} is therefore zero (because $\boldsymbol{\omega}$ and $\mathbf{J}\boldsymbol{\omega}$ are parallel).
-As Skye itself is not as perfect symmetric than a sphere (compare \cref{sub:par_inertia}) the nutation term will be considered although it is much smaller than the active moment.
+The latter term influences the rotation axis such that the free body will asymptotically end in a rotation around its smallest or largest principle inertia axis.
+For a homogeneous sphere, the inertia tensor is diagonal with all its diagonal elements equal and the cross product in \cref{eq:angular_accel} is therefore zero (because $\boldsymbol{\omega}$ and $\mathbf{J}\boldsymbol{\omega}$ are parallel).
+As Skye itself is not as perfect symmetric as a sphere (compare \cref{sub:par_inertia}) the nutation term will be considered although it is much smaller than the active moment.
 \\
-As shown in \eqref{eq:moments}, the active moment consists of an actuation term $\mathbf{M}^{actuation}$, a gravitation term $\mathbf{M}^{gravity}$, and an aerodynamic term $\mathbf{M}^{aero}$.
+The active moment $\mathbf{M}$ consists of an actuation term $\mathbf{M}^{actuation}$, a gravitation term $\mathbf{M}^{gravity}$, and an aerodynamic term $\mathbf{M}^{aero}$.
 
 \begin{equation}
 \label{eq:moments}
@@ -86,7 +86,7 @@ For the actuation term, the moment
 is first calculated in the local motor coordinate frames $m^k$ and then transformed by the rotation matrix $\mathbf{C}_{b,m^k}$ to blimp coordinates $b$ for each motor $k=1,...,N$.
 
 The gravity term includes the offset $\mathbf{p}^{cob,cog}$ from COG to COB and 
-the gravitation force $m\mathbf{g}$ which is transformed by the rotation matrix $\mathbf{C}_{b,w}$ from world coordinates $w$ to blimp coordinates $b$.
+the gravitation force $m\mathbf{g}$. The gravitation force is only known in world coordinates $w$ and hence is transformed by the rotation matrix $\mathbf{C}_{b,w}$ from world coordinates $w$ to blimp coordinates $b$.
 
 The aerodynamic term can be modelled as aerodynamic friction. According to \citet{Kundu2012}, the wall shear stress is usually expressed in terms of the dimensionless skin friction coefficient $c_f$ as 
 \begin{equation*}
@@ -101,6 +101,7 @@ If only rotational movement of the blimp is considered, integrating the wall she
 &= \frac{1}{2} c_f \rho_{air} \int_A \xi (\xi \omega)^2 dA \\
 &= \frac{1}{2} c_f \rho_{air} \omega^2 \int_{-r}^{r} (r^2-z^2)^{\frac{3}{2}} \sqrt{r^2-z^2} 2\pi dz \\
 &= \frac{1}{2} c_f \rho_{air} \omega^2 \frac{32}{15} \pi r^5
+ = \frac{16}{15} c_f \rho_{air} \pi r^5 \omega^2
 \end{align*}
 
 Nevertheless, this does not consider the drag of all components which are attached on the hull (e.g. actuation units or handles) which will have a large effect on the aerodynamics.
@@ -121,43 +122,40 @@ Measurements showed that the aerodynamic drag is more than a magnitude smaller t
 %and the thrust $F_k$ and angle $\varphi_k$ are accurately known for the selected data samples (compare \cref{sub:data_selection}).
 
 \section{Parameterization}
-For the angular acceleration model introduced above, we formulate the parameterized system model as
-
-\begin{eqnarray}
-\label{eq:sys_mod}
-\lefteqn{
-\mathbf{f}(\mathbf{x}, \boldsymbol{\theta}) = {}} \\
+Inserting \cref{eq:moments} into \cref{eq:angular_accel}, we get the model for the angular acceleration as
+\begin{align}
+\lefteqn{ \mathbf{f}(\mathbf{x}, \mathbf{u}, \boldsymbol{\theta}) = {} \label{eq:sys_mod} }\\
 & & {} \mathbf{J}_b^{-1} \left( 
 \sum_{k=1}^N  \left[  \mathbf{C}_{b,m^k} \left( \mathbf{p}^{m^k,cog}_{m^k} \times \mathbf{F}^k_{m^k} \right)  \right]
 -
 \left( \mathbf{p}^{cob,cog}_b \times (\mathbf{C}_{b,w}m\mathbf{g}_w) \right)
 - \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right) \nonumber
-\end{eqnarray}
+\end{align}
 
-Every variable in \eqref{eq:sys_mod} must either be a measurement, a known value or a parameter\footnote{In this work we only use time invariant variables.
-As shown by \citet{Furgale2012}, continuous time variables can be added to batch optimization using spline functions.}. 
-In our system model we can classify the variables as shown in table \ref{tab:params}.
+Every variable in \cref{eq:sys_mod} must be classified as being part of the system state $\mathbf{x}$, the input $\mathbf{u}$, the parameter $\boldsymbol{\theta}$ or as a (constant) known variable\footnote{In this work we only use time invariant variables.
+Continuous time variables can be added to batch optimization e.g. by using spline functions as shown in \citep{Furgale2012}.}.
+The variables of the system model can be classified as shown in table \ref{tab:params}.
 
 \begin{table}[htb!]
 \centering
 \begin{tabular}{lll}
 \hline
-Motor position & $\mathbf{p}^{m^k,cog}_{m^k}$ & param \\
-Motor orientation & $\mathbf{C}_{b,m^k}$ & param \\
-Blimp COG offset & $\mathbf{p}^{cob,cog}_b$ & param \\
-Blimp inertia tensor & $\mathbf{J}_b$ & param \\
-Blimp mass & $m$ & param \\
-Input force & $\mathbf{F}_{m^k}^k$ & meas \\
-Blimp orientation & $\mathbf{C}_{b,w}$ & meas \\
-Blimp angular velocity & $\boldsymbol{\omega}$ & meas \\
-Gravitation & $\mathbf{g}_w$ & known \\
+Motor position & $\mathbf{p}^{m^k,cog}_{m^k}$ 	& param \\
+Motor orientation & $\mathbf{C}_{b,m^k}$ 		& param \\
+Blimp COG offset & $\mathbf{p}^{cob,cog}_b$ 	& param \\
+Blimp inertia tensor & $\mathbf{J}_b$ 			& param \\
+Blimp mass & $m$ 								& param \\
+Actuator force & $\mathbf{F}_{m^k}^k$ 			& input \\
+Blimp orientation & $\mathbf{C}_{b,w}$ 			& state \\
+Blimp angular velocity & $\boldsymbol{\omega}$ 	& state \\
+Gravitation & $\mathbf{g}_w$ 					& known \\
 \hline
 \end{tabular}
-\caption{Classification of all variables of the system model equation. All variables that are not known or measured, are introduced as a parameter.}
+\caption{Classification of all variables of the system model equation. All variables that are subject of estimation are introduced as parameter.}
 \label{tab:params}
 \end{table}
 
-Since every additional parameter makes the problem harder to solve, we must focus on parameterizing \textit{hard to measure} values.
+Because every additional parameter makes the problem harder to solve, we must focus on parameterizing \textit{hard to measure} values.
 After an observability analysis in \cref{sub:observability}, we will present an updated table where unobservable parameters are replaced by \textit{easy to measure} values.
 %As we will show in \cref{sub:observability}, a scale error in the 'knowns' $m$ and $\mathbf{g}$ result in a scale error of the COG offset estimate $\mathbf{p}^{cob,cog}$ only.
 \\
@@ -201,29 +199,29 @@ As we will show in \cref{sub:observability}, a scale offset of the now 'known' m
 \subsection{Motor Orientation}
 \label{sub:par_orientation}
 Since the motor thrust is known in motor coordinates $m^k$, a transformation into blimp coordinates is necessary to calculate the dynamics of the blimp.
-The coordinate transformation is described by a special orthogonal group in the three dimensional space (SO3).
-The SO3 can either be minimal represented by $3$ parameters 
+The coordinate transformation is described by a \textit{special orthogonal group in the three dimensional space} SO(3).
+The SO(3) can either be minimal represented by $3$ parameters 
 (e.g. Euler angles, rotation vector, Gibbs-Rodriquez parameters) 
 or nonminimal represented by $p>3$ parameters and $p-3$ constraints 
 (e.g. quaternions, rotation matrix).
-While minimal representations always suffer from a singularity (there exists one specific rotation that is not described uniquely), nonminimal representations generally do not contain a singularity.
+While minimal representations always suffer from a singularity (representation is not \textit{bijective}), nonminimal representations generally do not contain a singularity.
 \\
 
-Here we have to make the trade-off. Either we introduce one specific motor orientation which cannot be fully observed or we will have to solve a constraint optimization problem.
+Here we have to make the trade-off. Either we introduce one specific motor orientation which cannot be observed or we will have to solve a constraint optimization problem.
 Unconstraint optimization problems are much less demanding to solve.
 Therefore it is more convenient to choose a parameterization such that the motor orientation is not on the singularity.
 If a rough estimate of the motor orientation can be made, this can be used to introduce an intermediate coordinate frame, such that the true motor orientation will not be on the singularity with very heigh probability.
 Therefore, we go better with minimal representation for this problem\footnote{
-An alternative implementation with nonminmal representation (quaternions) using either hard or soft constraints showed both worse performance than using minimal representation.
+An alternative implementation with nonminmal representation (quaternions) using either hard or soft constraints showed worse performance than using minimal representation.
 }.
 
-Because of its computationally cheap and for optimization sufficiently smooth formula \eqref{eq:rod_to_C} to get the direction cosine transform, we use Gibbs-Rodriquez parameters $\boldsymbol{\lambda}$. Starting from rotation angle $\varphi$ and rotation axis $\mathbf{n}$, Gibbs-Rodriquez parameters are defined as
+Because of its computationally cheap and for optimization sufficiently smooth formula (see \cref{eq:rod_to_C}) to get the rotation matrix, we use Gibbs-Rodriquez parameters $\boldsymbol{\lambda}$. Starting from rotation angle $\varphi$ and rotation axis $\mathbf{n}$, Gibbs-Rodriquez parameters are defined as
 
 \begin{equation}
 \boldsymbol{\lambda} = \mathbf{n} \tan(\varphi/2) 
 \end{equation}
 
-The direction cosine transform is calculated as
+and is singular for $\varphi = \pi$. The direction cosine transform is calculated as
 
 \begin{equation}
 \label{eq:rod_to_C}
@@ -262,79 +260,87 @@ $\boldsymbol{\vartheta} = (\vartheta_1, \hdots, \vartheta_6)'$.
 \subsection{Observability}
 \label{sub:observability}
 One way to analytically show observability of a system is shown by \citet{hermann1977} using Lie algebra. 
-Here we do not show a proof of observability but rather argue qualitatively which parameters would not observable and are therefore not estimated.
-As we find an optimal solution for the remaining parameters, we can assume that they are observable.
+Here we do not show a proof of observability but argue which parameters are not observable must therefore be excluded from the optimization problem.
+%As we find an optimal solution for the remaining parameters, we can assume that they are observable.
 \\
-For convenience, we state the parameterized system model \eqref{eq:sys_mod} again.
-
-\begin{eqnarray*}
-\lefteqn{
-\mathbf{f}(\mathbf{x}, \boldsymbol{\theta}) = {}} \\
+For convenience, we state the parameterized system model \cref{eq:sys_mod} again.
+\begin{align*}
+\lefteqn{ \mathbf{f}(\mathbf{x}, \mathbf{u}, \boldsymbol{\theta}) = {} }\\
 & & {} \mathbf{J}_b^{-1} \left( 
 \sum_{k=1}^N  \left[  \mathbf{C}_{b,m^k} \left( \mathbf{p}^{m^k,cog}_{m^k} \times \mathbf{F}^k_{m^k} \right)  \right]
 -
 \left( \mathbf{p}^{cob,cog}_b \times (\mathbf{C}_{b,w}m\mathbf{g}_w) \right)
-- \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right)
-\end{eqnarray*}
+- \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right) \nonumber
+\end{align*}
 
-The first important observation is, that the scale of the inertia tensor $\mathbf{J}$ is only jointly observable with the scale of the position vectors of the motors $\mathbf{p}^{m^k,cog}$ and the COG offset $\mathbf{p}^{cob,cog}$.
-If all those parameters have to be estimated, there exist infinite many solutions where the estimates are $\hat{\mathbf{p}}^{m^k,cog} = \gamma \mathbf{p}^{m^k,cog}$, 
-$\hat{\mathbf{p}}^{cob,cog} = \gamma \mathbf{p}^{cob,cog}$ and 
-$\hat{\mathbf{J}}           = \frac{1}{\gamma} \mathbf{J}$
+The first important observation is, that the scale of the inertia tensor $\mathbf{J}$ is only jointly observable with the scale of the motor position vectors $\mathbf{p}^{m^k,cog}$ and the COG offset $\mathbf{p}^{cob,cog}$.
+If all those parameters have to be estimated, there exist infinite many solutions where the estimates are
+\begin{align*}
+ \hat{\mathbf{p}}^{m^k,cog} &= \gamma \mathbf{p}^{m^k,cog} \\
+ \hat{\mathbf{p}}^{cob,cog} &= \gamma \mathbf{p}^{cob,cog} \\
+ \hat{\mathbf{J}}           &= \frac{1}{\gamma} \mathbf{J}
+\end{align*}
 for any real number $\gamma$.
 The problem becomes observable, when the scale of one of those parameters is fixed, i.e. either the norm of one vector or the determinant of the tensor is assumed to be known.
 Note that this scale can be chosen arbitrary with no impact on the motor orientation $\mathbf{C}_{b,m^k}$.
 
-Because we simplified the motor position in \eqref{eq:motor_position} with the scalar radius $r$, it is sufficient to assume $r$ as known to get a unique solution for all remaining parameters.
+Because we simplified the motor position in \cref{eq:motor_position} with the scalar radius $r$, it is sufficient to assume $r$ as known to get a unique solution for all remaining parameters.
 Without this simplification, a constraint optimization problem has to be solved.
 \\
 
-If one has a look at the COG offset term in \eqref{eq:sys_mod}, it can be seen that the same scaling problem exists between $\mathbf{p}^{cob,cog}$ and $m$.
+If one has a look at the COG offset term in \cref{eq:sys_mod}, it can be seen that the same scaling problem exists between $\mathbf{p}^{cob,cog}$ and $m$.
 Here again, a wrong estimate of the fixed value $m$
-
 would only result in a scale error of the jointly observable parameter $\mathbf{p}^{cob,cog}$ without impact on the remaining parameters\footnote{
-In contrast to the COG offset $\mathbf{p}^{cob,cog}_{b}$ the mass $m$ can easily be measured on scales. Therefore we assume the scalar $m$ as known.}.
+In contrast to the COG offset $\mathbf{p}^{cob,cog}_{b}$, the mass $m$ can easily be measured on scales. Therefore we assume the scalar $m$ as known.}.
 \\
-For completeness, the updated classification of the variables from table \ref{tab:params} is shown in table \ref{tab:params_updated}.
+The updated classification of the variables from table \ref{tab:params} is shown in table \ref{tab:params_updated}.
 
 \begin{table}[htb!]
 \centering
 \begin{tabular}{lll}
 \hline
-Motor orientation & $\mathbf{C}_{b,m^k}$ & param \\
+Motor orientation & $\mathbf{C}_{b,m^k}$ 	& param \\
 Blimp COG offset & $\mathbf{p}^{cob,cog}_b$ & param \\
-Blimp inertia tensor & $\mathbf{J}_b$ & param \\
-Input force & $\mathbf{F}_{m^k}^k$ & meas \\
-Blimp orientation & $\mathbf{C}_{b,w}$ & meas \\
-Blimp angular velocity & $\boldsymbol{\omega}$ & meas \\
-Gravitation & $\mathbf{g}_w$ & known \\
-Blimp mass & $m$ & known \\
-Motor POA radius & $r$ & known \\
+Blimp inertia tensor & $\mathbf{J}_b$ 		& param \\
+Actuator force & $\mathbf{F}_{m^k}^k$ 			& input \\
+Blimp orientation & $\mathbf{C}_{b,w}$ 		& state \\
+Blimp angular velocity & $\boldsymbol{\omega}$ & state \\
+Gravitation & $\mathbf{g}_w$ 				& known \\
+Blimp mass & $m$ 							& known \\
+Motor POA radius & $r$ 						& known \\
 \hline
 \end{tabular}
-\caption{dfdf}
+\caption{Updated variable classification for the system model. Like this, all parameters are observable.}
 \label{tab:params_updated}
 \end{table}
 
 
 \section{Nonlinear Least Squares}
 As outlined above, our goal is to minimize the error between the measured and modelled angular acceleration.
-For normally distributed system model errors, the maximum-likelihood estimate of the parameters \citep{Seber} is equivalent to find the solution to the least squares problem.
+For normally distributed system model errors, the maximum-likelihood estimate of the parameters is equivalent to find the solution to the least squares problem \citep{Seber}.
 In general, the cost function $S(\boldsymbol{\theta})$ for the ordinary nonlinear least squares problem is
 
 \begin{equation}
 S(\boldsymbol{\theta}) = \sum_{i=1}^n ( y_i - f_i(\mathbf{x}_i, \boldsymbol{\theta}) )^2
 \end{equation}
-which is the squared sum of the residual between observation $y_i$ and function value $f_i(\mathbf{x}_i, \boldsymbol{\theta})$ for $n$ distinct observations.
-For our problem, we group the observations to the three dimensional angular acceleration measurement vector $\mathbf{y}_j$ and the corresponding system model function $\mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})$ from \eqref{eq:sys_mod}
+which is the squared sum of the residual between observation
+$y_i$
+and function value
+$f_i(\mathbf{x}_i, \boldsymbol{\theta})$
+for
+$i=1,...,n$ distinct observations.
+For our problem, we group the observations to the three dimensional angular acceleration measurement vector $\mathbf{y}_j$ and the corresponding system model function\footnote{
+To solve the optimization problem, we do not distinguish between inputs $\mathbf{u}$ and states $\mathbf{x}$.
+In the remaining of this chapter, we will use $\mathbf{x}$ for states \textit{and} inputs for better readability and consistency with the literature.}
+$\mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})$ from \cref{eq:sys_mod}
 
 \begin{equation}
 \label{eq:cost_f_x_theta}
 S(\boldsymbol{\theta}) = \sum_{j=1}^{n/3} \| \mathbf{y}_j - \mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta}) \|^2
 \end{equation}
 
-and we have $n/3$ distinct angular acceleration measurements $\mathbf{y}_j$ at time step $j$.
-For being consistent with the literature, we substitute the states $\mathbf{x}_j$ into the function $\mathbf{f}_j(\boldsymbol{\theta})$, and use from now on
+and we have $n/3$ distinct angular acceleration measurements $\mathbf{y}_j$ for time steps $j=1,...,n/3$.
+For being consistent with the literature, we substitute $\mathbf{x}_j$ into the function $\mathbf{f}_j(\boldsymbol{\theta})$, and use from now on
 \begin{equation}
 \mathbf{f}(\boldsymbol{\theta}) = \left[ \begin{array}{c}
 \mathbf{f}(\mathbf{x}_1, \boldsymbol{\theta}) \\
@@ -356,7 +362,7 @@ S(\boldsymbol{\theta}) = \| \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) \|^2 = 
 \end{equation}
 
 \paragraph{Linear Regression\\}
-Before we deal with the solution to the nonlinear least squares problem, we briefly review the linear case. See \citet{Draper} for a profound treatment of about linear regression.
+Before we deal with the solution to the nonlinear least squares problem, we briefly review the linear case. Consider \citet[chap. 5]{Draper} for a profound treatment of linear regression.
 In linear regression, the parameter vector is usually denoted by $\boldsymbol{\beta}$ and the least squares problem for a linear function 
 $\mathbf{y} = \mathbf{X} \boldsymbol{\beta} + \boldsymbol{\varepsilon}$ 
 with normally distributed error 
@@ -381,7 +387,9 @@ where
 
 is the covariance matrix of the estimates. An estimate for ${\sigma}$ is given by
 \begin{equation}
-\hat{\sigma}^2 = \frac{1}{n-p} (\mathbf{y} - \mathbf{X} \boldsymbol{\beta})
+\hat{\sigma}^2
+= \frac{1}{n-p} (\mathbf{y} - \mathbf{X} \boldsymbol{\beta})' (\mathbf{y} - \mathbf{X} \boldsymbol{\beta})
+= \frac{1}{n-p} \| \mathbf{r} \|^2
 \end{equation}
 
 \paragraph{Numerical Methods for Nonlinear Regression\\}
@@ -405,7 +413,7 @@ evaluated at $\boldsymbol{\theta}_0$
 \mathbf{F}_0 = \frac{\partial \mathbf{f}(\boldsymbol{\theta})} {\partial \boldsymbol{\theta}'} \bigg|_{\boldsymbol{\theta} = \boldsymbol{\theta}_0}
 \end{equation}
 
-%Inserting \eqref{eq:linearized_f} into the cost function \eqref{eq:cost_ols} yields
+%Inserting \cref{eq:linearized_f} into the cost function \cref{eq:cost_ols} yields
 %\begin{align}
 %S(\boldsymbol{\theta})
 %&= \| \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) \|^2 \nonumber\\
@@ -419,7 +427,7 @@ evaluated at $\boldsymbol{\theta}_0$
 %\boldsymbol{\beta} = (\mathbf{F}' \mathbf{F})^{-1} \mathbf{F}' \mathbf{z}
 %\end{equation}
 
-For the residual vector $\mathbf{r}(\boldsymbol{\beta})$, we get
+For the residual vector $\mathbf{r}(\boldsymbol{\theta})$, we get
 \begin{align}
 \mathbf{r}(\boldsymbol{\theta}) 
 &= \mathbf{y} - \mathbf{f}(\boldsymbol{\theta}) \nonumber\\
@@ -437,7 +445,7 @@ S(\boldsymbol{\theta}) \approx
 \mathbf{F}_0' \mathbf{F}_0
 (\boldsymbol{\theta} - \boldsymbol{\theta}_0)
 \end{equation}
-Following \citet[chap. 2]{Seber}, the cost is minimized with respect to $\theta$ when
+Following \citet[chap. 2]{Seber}, the cost is minimized with respect to $\boldsymbol{\theta}$ when
 \begin{equation}
 \boldsymbol{\theta} - \boldsymbol{\theta}_0 = 
 (\mathbf{F}_0' \mathbf{F}_0)^{-1} \mathbf{F}_0' \mathbf{r}(\boldsymbol{\theta}_0)
@@ -474,10 +482,13 @@ From this follows the steepest-descent algorithm, that is
 \mathbf{F}_i \mathbf{r}(\boldsymbol{\theta}^{i})
 \end{equation}
 
+\Cref{fig:steepest_descent} illustrates the working principle of the steepest-descent method for two parameters.
+
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width = 0.6 \textwidth]{images/steepest_descent.pdf}
-\caption{XXXXXXXXXXX mention this somewhere in the text steepest-descent for two dimensional function}
+\includegraphics[width = 0.6 \textwidth]{images/steepest_descent.eps}
+\caption{Starting at an initial point, the steepest-descent method iteratively proceeds into the negative direction of the gradient (down-hill) and finally converges at a (local) minimum.}
+\label{fig:steepest_descent}
 \end{figure}
 
 
@@ -490,8 +501,8 @@ As stated by \citeauthor{Marquardt1963},
 steepest-descent methods (SD) have \textit{slow convergence after the first few iterations},
 and Taylor series based methods, i.e. Gauss-Newton method (GN) suffer by \textit{divergence of successive iterates}.
 The LMA performs an optimum interpolation between GN and SD
-and is therefore more robust than GN and has faster convergence than SD.
-Using the notation introduced in the section above, LMA modifies the Gauss-Newton step \eqref{eq:gauss_newton_step} to
+and is more robust than GN and has faster convergence than SD.
+Using the notation introduced in the section above, LMA modifies the Gauss-Newton step \cref{eq:gauss_newton_step} to
 
 \begin{equation}
 \label{eq:lma_step}
@@ -502,17 +513,16 @@ Using the notation introduced in the section above, LMA modifies the Gauss-Newto
 
 where $\lambda_i$ is a weighting factor between the GN and SD.
 There exist several possibilities to choose $\lambda_i$.
-Some implementations also use in \eqref{eq:lma_step} the diagonal values of $\mathbf{F}_i' \mathbf{F}_i$ instead of $\mathbf{I}$, such that the method in not influenced by rescaling of $\boldsymbol{\theta}$.
+Some implementations also use in \cref{eq:lma_step} the diagonal values of $\mathbf{F}_i' \mathbf{F}_i$ instead of $\mathbf{I}$, such that the method is not influenced by rescaling of $\boldsymbol{\theta}$.
 \\
 
 Because of its convergence rate and robustness, LMA is an appropriate algorithm for many nonlinear least square problems.
-As described in chapter \ref{chap:implementation}, we will use the \textsc{Matlab} implementation of the LMA to solve our problem.
-
+As described in \cref{chap:implementation}, we will use the \textsc{Matlab} implementation of the LMA to solve our problem.
 
 \section{System Model Jacobian}
-In this section, we will derive the Jacobian for our system model \eqref{eq:sys_mod}.
+In this section, we will derive the Jacobian for our system model \cref{eq:sys_mod}.
 In general, the Jacobian $\mathbf{F}(\boldsymbol{\theta})$ has dimension $n \times p$, where $n$ is the number of observations and $p$ is the number of parameters.
-Analogue to our notation in \eqref{eq:cost_f_x_theta}, we first can formulate the Jacobian $\mathbf{F}(\mathbf{x}_j\boldsymbol{\theta}) \in \mathbb{R}^{3\times p}$ directly for the system model \eqref{eq:sys_mod} and then form the Jacobian for the batch optimization as
+Analogue to our notation in \cref{eq:cost_f_x_theta}, we first can formulate the Jacobian $\mathbf{F}(\mathbf{x}_j, \boldsymbol{\theta}) \in \mathbb{R}^{3\times p}$ directly for the system model \cref{eq:sys_mod} and then form the Jacobian for the batch optimization as
 \begin{equation}
 \mathbf{F}(\boldsymbol{\theta}) = \left[ \begin{array}{c}
 \mathbf{F}(\mathbf{x}_1, \boldsymbol{\theta}) \\
@@ -521,7 +531,7 @@ Analogue to our notation in \eqref{eq:cost_f_x_theta}, we first can formulate th
 \end{array} \right]
 \end{equation}
 
-The columns of the Jacobian
+The $p$ columns of the Jacobian
 \begin{equation}
 \mathbf{F}(\mathbf{x}_j, \boldsymbol{\theta}) = 
 \frac{\partial \mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})} {\partial \boldsymbol{\theta}'}
@@ -533,7 +543,7 @@ with respect to the appropriate parameter.
 In the following, we use the shorthand notation $\mathbf{f}$
 instead of $\mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})$.
 
-We state again the system model from \eqref{eq:sys_mod} and calculate the derivative w.r.t. the parameters as following.
+We state again the system model from \cref{eq:sys_mod} and calculate the derivative w.r.t. the parameters as following.
 \begin{equation*}
 \mathbf{f}
 = \mathbf{J}_b^{-1} \left( 
@@ -545,7 +555,7 @@ We state again the system model from \eqref{eq:sys_mod} and calculate the deriva
 
 
 \paragraph{Derivative w.r.t Motor Orientation\\}
-As stated in \cref{sub:par_orientation}, the motor orientation is parameterized by Gibbs-Rodriquez parameters. The derivative of the direction cosine transform \eqref{eq:rod_to_C} has been calculated with \textsc{Mupad} and is stated in appendix \ref{sec:app_dwrt_rodriquez}.
+As stated in \cref{sub:par_orientation}, the motor orientation is parameterized by Gibbs-Rodriquez parameters. The derivative of the direction cosine transform \cref{eq:rod_to_C} has been calculated with \textsc{Mupad} and is stated in appendix \ref{sec:app_dwrt_rodriquez}.
 
 The derivative of the system model w.r.t. the Gibbs-Rodriquez parameters $\boldsymbol{\lambda} = (\lambda_1, \lambda_2, \lambda_3)'$ is
 
@@ -567,7 +577,7 @@ Using the rules for derivative of the cross product in appendix \ref{sec:app_d_c
 , \qquad k = 1,...,N
 \end{equation}
 
-If the motor position is substituted by the radius $r$ (see \eqref{eq:motor_position}), the derivative of the system model w.r.t the POA radius $r$ is simply
+If the motor position is substituted by the radius $r$ (see \cref{eq:motor_position}), the derivative of the system model w.r.t the POA radius $r$ is simply
 
 \begin{equation}
 \frac{\partial \mathbf{f}}{\partial r} =
@@ -595,6 +605,7 @@ The derivative of the system model w.r.t. the COG offset $\mathbf{p}^{cob,cog}_{
 
 \paragraph{Derivative w.r.t. Inertia Tensor\\}
 The derivative of the system model w.r.t. the inertia tensor parameters $\boldsymbol{\vartheta}$ is
+according to the chain rule
 \begin{equation}
 \frac{\partial \mathbf{f}}{\partial \boldsymbol{\vartheta}'} =
 -
@@ -606,22 +617,26 @@ The derivative of the system model w.r.t. the inertia tensor parameters $\boldsy
 \boldsymbol{\omega} ^\times \frac{\partial \mathbf{J}_b}{\partial \boldsymbol{\vartheta}'} \boldsymbol{\omega}
 \right)
 \end{equation}
-According to the chain rule, the derivative of the inverse tensor has been calculated with \textsc{Mupad} and is stated in XXX APPENDIX XY. In XXX APPENDIX XY you can find another, analytically nicer parameterization of $\mathbf{J}$ with its derivative which has not been implemented for this work though.
+The derivative of the inverse tensor has been calculated with \textsc{Mupad}.
+% and is stated in XXX APPENDIX XY.
+% In XXX APPENDIX XY you can find another, analytically nicer parameterization of $\mathbf{J}$ with its derivative which has not been implemented for this work though.
+\\
 
+XXXXXXXXXXX REPLACE PARAGRAPHS BY A TABLE ??????????????
 
 \section{Confidence Region}
 \label{sec:confidence_region}
 For having a rough idea about the certainty of the parameters found by batch optimization, the covariance matrix of the estimates for nonlinear least squares is calculated.
-According to \citet[chap. 2]{Seber} the covariance can be calculated using first order Taylor series equivalent to the linear case \eqref{eq:linear_ls_covariance} as
+According to \citet[chap. 2]{Seber} the covariance can be calculated using first order Taylor series equivalent to the linear case \cref{eq:linear_ls_covariance} as
 
 \begin{equation}
 \label{eq:nlls_covariance}
 \mathbf{V}(\boldsymbol{\theta}) = (\mathbf{F}(\boldsymbol{\theta})'\mathbf{F}(\boldsymbol{\theta})) ^{-1} \sigma^2
 \end{equation}
 where an estimate for $\sigma$ is given by
-\begin{equation}
+\begin{equation*}
 \hat{\sigma}^2 = \frac{1}{n-p} \mathbf{r}(\boldsymbol{\theta})' \mathbf{r}(\boldsymbol{\theta})
-\end{equation}
+\end{equation*}
 
 To calculate the covariance of the estimated variables, we use the error propagation law as given by \citet[eq. 4.15]{Siegwart}
 
@@ -636,10 +651,10 @@ where
 \item[] $\mathbf{G}_X  $ is the Jacobian matrix of any function $\mathbf{g}$ w.r.t. $X$;
 \end{itemize}
 
-Note that \eqref{eq:linear_ls_covariance} is basically the inverse formulation of \eqref{eq:error_propagation_law} where $\mathbf{V}_Y = \mathbf{I} \sigma^2$.
+Note that \cref{eq:linear_ls_covariance} is basically the inverse formulation of \cref{eq:error_propagation_law} where $\mathbf{V}_Y = \mathbf{I} \sigma^2$.
 \\
 
-Using the estimate of the parameter covariance \eqref{eq:nlls_covariance} and the error propagation law \eqref{eq:error_propagation_law}, we can calculate the covariance (and hence further statistics as confidence region) of our estimates.
+Using the estimate of the parameter covariance \cref{eq:nlls_covariance} and the error propagation law \cref{eq:error_propagation_law}, we can calculate the covariance (and hence further statistics as confidence region) of our estimates.
 \\
 
 As an example, we apply the calculation of the motor position variance given the Rodriquez-Gibbs parameters $\boldsymbol{\lambda}$ of the the motor orientation.
@@ -647,8 +662,8 @@ The motor position, expressed in blimp coordinates $b$, is
 \begin{equation*}
 \mathbf{p}^{m^k}_b = \mathbf{C}_{b,m^k}(\boldsymbol{\lambda}) \mathbf{p}^{m^k}_{m^k}
 \end{equation*}
-.
-The covariance matrix $\mathbf{V}(\boldsymbol{\lambda})$ is calculated by \cref{eq:nlls_covariance} and hence
+
+The covariance matrix $\mathbf{V}(\boldsymbol{\lambda})$ is calculated by \cref{eq:nlls_covariance} and hence we get the error propagation by \cref{eq:error_propagation_law} as
 \begin{equation}
 \mathbf{V} (\mathbf{p}^{m^k}_b) = 
 \left(\frac{\partial \mathbf{p}^{m^k}_b}{\partial \boldsymbol{\lambda}'}\right)

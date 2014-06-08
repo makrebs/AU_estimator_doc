@@ -1,7 +1,7 @@
 \chapter{Optimization: Problem Formulation and Solution}
 \label{chap:batch}
 
-Figure \ref{fig:batch_opti} gives an overview on how the batch optimization problem is solved.
+\Cref{fig:batch_opti} gives an overview on how the batch optimization problem is solved.
 On one hand, the real system is fed with some specific inputs and the system behaviour is measured by the available sensors.
 On the other hand, virtual sensor measurements are calculated for the same inputs using a parameterized system model.
 Our goal is to minimize the difference between the real and virtual system output.
@@ -18,10 +18,10 @@ In the following, we will describe the system model and its parameters.
 Then we show a solution to the problem as a nonlinear least squares formulation and derive an analytical solution for the parameter certainty.
 
 \begin{figure}[btp]
-\label{fig:batch_opti}
 \centering
-\includegraphics[width=0.85\textwidth]{images/problem_formulation.pdf}
+\includegraphics[width=0.7\textwidth]{images/problem_formulation.eps}
 \caption{Scheme for optimization of parameterized system model.}
+\label{fig:batch_opti}
 \end{figure}
 
 \section{System Model}
@@ -30,7 +30,6 @@ A system model for Skye has been stated by \citet{Weichart2012} and is summarize
 
 \begin{table}[htb!]
 \centering
-\label{tab:sys_mod}
 $\begin{array}{ll}
 \toprule
 \dot{\boldsymbol{\omega}}_b^b &= \mathbf{J}_b^{-1} \left( \mathbf{M}_b  - \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right) \\
@@ -47,6 +46,7 @@ $\begin{array}{ll}
 \bottomrule
 \end{array}$
 \caption{Equations of motion for Skye}
+\label{tab:sys_mod}
 \end{table}
 
 It consists on the differential equations for the angular velocity $\boldsymbol{\omega}$, orientation quaternion $\mathbf{q}$, velocity $\mathbf{v}$, and position $\mathbf{p}$.
@@ -66,7 +66,7 @@ The change of angular velocity is given by the active moments $\mathbf{M}$ as we
 \\
 The latter term influences the rotation axis such that the free body will asymptotically end in a rotation around its smallest or or largest principle inertia axis.
 For a homogeneous sphere, the inertia tensor is diagonal with all its diagonal elements equal and the cross product in \eqref{eq:angular_accel} is therefore zero (because $\boldsymbol{\omega}$ and $\mathbf{J}\boldsymbol{\omega}$ are parallel).
-As Skye itself is not as perfect symmetric than a sphere (compare section \ref{sub:par_inertia}) the nutation term will be considered although it is much smaller than the active moment.
+As Skye itself is not as perfect symmetric than a sphere (compare \cref{sub:par_inertia}) the nutation term will be considered although it is much smaller than the active moment.
 \\
 As shown in \eqref{eq:moments}, the active moment consists of an actuation term $\mathbf{M}^{actuation}$, a gravitation term $\mathbf{M}^{gravity}$, and an aerodynamic term $\mathbf{M}^{aero}$.
 
@@ -108,7 +108,7 @@ Measurements showed that the aerodynamic drag is more than a magnitude smaller t
 !!!Measured it is actually 0.04448Nm!!!
 
 %The position vector $\mathbf{p}^{m_k,cog}_{m_k}$ is expressed in motor coordinates too.
-%As shown in section \ref{sub:par_position}, this simplifies the equation a lot if the motors are placed on a sphere. The motors forces $\mathbf{F}_{m_k}$ have only nonzero components in x and y direction (see figure \ref{fig:frames})
+%As shown in \cref{sub:par_position}, this simplifies the equation a lot if the motors are placed on a sphere. The motors forces $\mathbf{F}_{m_k}$ have only nonzero components in x and y direction (see figure \ref{fig:frames})
 %
 %\begin{equation}
 %\mathbf{F}_{m_k} = \left[ \begin{array}{c}
@@ -118,7 +118,7 @@ Measurements showed that the aerodynamic drag is more than a magnitude smaller t
 %\end{array} \right]
 %\end{equation}
 %
-%and the thrust $F_k$ and angle $\varphi_k$ are accurately known for the selected data samples (compare section \ref{sub:data_selection}).
+%and the thrust $F_k$ and angle $\varphi_k$ are accurately known for the selected data samples (compare \cref{sub:data_selection}).
 
 \section{Parameterization}
 For the angular acceleration model introduced above, we formulate the parameterized system model as
@@ -139,7 +139,6 @@ As shown by \citet{Furgale2012}, continuous time variables can be added to batch
 In our system model we can classify the variables as shown in table \ref{tab:params}.
 
 \begin{table}[htb!]
-\label{tab:params}
 \centering
 \begin{tabular}{lll}
 \hline
@@ -155,11 +154,12 @@ Gravitation & $\mathbf{g}_w$ & known \\
 \hline
 \end{tabular}
 \caption{Classification of all variables of the system model equation. All variables that are not known or measured, are introduced as a parameter.}
+\label{tab:params}
 \end{table}
 
 Since every additional parameter makes the problem harder to solve, we must focus on parameterizing \textit{hard to measure} values.
-After an observability analysis in section \ref{sub:observability}, we will present an updated table where unobservable parameters are replaced by \textit{easy to measure} values.
-%As we will show in section \ref{sub:observability}, a scale error in the 'knowns' $m$ and $\mathbf{g}$ result in a scale error of the COG offset estimate $\mathbf{p}^{cob,cog}$ only.
+After an observability analysis in \cref{sub:observability}, we will present an updated table where unobservable parameters are replaced by \textit{easy to measure} values.
+%As we will show in \cref{sub:observability}, a scale error in the 'knowns' $m$ and $\mathbf{g}$ result in a scale error of the COG offset estimate $\mathbf{p}^{cob,cog}$ only.
 \\
 
 There are several ways of how to represent the parameters.
@@ -196,7 +196,7 @@ It is equal for all motors and the motor position expressed in the local motor f
 \end{equation}
 The actual position on the hull is then simply given by the motor orientation, which is explained next.
 The radius $r$ be measured by an appropriate measuring device.
-As we will show in section \ref{sub:observability}, a scale offset of the now 'known' motor position leads to a scale offset of the estimates about the inertia tensor $\mathbf{J}$ and COG offset $\mathbf{p}^{cob,cog}$.
+As we will show in \cref{sub:observability}, a scale offset of the now 'known' motor position leads to a scale offset of the estimates about the inertia tensor $\mathbf{J}$ and COG offset $\mathbf{p}^{cob,cog}$.
 
 \subsection{Motor Orientation}
 \label{sub:par_orientation}
@@ -298,7 +298,6 @@ In contrast to the COG offset $\mathbf{p}^{cob,cog}_{b}$ the mass $m$ can easily
 For completeness, the updated classification of the variables from table \ref{tab:params} is shown in table \ref{tab:params_updated}.
 
 \begin{table}[htb!]
-\label{tab:params_updated}
 \centering
 \begin{tabular}{lll}
 \hline
@@ -314,6 +313,7 @@ Motor POA radius & $r$ & known \\
 \hline
 \end{tabular}
 \caption{dfdf}
+\label{tab:params_updated}
 \end{table}
 
 
@@ -545,7 +545,7 @@ We state again the system model from \eqref{eq:sys_mod} and calculate the deriva
 
 
 \paragraph{Derivative w.r.t Motor Orientation\\}
-As stated in section \ref{sub:par_orientation}, the motor orientation is parameterized by Gibbs-Rodriquez parameters. The derivative of the direction cosine transform \eqref{eq:rod_to_C} has been calculated with \textsc{Mupad} and is stated in appendix \ref{sec:app_dwrt_rodriquez}.
+As stated in \cref{sub:par_orientation}, the motor orientation is parameterized by Gibbs-Rodriquez parameters. The derivative of the direction cosine transform \eqref{eq:rod_to_C} has been calculated with \textsc{Mupad} and is stated in appendix \ref{sec:app_dwrt_rodriquez}.
 
 The derivative of the system model w.r.t. the Gibbs-Rodriquez parameters $\boldsymbol{\lambda} = (\lambda_1, \lambda_2, \lambda_3)'$ is
 

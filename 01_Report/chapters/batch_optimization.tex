@@ -1,7 +1,7 @@
 \chapter{Optimization: Problem Formulation and Solution}
 \label{chap:batch}
 
-\Cref{fig:batch_opti} gives an overview on how the batch optimization problem is solved.
+\Cref{fig:batch_opti} gives an overview on the batch optimization problem formulation.
 On one hand, the real system is fed with some specific inputs and the system behaviour is measured by the available sensors.
 On the other hand, virtual sensor measurements are calculated for the same inputs using a parameterized system model.
 Our goal is to minimize the difference between the real and virtual system output.
@@ -55,7 +55,7 @@ Active forces and moments with respect to its center of gravity are concentrated
 The total mass $\mathbf{\mathcal{M}}$ includes the rigid mass, helium mass as well as the virtual mass compensating for the inertia of the surrounding fluid.
 The moment of inertia (or inertia tensor) $\mathbf{J}$ does not contain a virtual part as long as we focus on sphere like blimps.
 \\
-For the optimization, we content ourself with the angular acceleration $\boldsymbol{\alpha}$ as outlined in \cref{chap:problem_evaluation} and will have a closer look at the corresponding equation now.
+For the optimization, we content ourself with the angular acceleration $\boldsymbol{\alpha}$ as outlined in \cref{sec:problem_evaluation} and will have a closer look at the corresponding equation now.
 
 \begin{equation}
 \label{eq:angular_accel}

@@ -26,6 +26,7 @@ This is illustrated by \cref{fig:motivation}.
 \end{figure}
 
 \section{Configuration Estimation}
+\label{sec:configuration_estimation}
 This work is on estimation of the actuation configuration for a multi-actuated blimp.
 It is motivated on our work on Skye, a spherical and omnidirectional blimp.
 Its design and control is described in detail in \citep{Skye2013} and briefly summarized below. \\
@@ -79,7 +80,9 @@ where $F^k$ is the thrust force magnitude.
 \centering
 \includegraphics[width=.4\linewidth]{images/motor_frame.eps}
 \includegraphics[width=.4\linewidth]{images/blimp_frame.eps}
-\caption{\textbf{Left}: Motor coordinate frame $m^k$. When the thruster is not rotated, it directs in $\mathbf{e}^x_{m^k}$ direction. $\mathbf{e}^z_{m^k}$ directs to the bottom. \textbf{Right}: Blimp coordinate frame $b$. $\mathbf{e}^x_{b}$ directs to the camera which is mounted at the front. $\mathbf{e}^z_{b}$ directs to the bottom.}
+\caption{\textbf{Left}: Motor coordinate frame $m^k$. When the thruster is not rotated, it directs in $\mathbf{e}^x_{m^k}$ direction. $\mathbf{e}^z_{m^k}$ directs to the bottom.
+\textbf{Right}: Blimp coordinate frame $b$. $\mathbf{e}^x_{b}$ directs to the camera which is mounted at the front. 
+$\mathbf{e}^z_{b}$ directs to the bottom.}
 \label{fig:frames}
 \end{figure}
 
@@ -87,21 +90,23 @@ where $F^k$ is the thrust force magnitude.
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=.4\linewidth]{images/motor_force.eps}
-\caption{BLAAAAAAAAAAAAAAA}
+\caption{Motor orientation angle $\alpha^k$ and thrust force $F^k$.}
 \label{fig:motor_force}
 \end{figure}
 
 \subsection{Hardware and Software}
-Skye is based around the Inertial Measurement Unit from the PIXHAWK Research Project (??ref??). 
-The firmware of Skye is based on the PX4 autopilot project (??ref??) and augmented with Skye specific features.
-To control Skye a QGroundControl (??ref??) based interface is installed on a Laptop which is connected via a XBEE link to the PX4 autopilot.
-From there user input is provided with a 3D mouse from 3Dconnexion.
+The control hardware and software of Skye is based upon the framework from the \textsc{Pixhawk} Research Project \citep{pixhawk}.
+The firmware of Skye is based on \textsc{Pixhawk}'s PX4FMU device which includes an IMU.
+For operating Skye, a \textsc{QGroundControl} based interface is installed on a laptop
+which is connected via a \textsc{XBee} link to the PX4 autopilot.
+Piloting is possible by a 3D mouse from \textsc{3DConnexion} (\citep[see]{Krebs2012}).
 
 \subsection{Sensors}
-Onboard the PX4 autopilot are the sensors used in this work.
-While the PX4 autopilot has many sensors the most important sensor for this work is the MPU-6000 Six-Axis (Gyro + Accelerometer) MEMS MotionTracking™ Device.
-This sensor measures angular velocities around all three axes of rotation as well as translational acceleration in all three directions. \\
-As will be explained later we use mainly the gyro sensor. To get an understanding of the performance of this sensor we measured the noise of the sensor to be about $3.2 \cdot 10^{-4}rad/s$ RMS.
+The sensors used for this work are part of the PX4FMU.
+Although there are some more sensors on the device, the most relevant sensor for this work is the MPU-6000 Six-Axis (Gyro + Accelerometer) MEMS MotionTracking™ Device.
+This sensor measures angular velocities around three axes as well as translational acceleration in three directions. \\
+As we will explain later our algorithm mainly depends on the gyro sensor.
+To get an understanding of the performance of this sensor we measured the noise of the sensor to be about $3.2 \cdot 10^{-4}rad/s$ RMS.
 
 \subsection{Allocation}
 
@@ -112,9 +117,52 @@ As will be explained later we use mainly the gyro sensor. To get an understandin
 \label{fig:system_loop_3}
 \end{figure}
 
-The unique thing about Skye is the way controlled flight is achieved. 
+One characteristic feature of Skye is the way controlled flight is achieved. 
 \Cref{fig:system_loop_3} shows the control loop of Skye.
-Because the actuators of Skye have 8DOF and the flying body has only 6DOF of control, the mapping between the controller output and the actuator inputs is not a unique mapping. (??cite vue??)
-This mapping is solved with lagrange with the cost-function set to optimize power consumption of the actuators. See (??ref??) for more details.\\
-For this work, the important part about the allocation is that it is derived from the positions and orientations of the motors.
+Because the four actuators have 8DOF in total and the flying body has only 6DOF that are subject of control,
+the mapping between the controller output and the actuator inputs is not unique.
+This mapping is designed to use minimal power consumption.
+This is solved as a constraint optimization problem.
+An analytical solution for the linear mapping has been derived by \citet{Schaffner2012} using Lagrangian multipliers.
+For the constraints of this optimization problem, it is crucial to know the position and orientation of the motors.
+It is not trivial to get the actual actuation configuration precisely and which motivates this thesis.
 
+
+
+
+
+\section{Problem Evaluation}
+\label{sec:problem_evaluation}
+The main goal of this work is the \textit{Estimation of Actuation Configuration for a Multi-Actuated Blimp}.
+The need for a good estimate of the actuation configuration is mainly given by the calculation for the allocation part of the controller as described before.
+Additional value can be achieved by estimating further properties, e.g. the offset between COG and COB.
+If this offset is known, it is possible to calculate the required taring weight apportionment to get any desired COG offset\footnote{
+In the simulation (see \cref{sec:simulation}), such an algorithm is already implemented to place the taring weights.
+}.
+\\
+
+As it becomes clear by reading related work \ref{sec:configuration_estimation}, there exist various methods for system calibration.
+% DOES SYSTEM IDENTIFICATION INCLUDE ONLINE EXTIMATION?
+In general, online estimation techniques are preferred for dynamically changing properties (state estimation).
+Offline estimation is preferred for estimating constant properties (parameter estimation).
+The actuation configuration is assumed to be constant.
+Therefore we will use offline estimation in this work.
+Nevertheless, a combined (online) estimator for parameters and states would be interesting but goes beyond the scope of this thesis.
+\\
+
+Offline estimation means that we collect a batch of data and calculate the estimate of the actuation configuration out of this data.
+If the parameters change slowly over time, it is also possible to repeat the batch optimization after some time to consider these changes.
+\\
+
+For the estimation of the actuation configurations, we assume the system states to be known.
+We will use the available information about the states from the online state estimator which is already implemented on the system.\\
+For bulky, but rotation symmetric systems as blimps, aerodynamic effects have much more influence on the translational movements than on the rotational movements.
+Effects like flow separation, drag crisis or the inertia of the surrounding fluid mainly influence the translational movements.
+On rotational movements, aerodynamic effects have a much smaller impact.
+Since it is a difficult task to model aerodynamic effects and this would lead to many more unknown parameters, we decided to restrict ourself on the investigation of the rotational movement.
+We will see below that this approach is greatly capable of estimating the actuation configuration.
+Nevertheless, we designed our estimator such that it would be possible to extend it by considering translational movements too.
+
+%...Title is \textsc{Estimation of Actuation Configuration for a Multi-Actuated Blimp}
+%...inside System Identification methods, why did we pick batch optimization
+%...why did we restrict to Gyro / angular acceleration

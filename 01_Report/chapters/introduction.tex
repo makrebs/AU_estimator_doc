@@ -2,12 +2,13 @@
 \label{chap:introduction}
 
 \section{Motivation}
-Blimps are often used as advertising vehicle. Especially eye-catching are special shaped blimps, e.g. blimps that have the shape of a mascot, car or any other commercial product (see figure \ref{fig:blimps}).
-An alternative are conventionally shaped blimps showing imprints or banners.
-The arrangement of the actuators for those different shaped blimps varies a lot and needs in general manual adjustment of the control algorithm.
+Blimps are ideal vehicles for being used as aerial advertising medium. Especially eye-catching are specifically shaped blimps, e.g. blimps that have the shape of a mascot, car or any other commercial product (see figure \ref{fig:blimps}).
+As an alternative, conventionally shaped blimps can show imprints or banners.
+The arrangement of the actuators for those different shaped blimps varies a lot.
+In general, manual adjustment of the control algorithms is needed or the actuators have to be controlled manually at all.
 Using some adequate sensors, it would be useful to determine the effect of an actuator on the movement of the blimp automatically.
-With such an algorithm, the blimp hull can be manufactured independently on the actuation which just can be attached to the blimp and the controller figures out the effect of its actuators by its own.
-This procedure is illustrated in figure \ref{fig:motivation}.
+When such an algorithm is available, the blimp hull can be manufactured independently on the actuation which just can be attached to the blimp and the controller figures out the effect of its actuators by its own.
+This is illustrated by \cref{fig:motivation}.
 
 \begin{figure}[hbtp]
 \centering
@@ -24,21 +25,21 @@ This procedure is illustrated in figure \ref{fig:motivation}.
 \label{fig:motivation}
 \end{figure}
 
-
 \section{Configuration Estimation}
 This work is on estimation of the actuation configuration for a multi-actuated blimp.
 It is motivated on our work on Skye, a spherical and omnidirectional blimp.
 Its design and control is described in detail in \citep{Skye2013} and briefly summarized below. \\
 Various work on thruster configuration estimation can be found for underwater robot systems.
-\citet{Doniec} propose black box model approach.
+\Citet{Doniec} propose black box model approach.
 They calculate an inverse model of the thrusters, i.e. a mapping from a desired rotation and position change of the robot to the thruster commands. After about 40 seconds of random walk, the inverse model is computed as the Moore-Penrose pseudoinverse of the collected input/output data.
-\citet{VandeVen2005} show an overview of neural network control of underwater vehicles. \\ 
-For our work, we are using a gray box model for the actuation configuration.
-A similar batch approach has been chosen by \citep{Shuster1991} for spacecraft sensor alignment estimation.
-They determine the rotation vector between multiple star tracker devices. \citet{Bloesch2013} formulated a nonlinear least squares problem to estimate kinematic parameters of a legged robot.
-In depth studies using batch optimization have been made for camera-IMU calibration XXXXXXXXX 
-! Find citation in AMR book or elsewhere!
-
+\Citet{VandeVen2005} show an overview of neural network control of underwater vehicles. \\ 
+If a first principle based model of the system is available, gray box modelling may be applied.
+Many aerospace and robotics tasks are solved using physical meaningful models.
+To determine the sensor alignments after launch shock, \citet{Shuster1991} estimate the rotation vector between multiple star tracker devices using batch optimization.
+\Citet{Bloesch2013} formulated a nonlinear least squares problem to estimate kinematic parameters of a legged robot.
+In depth studies using batch optimization have been made for intrinsic and extrinsic (stereo) camera calibration \citep[see]{Siegwart}.
+In recent time, visual-inertia sensor calibration has found much attraction.
+Beside others, \citet{Hol2011} shows both batch and recursive estimation (Kalman Filter) for this task.
 
 \section{Skye System Overview}
 The practical part of this work is done with the Skye System \citep{Skye2013}.\\

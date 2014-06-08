@@ -10,18 +10,18 @@ With such an algorithm, the blimp hull can be manufactured independently on the 
 This procedure is illustrated in figure \ref{fig:motivation}.
 
 \begin{figure}[hbtp]
-\label{fig:blimps}
 \centering
 \includegraphics[width=.4\linewidth]{images/CustomBull_Lg.jpg}
 \includegraphics[width=.4\linewidth]{images/CustomCar.jpg}
 \caption{Special shaped blimps are used for advertising \citep{rcblimps}.}
+\label{fig:blimps}
 \end{figure}
 
 \begin{figure}[hbtp]
-\label{fig:motivation}
 \centering
 \includegraphics[width=.85\linewidth]{images/motivation.png}
 \caption{The goal is to find an algorithm, that allow to take any blimp shape (\textit{left}) and put the actuation units (\textit{center}) on. The actuation configuration is then automatically detected, such that elegant movements can be performed without manual controller adjustments (\textit{right}).}
+\label{fig:motivation}
 \end{figure}
 
 
@@ -42,10 +42,11 @@ In depth studies using batch optimization have been made for camera-IMU calibrat
 
 \section{Skye System Overview}
 The practical part of this work is done with the Skye System \citep{Skye2013}.\\
-Skye is a spherical blimp (figure~\ref{fig:frames} right) where the center of gravity coincides with the center of buoyancy.
-Four identical actuators (figure~\ref{fig:frames} left) are attached to the hull of Skye in a tetrahedral arrangement.
+Skye is a spherical blimp (\cref{fig:frames} right) where the center of gravity coincides with the center of buoyancy.
+Four identical actuators (\cref{fig:frames} left) are attached to the hull of Skye in a tetrahedral arrangement.
 Each of these actuators can rotate around their z-axis.
-Mounted to the rotating part of the actuators there is an impeller which can generate thrust in the XY-plane along the direction it is currently pointed.\\
+Mounted to the rotating part of the actuators there is an impeller which can generate thrust in the XY-plane along the direction it is currently pointed.
+
 \subsection{Coordinate Systems}
 This setup gives Skye the ability to move and rotate in all directions with more ore less the same efficiency.\\
 In this work we use different coordinate systems for the Skye body and the actuators.\\
@@ -59,11 +60,11 @@ To put it another way, the thrust-force points in the x-axis direction when the 
 rotation isch als e rechte hand rotation um z definiert?? how to formulate?
 
 \begin{figure}[hbtp]
-\label{fig:frames}
 \centering
 \includegraphics[width=.4\linewidth]{images/motor_frame.png}
 \includegraphics[width=.4\linewidth]{images/blimp_frame.png}
 \caption{\textbf{Left}: Motor coordinate frame $m_k$. When the thruster is not rotated, it directs in $\mathbf{e}^x_{m_k}$ direction. $\mathbf{e}^z_{m_k}$ directs to the bottom. \textbf{Right}: Blimp coordinate frame $b$. $\mathbf{e}^x_{b}$ directs to the camera which is mounted at the front. $\mathbf{e}^z_{b}$ directs to the bottom.}
+\label{fig:frames}
 \end{figure}
 
 \subsection{Hardware and Software}
@@ -81,14 +82,14 @@ As will be explained later we use mainly the gyro sensor. To get an understandin
 \subsection{Allocation}
 
 \begin{figure}[hbtp]
-\label{fig:system_loop_3}
 \centering
-\includegraphics[width=.9\linewidth]{images/system_loop_3.pdf}
-\caption{\textbf{Left}: Skye control loop}
+\includegraphics[width=.9\linewidth]{images/system_loop_3.eps}
+\caption{Skye control loop.}
+\label{fig:system_loop_3}
 \end{figure}
 
 The unique thing about Skye is the way controlled flight is achieved. 
-Figure~\ref{fig:system_loop_3} shows the control loop of Skye.
+\Cref{fig:system_loop_3} shows the control loop of Skye.
 Because the actuators of Skye have 8DOF and the flying body has only 6DOF of control, the mapping between the controller output and the actuator inputs is not a unique mapping. (??cite vue??)
 This mapping is solved with lagrange with the cost-function set to optimize power consumption of the actuators. See (??ref??) for more details.\\
 For this work, the important part about the allocation is that it is derived from the positions and orientations of the motors.

@@ -12,12 +12,12 @@ position, i.e. a coordinate system that is tangential on the sphere.
 Then we can compare the multiple estimates in this \textit{tangential coordinate frame} $t$.
 \\
 The error of the actuator arrangement is expressed by an error distance $e_{pos}^k$ for each motor $k$, which is approximated by the euclidean norm in the x-y plane of the tangential frame,
-and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' and estimated motor coordinate systems $\mathbf{e}_{m_k}^x$ and $\mathbf{e}_{t_k}^x$.
+and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' and estimated motor coordinate systems $\mathbf{e}_{m^k}^x$ and $\mathbf{e}_{t_k}^x$.
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[scale=1]{images/tangential_frame.png}
-\caption{The \textit{tangential frame} is the coordinate frame of the motor at its \textit{true} position. If the true position is not known, an estimate is used. In any case, its $\lbrace \mathbf{e}^x_{m_k} , \mathbf{e}^y_{m_k} \rbrace$ plane will be tangential to the spherical hull such that an error of the arrangement can be approximated by the euclidean norm in the tangential coordinate frame.
+\caption{The \textit{tangential frame} is the coordinate frame of the motor at its \textit{true} position. If the true position is not known, an estimate is used. In any case, its $\lbrace \mathbf{e}^x_{m^k} , \mathbf{e}^y_{m^k} \rbrace$ plane will be tangential to the spherical hull such that an error of the arrangement can be approximated by the euclidean norm in the tangential coordinate frame.
 DRAW DISTANCE AND ANGLE INTO IMAGE. INCREASE RESOLUTION. CORRECT COORDINATE LABELS.}
 \label{fig:tangential_frame}
 \end{figure}
@@ -32,13 +32,14 @@ According to margin of error (??cite??) calculations, the certainty that the act
 
 \section{Simulation}
 To test our optimization framework, we defined five test cases.
-\begin{itemize}
+\begin{description}
 \item[Default] A simulation of Skye blimp that is comparable to the real Skye system. All 21 parameters as listed in \cref{tab:params_updated} are estimated.
 \item[1 AU] As default, but only one of the AUs of Skye is estimated (AU 4). The remaining AUs are not powered at all. 12 parameters estimated.
 \item[5 AU] Different Skye blimp with 5 AUs. Configuration for all AUs estimated. 24 parameters.
 \item[No Drag] As default, but simulation without aerodynamic drag. This is used to see how much drag influences the result accuracy.
 \item[COG] As default, but with large additional weight at AU4 position. COG to COB offset is 10cm and yields a moment in the same magnitude as the actuation moment. This is used to estimate the error introduced by large COG shifts.
-\end{itemize}
+\end{description}
+
 \subsection{Estimation Confidence}
 
 \begin{figure}[hbtp]

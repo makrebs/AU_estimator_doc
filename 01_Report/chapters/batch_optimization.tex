@@ -55,7 +55,7 @@ Active forces and moments with respect to its center of gravity are concentrated
 The total mass $\mathbf{\mathcal{M}}$ includes the rigid mass, helium mass as well as the virtual mass compensating for the inertia of the surrounding fluid.
 The moment of inertia (or inertia tensor) $\mathbf{J}$ does not contain a virtual part as long as we focus on sphere like blimps.
 \\
-For the optimization, we content ourself with the angular acceleration $\boldsymbol{\alpha}$ as outlined in chapter \ref{chap:design_evaluation} and will have a closer look at the corresponding equation now.
+For the optimization, we content ourself with the angular acceleration $\boldsymbol{\alpha}$ as outlined in \cref{chap:problem_evaluation} and will have a closer look at the corresponding equation now.
 
 \begin{equation}
 \label{eq:angular_accel}
@@ -245,8 +245,10 @@ y^2+z^2 & - xy    & - xz \\
 and is always symmetric.
 In its principle frame, the off-diagonal components are zero.
 We do not restrict the inertia tensor's principle frame to be aligned with the blimp frame $b$.
-Therefore $\mathbf{J}_b$ is represented by six parameters $\boldsymbol{\vartheta} = (\vartheta_1, \hdots, \vartheta_6)'$.
-XXXX SEE APPENDIX XY FOR ALTERNATIVE PARAMETERIZATION
+Therefore $\mathbf{J}_b$ is represented by six parameters\footnote{
+There exist multiple variants to represent the inertia tensor. One alternative would be to decompose it into the diagonal principle form and the corresponding coordinate transformation.
+}
+$\boldsymbol{\vartheta} = (\vartheta_1, \hdots, \vartheta_6)'$.
 \begin{equation}
 \mathbf{J}_b = 
 \left[ \begin{array}{ccc}
@@ -638,6 +640,27 @@ Note that \eqref{eq:linear_ls_covariance} is basically the inverse formulation o
 \\
 
 Using the estimate of the parameter covariance \eqref{eq:nlls_covariance} and the error propagation law \eqref{eq:error_propagation_law}, we can calculate the covariance (and hence further statistics as confidence region) of our estimates.
+\\
 
-GIVE AN EXAMPLE.. e.g. tangential position (co-)variance estimate
+As an example, we apply the calculation of the motor position variance given the Rodriquez-Gibbs parameters $\boldsymbol{\lambda}$ of the the motor orientation.
+The motor position, expressed in blimp coordinates $b$, is
+\begin{equation*}
+\mathbf{p}^{m_k}_b = \mathbf{C}_{b,m_k}(\boldsymbol{\lambda}) \mathbf{p}^{m_k}_{m_k}
+\end{equation*}
+.
+The covariance matrix $\mathbf{V}(\boldsymbol{\lambda})$ is calculated by \cref{eq:nlls_covariance} and hence
+\begin{equation}
+\mathbf{V} (\mathbf{p}^{m_k}_b) = 
+\left(\frac{\partial \mathbf{p}^{m_k}_b}{\partial \boldsymbol{\lambda}'}\right)
+\mathbf{V}(\boldsymbol{\lambda})
+\left(\frac{\partial \mathbf{p}^{m_k}_b}{\partial \boldsymbol{\lambda}'}\right)'
+\end{equation}
 
+To express the variance in another frame $t$ (we will use that in \cref{chap:simulation_results}), we can apply coordinate transformation for the covariance matrix and yield
+\begin{equation}
+\label{eq:variance_coordinates_tangential}
+\mathbf{V} (\mathbf{p}^{m_k}_t) = 
+\mathbf{C}_{t,b}
+\mathbf{V}(\boldsymbol{\lambda})
+\mathbf{C}_{t,b}'
+\end{equation}

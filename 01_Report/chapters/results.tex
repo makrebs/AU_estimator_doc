@@ -48,7 +48,7 @@ To test our optimization framework, we defined five test cases.
 \includegraphics[scale=.72]{images/results/err_cmp_sim_cog.eps}
 \includegraphics[scale=.72]{images/results/err_cmp_sim_tensor.eps}
 \caption{Results for simulator}
-\label{fig:tangential_frame}
+\label{fig:err_cmp_sim}
 \end{figure}
 
 
@@ -66,16 +66,19 @@ To test our optimization framework, we defined five test cases.
 The confidence about the parameter estimates can be calculated as stated in \cref{sec:confidence_region}.
 Nevertheless, the statistics can also been accessed by repeat the batch optimization using independent realizations.
 \Cref{fig:result_95pc_confidence} shows the resulting position estimate for multiple realizations.
-It can be seen that the 95\% confidence region calculated according to \cref{eq:nlls_covariance} (dashed line) well matches the 95\% confidence region calculated as $1.96$ times the standard deviation of the multiple realizations.
+It can be seen that the 95\% confidence region calculated according to \cref{eq:variance_coordinates_tangential} (dashed line) well matches the 95\% confidence region calculated as $1.96$ times the standard deviation of the multiple realizations.
 When calculating the standard deviation by \cref{eq:nlls_covariance}, it is crucial that the data for the batch optimization is independently drawn.
 For us, that means that no more than one datapoint sample must be considered with the same input vector.
 If multiple datapoints with the same input vector are drawn, the calculated standard deviation gets overconfident.
 Hence, the results in \cref{fig:result_95pc_confidence} were calculated with only one datapoint per input vector\footnote{
-We splitted our dataset into 34 subsets with 36 different input vectors each. Only one sample per input vector was used for the batch optimization.}.
+As mentioned above, we splitted the available data into 16 subsets with 24 different input vectors each. Only one sample per input vector was used for this batch optimization.}.
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width = \textwidth]{images/results/confidence_95_interval.eps}
+\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU1.eps}
+\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU2.eps} \\
+\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU3.eps}
+\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU4.eps}
 \caption{Distribution of motor position estimates. $\mathbf{+}$: Realization. \textbf{solid}: 95\% confidence interval. \textbf{dashed}: 95\% confidence interval by residual.}
 \label{fig:result_95pc_confidence}
 \end{figure}
@@ -129,7 +132,7 @@ Further results using real measurements are showed in the next section.
 \includegraphics[scale=.72]{images/results/err_cmp_real_cog.eps}
 \includegraphics[scale=.72]{images/results/err_cmp_real_tensor.eps}
 \caption{Results for real system}
-\label{fig:tangential_frame}
+\label{fig:err_cmp_real}
 \end{figure}
 
 

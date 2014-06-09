@@ -22,7 +22,7 @@ With this technique it is possible to easily cut away parts of segments which ha
 
 \section{Real System}
 \label{sec:real_system}
-To record data from a real blimp experiments where conducted on the Skye System. \\
+To record data from a real blimp, experiments where conducted on the Skye System. \\
 To excite the system with actuator inputs which are suitable for batch optimisation we expanded both QGroundControl and the Skye specific PX4 Firmware with new functionality.
 
 \subsection{Input Patterns}
@@ -38,14 +38,14 @@ By combining these constraints on the inputs, we came up with the following patt
 \begin{enumerate}
 \item Apply input vector to system for a fixed amount of time
 \item Stop thrust and turn actuators in the opposite direction
-\item Apply same inputs in reverse to the system for the same amount of time
+\item Apply same inputs in reverse for the same amount of time
 \end{enumerate}
 Using this scheme the system does not move too much while still providing good steady-state system response. \\
 For the input vectors themselves we considered a few options:\\
 \begin{enumerate}
-\item use allocation to generate input vectors which result in only rotational acceleration
-\item use fixed thrust and select thruster angle uniformly
-\item randomize thrust with mean and standard deviation and select thruster angle uniformly
+\item generate random desired angular accelerations and use allocation to generate input vectors for the thrusters, which result in only rotational acceleration
+\item use fixed thrust and select thruster angle from a uniform random number distribution
+\item randomize thrust from a random number sequence with given mean and standard deviation and select thruster angle from a uniform random number distribution
 \end{enumerate}
 The idea behind 1. is to further reduce the amount the blimp moves by removing the translatory forces all together. 
 However this approach does not work.\\
@@ -57,19 +57,26 @@ In \ref{eq:m_actuation} the $\mathbf{M}^{actuation}$ part is repeated for conven
 \mathbf{M}^{actuation} = \sum_{k=1}^N  \left[  \mathbf{C}_{b,m_k} \left( \mathbf{p}^{m_k,cog}_{m_k} \times \mathbf{F}^k_{m_k} \right)  \right]
 \end{equation}
 
-It becomes now clear that if we use the allocation to feed $\mathbf{F}^k_{m^k}$, $\mathbf{C}_{b,m^k}$ and $\mathbf{p}^{m^k,cog}_{m^k}$ are completely unobservable.\\
-This leaves us with methods 2. and 3.
+It becomes clear that if we use the allocation to feed $\mathbf{F}^k_{m^k}$, $\mathbf{C}_{b,m^k}$ and $\mathbf{p}^{m^k,cog}_{m^k}$ are completely unobservable.\\
+This leaves us with methods 2 and 3.
 It turns out that fully random method is better than the other one, because method 2 still only excites a limited sub-space of the input space. This is avoided with the fully random inputs provided by method 3.\\
 
 \subsection{Input Generation}
 \label{sub:input_generation}
-To avoid having to reflash the firmware all the time, the inputs are generated inside QGroundControl and transmitted with a special direct actuator control message to the blimp.
+To avoid having to re-flash the firmware all the time, the inputs are generated inside \textsc{QGroundControl} and transmitted with a special direct actuator control message to the blimp.
 The firmware then just forwards the actuator commands to the actuators. \\
-This way all of the parameters like standard deviation and time intervals can be set from within the QGroundControl interface. (??screenshot??)\\
+This way all of the parameters like standard deviation and time intervals can be set from within the \textsc{QGroundControl} interface.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=.9\linewidth]{images/qgc/QGroundControl_v_2.png}
+\caption{\textsc{QGroundControl} System input generation interface}
+\label{fig:qgc_input_gen}
+\end{figure}
 
 \subsection{Testing Setup}
 \label{sub:testing_setup}
-Although the input patterns are designed to avoid large movements as good as possible the blimp still needs to be catched after a number of such inputs. This leads us to the basic testing setup we used to record data: \\
+Although the input patterns are designed to avoid large movements as good as possible, the blimp still needs to be catched after a number of such inputs. This leads us to the basic testing setup we used to record data: \\
 An operator is located at the ground station and a second operator is near the blimp.
 At the ground station there is a button to initiate one such input sequence.
 The operator at the blimp catches it as soon as it drifts too close to an obstacle. \\
@@ -91,7 +98,7 @@ The new mode collects and transmits the following data to the ground station:
 \end{enumerate}
 Because the actuator feedback loop runs at 25Hz the whole telemetry message is transmitted at that rate.
 To avoid problems with noise aliasing the sensor signals are run through a resampling filter. \\
-QGroundControl then writes these mavlink messages into a log file which is read by our MATLAB code.
+\textsc{QGroundControl} then writes these mavlink messages into a log file which is read by our \textsc{Matlab} code.
 
 \subsection{Data Selection}
 \label{sub:data_selection}
@@ -132,7 +139,7 @@ We also implemented a blimp simulator for several reasons:
 \item effects like noise and drag can be easily turned on and off
 \item arbitrary blimp configurations can be created
 \end{itemize}
-From this list of advantages a list of requirements can be generated:
+We then came up with a list of requirements:
 \begin{itemize}
 \item include aerodynamic drag
 \item include sensor noise
@@ -140,12 +147,19 @@ From this list of advantages a list of requirements can be generated:
 \item allow for easy reconfiguration of the blimp
 \end{itemize}
 These requirements led us to the following implementation with object oriented \textsc{MATLAB} code:\\
-(??insert pic??)\\
+
 The blimp is built with objects that interact with each other.
 Each of these objects can have continuous and discrete states.\\
-The simulator then interacts with the objects over an standardized interface.
-At each time-step the simulator updates the states of the objects and then calls a function to calculate the derivatives of the continuous states.
-Additionally, if we are at the border of a discrete time step the simulator also calls a function to get the next discrete states of the objects.\\
+The simulator then interacts with the objects over a standardized interface.
+At each time-step the simulator updates the states of the objects and then calls a function on each object to calculate the derivatives of the continuous states.
+Additionally, at the border of a discrete time step the simulator also calls a function on the objects to get the next discrete states.\\
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{images/sim/sim_tree.png}
+\caption{Interaction between objects in the simulator}
+\label{fig:sim_tree}
+\end{figure}
 
 \subsection{Motion Equation}
 \label{sub:motion_equation}
@@ -154,17 +168,17 @@ The simulator uses the same motion equation as described in table~\ref{tab:sys_m
 
 \subsection{Mechanical Properties}
 \label{sub:mech_properties}
-To calculate the mechanical properties, the blimp structure is represented in a tree like data-structure. (??pictschur??)\\
+To calculate the mechanical properties, the blimp structure is represented in a tree like data-structure. (See figure~\ref{fig:sim_tree})\\
 The root node of the tree is the actual rigid body object which is simulated by the simulator.\\
 Each node in the tree represents an assembly of parts.
 With this methodology the blimp is actually an assembly of several parts. 
 In general it will include a hull, the electronics unit and a number of actuation units.
 Each of these parts are assemblies by themselves.
 The electronics unit could include for example the cover, a camera and the PX4 FMU, which simulates the sensors.\\
-An actuation unit is also an assembly of for instance a battery, a taring weight and an actuator which generates the forces and simulates the actuator dynamics.\\
+An actuation unit is also an assembly of for instance a battery, a taring weight and an actuator which simulates the actuator dynamics and generates the forces.\\
 This concept allows to have different types of components in a library which can then be used to build an arbitrary blimp.\\
-After the blimp has been assembled the mechanical properties of the parts at the leafs of the tree data-structure are recursively combined into their parent node. 
-This way the mechanical properties of the root node can be easily recalculated.\\
+After the blimp has been assembled the mechanical properties of the parts at the leafs of the tree data-structure are recursively combined into their parent node.
+This way the mechanical properties of the root node are recalculated.\\
 The taring routine uses the tree structure to calculate values for the taring weights located at the actuation units. 
 After taring is done, the changed mass of the taring weights cause the tree to recalculate the mechanical properties of the root node.
 

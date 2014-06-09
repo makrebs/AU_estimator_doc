@@ -25,17 +25,17 @@ To be able to generate meaningful results we recorded a long data set with Skye 
 To improve the accuracy of statistical results bootstrapping is applied to this large dataset.
 Moving block bootstrapping is applied because the dataset consists of time series data. (??cite??)
 The block stride is selected such that the dataset is divided in about 16 blocks.
-Using 16 samples to calculate standard deviation values for the results 
-According to margin of error (??cite??) calculations, the certainty that the actual standard deviation lies within 25\% of the standard deviation of the results from 16 blocks is 95\%.
+According to margin of error (??cite??) calculations, the certainty that the actual standard deviation lies within 25\% of the standard deviation of the results from 16 blocks is 95\%. \\
+Unless otherwise stated, the presented statistical results imply an 25\% error margin.
 
 \section{Simulation}
 To test our optimization framework, we defined five test cases.
 \begin{description}
-\item[Default] A simulation of Skye blimp that is comparable to the real Skye system. All 21 parameters as listed in \cref{tab:params_updated} are estimated.
-\item[1 AU] As default, but only one of the AUs of Skye is estimated (AU 4). The remaining AUs are not powered at all. 12 parameters estimated.
-\item[5 AU] Different Skye blimp with 5 AUs. Configuration for all AUs estimated. 24 parameters.
-\item[No Drag] As default, but simulation without aerodynamic drag. This is used to see how much drag influences the result accuracy.
-\item[COG] As default, but with large additional weight at AU4 position. COG to COB offset is 10cm and yields a moment in the same magnitude as the actuation moment. This is used to estimate the error introduced by large COG shifts.
+\item[Default] A simulation of a blimp that is comparable to the real Skye system. All 21 parameters as listed in \cref{tab:params_updated} are estimated.
+\item[1 AU] Same blimp as in default, but only one of the AUs is estimated (AU 4). The remaining AUs are not powered at all. 12 parameters estimated.
+\item[5 AU] Different blimp with 5 AUs. Configuration for all AUs estimated. 24 parameters.
+\item[No Drag] Same blimp as in default, but simulation without aerodynamic drag. This is used to see how much drag influences the result accuracy.
+\item[COG] Same blimp as in default, but with large additional weight at AU4 position. COG to COB offset is 10cm and yields a moment in the same magnitude as the actuation moment. This is used to estimate the error introduced by large COG shifts.
 \end{description}
 
 \subsection{Estimation Confidence}
@@ -63,6 +63,9 @@ The error decreases by using more input vectors and in some cases by using multi
 When using less than about 7-10 input vectors, no solution was found.}
 \label{fig:result_inputlength}
 \end{figure}
+
+In this thesis two methods have been used to calculate the confidence of the parameters.
+First is the method outlined in section~\ref{sec:confidence_region}
 
 The confidence about the parameter estimates can be calculated as stated in \cref{sec:confidence_region}.
 Nevertheless, the statistics can also been accessed by repeat the batch optimization using independent realizations.

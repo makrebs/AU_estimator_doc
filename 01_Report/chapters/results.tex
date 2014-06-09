@@ -21,6 +21,7 @@ DRAW DISTANCE AND ANGLE INTO IMAGE. INCREASE RESOLUTION. CORRECT COORDINATE LABE
 \end{figure}
 
 \section{Data used to generate Results}
+\label{sec:bootstrapping_and_statistics}
 To be able to generate meaningful results we recorded a long data set with Skye which contains about 850 seconds of undisturbed data samples.
 To improve the accuracy of statistical results bootstrapping is applied to this large dataset.
 Moving block bootstrapping is applied because the dataset consists of time series data. (??cite??)
@@ -29,77 +30,51 @@ According to margin of error (??cite??) calculations, the certainty that the act
 Unless otherwise stated, the presented statistical results imply an 25\% error margin.
 
 \section{Simulation}
-To test our optimization framework, we defined five test cases.
-\begin{description}
-\item[Default] A simulation of a blimp that is comparable to the real Skye system. All 21 parameters as listed in \cref{tab:params_updated} are estimated.
-\item[1 AU] Same blimp as in default, but only one of the AUs is estimated (AU 4). The remaining AUs are not powered at all. 12 parameters estimated.
-\item[5 AU] Different blimp with 5 AUs. Configuration for all AUs estimated. 24 parameters.
-\item[No Drag] Same blimp as in default, but simulation without aerodynamic drag. This is used to see how much drag influences the result accuracy.
-\item[COG] Same blimp as in default, but with large additional weight at AU4 position. COG to COB offset is 10cm and yields a moment in the same magnitude as the actuation moment. This is used to estimate the error introduced by large COG shifts.
-\end{description}
 
-\subsection{Estimation Confidence}
+For the following sections, a dataset has been generated from simulation of a blimp that is similar to Skye with a \unit[1.37]{m} radius.
+The simulation includes aerodynamic drag as well as sensor noise.
+The dataset is \unit[850]{s} long and includes about the same number of input vectors than a real dataset from the blimp.
 
-\begin{figure}[hbtp]
-\centering
-\includegraphics[scale=.72]{images/results/err_cmp_sim_pos.eps}
-\includegraphics[scale=.72]{images/results/err_cmp_sim_angle.eps}
-\includegraphics[scale=.72]{images/results/err_cmp_sim_cog.eps}
-\includegraphics[scale=.72]{images/results/err_cmp_sim_tensor.eps}
-\caption{Results for simulator}
-\label{fig:err_cmp_sim}
-\end{figure}
+\subsection{Convergence}
+\label{sec:sim_convergence}
 
+In this section we are going to discuss the convergence properties of the batch optimisation.
 
+\paragraph{Convergence w.r.t. dataset length} ~\\
 
-...Show estimate STD: BAR PLOTs.\\
-...Similar explanations as in Presentation
+In this thesis the datasets used for the batch optimisation have two concepts of length.
+Individual input vectors are applied to the system for a fixed amount of time. \\
+The first concept of length is thus measured in number of different input vectors, number of input vectors for short.
+The second concept of length is the amount of data-samples are used during each of the different input vectors, number of samples per input vector for short. \\
+The number of input vectors is the more important length measure as will be shown later.
+It determines whether the parameters are observable at all. \\
+The number of samples per input vector serves mainly to reduce the effect of the sensor noise on the results. \\
+Figure~\ref{fig:result_inputlength} shows the effects of different dataset lengths.
+Below about 7 different input vectors no solution could be found. 
+The number of samples per input vector reduces the error because noise from the sensors is reduced.
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width = \textwidth]{images/results/input_length_vs_position_error.eps}
-\caption{Influence of the data set length on the mean position estimate error of the four AUs $e_{pos}$. 
-The error decreases by using more input vectors and in some cases by using multiple realizations of the same input vector.
-When using less than about 7-10 input vectors, no solution was found.}
+\caption{Influence of the number of different input vectors on the mean position estimate error of the four AUs $e_{pos}$.
+When using less than about 7-10 input vectors, no solution was found.
+Number of samples per input vector decreases the error by reducing the influence of sensor noise}
 \label{fig:result_inputlength}
 \end{figure}
 
-In this thesis two methods have been used to calculate the confidence of the parameters.
-First is the method outlined in section~\ref{sec:confidence_region}
+\paragraph{Convergence w.r.t. initial parameter estimate} ~\\
 
-The confidence about the parameter estimates can be calculated as stated in \cref{sec:confidence_region}.
-Nevertheless, the statistics can also been accessed by repeat the batch optimization using independent realizations.
-\Cref{fig:result_95pc_confidence} shows the resulting position estimate for multiple realizations.
-It can be seen that the 95\% confidence region calculated according to \cref{eq:variance_coordinates_tangential} (dashed line) well matches the 95\% confidence region calculated as $1.96$ times the standard deviation of the multiple realizations.
-When calculating the standard deviation by \cref{eq:nlls_covariance}, it is crucial that the data for the batch optimization is independently drawn.
-For us, that means that no more than one datapoint sample must be considered with the same input vector.
-If multiple datapoints with the same input vector are drawn, the calculated standard deviation gets overconfident.
-Hence, the results in \cref{fig:result_95pc_confidence} were calculated with only one datapoint per input vector\footnote{
-As mentioned above, we splitted the available data into 16 subsets with 24 different input vectors each. Only one sample per input vector was used for this batch optimization.}.
-
-\begin{figure}[hbtp]
-\centering
-\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU1.eps}
-\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU2.eps} \\
-\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU3.eps}
-\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU4.eps}
-\caption{Distribution of motor position estimates. $\mathbf{+}$: Realization. \textbf{solid}: 95\% confidence interval. \textbf{dashed}: 95\% confidence interval by residual.}
-\label{fig:result_95pc_confidence}
-\end{figure}
-
-
-
-An important observation can be made about the influence of the dataset length on the estimate error.
-\Cref{fig:result_inputlength} shows the change of error with increasing length of the dataset.
-The more different input vectors are used for the batch optimization, the better gets the estimate.
-When using multiple samples of the same input vector (in \cref{fig:result_inputlength} shown for 1, 7, and 14 samples per input vector), the estimation error decreases as well.
-It can be seen that considering multiples of the same input vectors alone is not sufficient, to get a better estimate.
-Varying the input is at least that important.
-
-\subsection{Convergence Regions}
-The impact of the initial estimate for the batch optimization has been tested.
-Using different a grid of different initial configuration estimates, the failure rate for different input realizations has been tested and is shown in \cref{fig:result_sim_convergece_region}.
-It can be seen, that a initial position offset of \textit{all} motors in any random direction\footnote{
+The impact of the initial parameter estimate on the convergence of the batch optimization has been tested.
+In order to test convergence we implemented an algorithm which produces initial parameters from the true parameters.
+It uses two metrics to distort the true parameters:
+\begin{itemize}
+\item Position deviation of each actuator on the hull surface
+\item Rotation angle deviation of each actuator
+\end{itemize}
+The algorithm first rotates the actuator around its rotation axis by the given amount and then displaces it in a random direction on the hull surface by the requested amount. \\
+For a grid of different position and angle deviations the failure rate was determined with ten samples each.
+Figure~\ref{fig:result_sim_convergece_region} shows the result of this test.\\
+It can be seen, that an initial position offset of \textit{all} actuators in any random direction\footnote{
 The simulated blimp has a hull radius of \unit[1.37]{m} and therefore the distance between two of the tetrahedrally arranged actuation units is \unit[2.62]{m}.}
 is acceptable up to \unit[1]{m}.
 Initial orientation offsets of the motors are acceptable up to \unit[120]{°}.
@@ -120,6 +95,89 @@ Further results using real measurements are showed in the next section.
 \caption{Failure rate using experiment data and different initial guess about actuation configuration.}
 \label{fig:result_real_convergece_region}
 \end{figure}
+
+\subsection{Estimation Confidence}
+
+\paragraph{Methods} ~\\
+
+In this thesis two methods have been used to determine  the confidence of the parameters.
+The first method is outlined in section~\ref{sec:confidence_region} using the covariance matrices.
+After the batch optimisation has found a set of optimal parameters, the covariance matrix is propagated through the coordinate transformations used to represent results.
+The second method does not rely on any assumptions about covariance matrices and measures the parameter variance directly from multiple experimental results.
+To get enough experimental results bootstrapping as described in section~\ref{sec:bootstrapping_and_statistics} is used to generate 16 different datasets.
+
+\paragraph{Confidence from covariance matrix} ~\\
+
+As introduced in section~\ref{sec:sim_convergence} there are two measures of dataset length which influence the result in different ways.
+The same applies to the confidence calculated from the covariance matrix.
+When using more samples per input vector the covariance matrix gets over-confident. (??BLA BLA EXPLAIN FURHTER??)
+This means that the calculated variance is lower than the measured variance.
+When using just one sample per input vector the calculated and measured variance match.
+In figure~\ref{fig:result_95pc_confidence} the calculated variance is compared to the measured variance.
+The variances are illustrated with circles that represent the region in which the parameters reside with 95\% certainty.
+The size of the circles is determined with \eqref{eq:variance_to_95pc}.
+
+\begin{equation}
+\label{eq:variance_to_95pc}
+radius = 1.96 \cdot \sqrt{variance}
+\end{equation}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU1.eps}
+\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU2.eps} \\
+\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU3.eps}
+\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU4.eps}
+\caption{Distribution of actuator position estimates. 16 dataset with each 24 input vectors and one sample per input vector.
+$\mathbf{+}$ represent the results used to measure the variance.
+\textbf{solid}: 95\% confidence interval calculated from measured variance. 
+\textbf{dashed}: 95\% confidence interval calculated from covariance matrix.}
+\label{fig:result_95pc_confidence}
+\end{figure}
+
+\subsection{Estimation Performance}
+
+To test the performance our optimization framework, we defined five test cases.
+\begin{description}
+\item[Default] A simulation of a blimp that is comparable to the real Skye system. All 21 parameters as listed in \cref{tab:params_updated} are estimated. This is the same test case as in the previous sections.
+\item[1 AU] Same blimp as in default, but only one of the AUs is estimated (AU 4). The remaining AUs are not powered at all. 12 parameters estimated.
+\item[5 AU] Different blimp with 5 AUs. Configuration for all AUs estimated. 24 parameters.
+\item[No Drag] Same blimp as in default, but simulation without aerodynamic drag. This is used to see how much drag influences the result accuracy.
+\item[COG] Same blimp as in default, but with large additional weight at AU4 position. COG to COB offset is 10cm and yields a moment in the same magnitude as the actuation moment. This is used to estimate the error introduced by large COG shifts.
+\end{description}
+
+For each of these test cases the RMS error for 4 different parameters has been calculated.
+The samples for the RMS calculations are generated with the same method as described in section~\ref{sec:bootstrapping_and_statistics}.
+The used parameters are:
+\begin{enumerate}
+\item Position error of AU 4 in the tangential frame
+\item Angle error of AU 4 around the z axis of the tangential frame
+\item Center of gravity error in the blimp frame
+\item Tensor parameter vector error in percent
+\end{enumerate}
+
+Figure~\ref{fig:err_cmp_sim} shows the results of this analysis.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=.72]{images/results/err_cmp_sim_pos.eps}
+\includegraphics[scale=.72]{images/results/err_cmp_sim_angle.eps}
+\includegraphics[scale=.72]{images/results/err_cmp_sim_cog.eps}
+\includegraphics[scale=.72]{images/results/err_cmp_sim_tensor.eps}
+\caption{Results for simulator}
+\label{fig:err_cmp_sim}
+\end{figure}
+
+Here is a list of significant observations:
+\begin{itemize}
+\item The position estimation is accurate within centimetres
+\item The angle error is lower than \unit[0.5]{°}
+\item The center of gravity estimation is accurate within millimetres
+\item When feeding the same number of data-points to the batch optimisation, the estimation error is higher when more parameters need to be estimated (default <-> AU1 <-> AU5)
+\item Omitting aerodynamic drag from simulation does not improve the results by much. This supports our argumentation that we can neglect the aerodynamic effects on the rotations.
+\item Although a big COG shift decreases the accuracy of the actuator positions, the COG is still very accurately estimated. This decrease in error is not unexpected because in the parametrisation of the actuator positions we assume that the actuation units are equidistant to the center of gravity. With big COG shifts this is not the case any-more. However, Skye could not fly with such a big COG shift and thus must be tared. When taring it is important to know the actual COG. Following this argumentation it is not a problem that a big COG shift impacts the position estimation because the COG estimation is always accurate and we can thus detect such a situation and correct the COG before proceeding with estimating the actuator positions.
+\item For the 1 AU case the inertial tensor error is bigger because one actuator can only excite the system around two axes. This means that the tensor estimation is much less accurate.
+\end{itemize}
 
 
 \section{Experiments}

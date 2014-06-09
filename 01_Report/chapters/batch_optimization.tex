@@ -104,9 +104,11 @@ If only rotational movement of the blimp is considered, integrating the wall she
  = \frac{16}{15} c_f \rho_{air} \pi r^5 \omega^2
 \end{align*}
 
-Nevertheless, this does not consider the drag of all components which are attached on the hull (e.g. actuation units or handles) which will have a large effect on the aerodynamics.
-Measurements showed that the aerodynamic drag is more than a magnitude smaller than the usual actuation moments ($c_f \approx 0.02; \|\mathbf{M}^{aero}(\omega = \unit[0.8]{rad/s})\| \approx \unit[0.2]{Nm}$). Therefore we neglect this term and do not further bother about its direction.
-!!!Measured it is actually 0.04448Nm!!!
+Nevertheless, this does not consider the drag of all components which are attached on the hull (e.g. actuation units or handles) which will have a significant effect on the aerodynamics.
+Measurements showed that the total aerodynamic drag is more than a magnitude smaller than the usual actuation moments (
+$\|\mathbf{M}^{aero}(\omega = \unit[0.8]{rad/s})\| \approx \unit[0.2]{Nm} \Leftrightarrow 
+\| \mathbf{M}^{actuation}_{max} \| \approx \unit[15]{Nm}$
+). Therefore we neglect this term and do not further bother about its direction.
 
 %The position vector $\mathbf{p}^{m^k,cog}_{m^k}$ is expressed in motor coordinates too.
 %As shown in \cref{sub:par_position}, this simplifies the equation a lot if the motors are placed on a sphere. The motors forces $\mathbf{F}_{m^k}$ have only nonzero components in x and y direction (see figure \ref{fig:frames})

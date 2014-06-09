@@ -5,11 +5,9 @@ In this chapter, we present results for the estimation of actuation configuratio
 Since the parameter space of the motor orientation is not very intuitive, we transform the parameter results (and its variance) to a more intuitive form such that we can compare them.
 One possibility would be to express the motor position in the Cartesian blimp frame $b$.
 But since the position of the motor on the hull has only two degrees of freedom, a representation in the three dimensional blimp frame is not that much more intuitive.
-A good solution is to represent the estimated motor position in the coordinate frame of the motor at its \textit{true}\footnote{
-Since the true position is not known for real system results, we define one estimate as being true (e.g. the mean over all available estimates).
-}
-position, i.e. a coordinate system that is tangential on the sphere.
-Then we can compare the multiple estimates in this \textit{tangential coordinate frame} $t$.
+A good solution is to express the actuation configuration in the tangential reference frames $t^k$ (see \cref{sub:coordinate_systems}).
+As the radius $r$ is not estimated, the estimation error in
+$\lbrace \mathbf{e}^{t^k}_z \rbrace$ is marginal.
 \\
 The error of the actuator arrangement is expressed by an error distance $e_{pos}^k$ for each motor $k$, which is approximated by the euclidean norm in the x-y plane of the tangential frame,
 and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' and estimated motor coordinate systems $\mathbf{e}_{m^k}^x$ and $\mathbf{e}_{t_k}^x$.

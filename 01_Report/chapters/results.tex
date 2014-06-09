@@ -1,6 +1,5 @@
 \chapter{Results}
 \label{chap:simulation_results}
-
 In this chapter, we present results for the estimation of actuation configuration for using both simulation data and data from the real system.
 Since the parameter space of the motor orientation is not very intuitive, we transform the parameter results (and its variance) to a more intuitive form such that we can compare them.
 One possibility would be to express the motor position in the Cartesian blimp frame $b$.
@@ -30,18 +29,15 @@ According to margin of error (??cite??) calculations, the certainty that the act
 Unless otherwise stated, the presented statistical results imply an 25\% error margin.
 
 \section{Simulation}
-
 For the following sections, a dataset has been generated from simulation of a blimp that is similar to Skye with a \unit[1.37]{m} radius.
 The simulation includes aerodynamic drag as well as sensor noise.
 The dataset is \unit[850]{s} long and includes about the same number of input vectors than a real dataset from the blimp.
 
 \subsection{Convergence}
 \label{sec:sim_convergence}
-
 In this section we are going to discuss the convergence properties of the batch optimisation.
 
 \paragraph{Convergence w.r.t. dataset length} ~\\
-
 In this thesis the datasets used for the batch optimisation have two concepts of length.
 Individual input vectors are applied to the system for a fixed amount of time. \\
 The first concept of length is thus measured in number of different input vectors, number of input vectors for short.
@@ -63,7 +59,6 @@ Number of samples per input vector decreases the error by reducing the influence
 \end{figure}
 
 \paragraph{Convergence w.r.t. initial parameter estimate} ~\\
-
 The impact of the initial parameter estimate on the convergence of the batch optimization has been tested.
 In order to test convergence we implemented an algorithm which produces initial parameters from the true parameters.
 It uses two metrics to distort the true parameters:
@@ -97,9 +92,7 @@ Further results using real measurements are showed in the next section.
 \end{figure}
 
 \subsection{Estimation Confidence}
-
 \paragraph{Methods} ~\\
-
 In this thesis two methods have been used to determine  the confidence of the parameters.
 The first method is outlined in section~\ref{sec:confidence_region} using the covariance matrices.
 After the batch optimisation has found a set of optimal parameters, the covariance matrix is propagated through the coordinate transformations used to represent results.
@@ -107,12 +100,14 @@ The second method does not rely on any assumptions about covariance matrices and
 To get enough experimental results bootstrapping as described in section~\ref{sec:bootstrapping_and_statistics} is used to generate 16 different datasets.
 
 \paragraph{Confidence from covariance matrix} ~\\
-
 As introduced in section~\ref{sec:sim_convergence} there are two measures of dataset length which influence the result in different ways.
 The same applies to the confidence calculated from the covariance matrix.
 When using more samples per input vector the covariance matrix gets over-confident. (??BLA BLA EXPLAIN FURHTER??)
 This means that the calculated variance is lower than the measured variance.
 When using just one sample per input vector the calculated and measured variance match.
+
+\paragraph{Confidence from multiple results} ~\\
+As outline above the variance of the parameters has also been measured by evaluating multiple datasets generated from the same system and calculating the variance for each of the parameters.\\
 In figure~\ref{fig:result_95pc_confidence} the calculated variance is compared to the measured variance.
 The variances are illustrated with circles that represent the region in which the parameters reside with 95\% certainty.
 The size of the circles is determined with \eqref{eq:variance_to_95pc}.
@@ -136,7 +131,6 @@ $\mathbf{+}$ represent the results used to measure the variance.
 \end{figure}
 
 \subsection{Estimation Performance}
-
 To test the performance our optimization framework, we defined five test cases.
 \begin{description}
 \item[Default] A simulation of a blimp that is comparable to the real Skye system. All 21 parameters as listed in \cref{tab:params_updated} are estimated. This is the same test case as in the previous sections.
@@ -181,10 +175,11 @@ Here is a list of significant observations:
 
 
 \section{Experiments}
-\subsection{Estimation Confidence}
-...Copy past from Simulation. Replace STD by RMS. Compare Experiment with Simulation.
+\subsection{Estimation Performance}
+...Copy past from Simulation. Replace RMS by STD. Compare Experiment with Simulation.
 ...That means do not show a 'you-know-which-plot' again (it will be very similar to the one above)
 ...But show this angular acceleration plot. Add a error subplot to it.
+...add numbers about error before simulation adaption and after. these numbers are important i think because it shows by how much we can improve by using data fitted to the blimp instead just using data from the manufacturer.
 \subsection{Convergence Regions}
 
 \begin{figure}[hbtp]
@@ -197,6 +192,7 @@ Here is a list of significant observations:
 \label{fig:err_cmp_real}
 \end{figure}
 
+\subsection{Estimation Performance}
 
 \section{Ground Truth}
 ...Do not tell toooo much in this section. Nobody likes to read long reports. So just mention 'we did it' and show the results.

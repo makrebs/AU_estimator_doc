@@ -2,6 +2,7 @@
 \label{chap:simulation_results}
 In this chapter, we present results for the estimation of actuation configuration for using both simulation data and data from the real system. \\
 
+\section{Comparing results}
 Since the parameter space of the motor configuration is not very intuitive for error analysis,
 we transform the parameter results (and its variance) to a more intuitive form such that we can compare them.
 %One possibility would be to express the motor position in the Cartesian blimp frame $b$.
@@ -13,6 +14,8 @@ $ \mathbf{e}_{t^k}^z $-direction is marginal.
 The error of the actuator arrangement is expressed by an error distance $e_{pos}^k$ for each motor $k$, which is approximated by the euclidean norm in the x-y plane of the tangential frame,
 and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' and estimated motor coordinate systems $\mathbf{e}_{m^k}^x$ and $\mathbf{e}_{t^k}^x$.
 
+XXXX Add description about tensor comparision
+
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width = 0.8\textwidth]{images/tangential_frame.eps}
@@ -20,7 +23,7 @@ and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' 
 \label{fig:tangential_frame}
 \end{figure}
 
-\section{Data used to generate Results}
+\section{Dataset bootstrapping for statistical analysis}
 \label{sec:bootstrapping_and_statistics}
 To be able to generate meaningful results we recorded a long data set with Skye which contains about 850 seconds of undisturbed data samples.
 To improve the accuracy of statistical results bootstrapping is applied to this large dataset.
@@ -140,9 +143,9 @@ $\mathbf{+}$ represent the results used to measure the variance.
 \subsection{Estimation Performance}
 \label{sub:est_perf}
 
-To test the performance our optimization framework, we defined five test cases.
+To test the performance of our optimization framework, we defined five test cases.
 \begin{description}
-\item[Default] A simulation of a blimp that is comparable to the real Skye system. All 21 parameters as listed in \cref{tab:params_updated} are estimated. This is the same test case as in the previous sections.
+\item[Default] A simulation of a blimp that is comparable to the real Skye system. The positions of the actuation units are taken from CAD data of Skye. All 21 parameters as listed in \cref{tab:params_updated} are estimated. This is the same test case as in the previous sections.
 \item[1 AU] Same blimp as in default, but only one of the AUs is estimated (AU 4). The remaining AUs are not powered at all. 12 parameters estimated.
 \item[5 AU] Different blimp with 5 AUs. Configuration for all AUs estimated. 24 parameters.
 \item[No Drag] Same blimp as in default, but simulation without aerodynamic drag. This is used to see how much drag influences the result accuracy.
@@ -184,17 +187,23 @@ Here is a list of significant observations:
 
 
 \section{Experiments}
+The data in this section was recorded with the Skye blimp as described in section~\ref{sec:real_system}.
+For the experimental results we use the standard deviation of the results.
+Standard deviation was chosen over root mean square error because coming up with a bias-free ground-truth is hard.
+This will be discussed in more detail in section~\ref{sec:ground_truth}. \\
+By using the standard deviation as a estimation performance metric we implicitly assume that the mean of all estimations lie at the true value.
+With this setup it is not possible to measure estimator bias.
+We will show a different performance measure in section~\ref{sub:sim_improvement} which shows that the actuator configuration from the estimation result is more accurate than the default model we used for the simulation.
+
 \subsection{Estimation Performance}
-...Copy past from Simulation. Replace RMS by STD. Compare Experiment with Simulation.
-...That means do not show a 'you-know-which-plot' again (it will be very similar to the one above)
-...But show this angular acceleration plot. Add a error subplot to it.
-...add numbers about error before simulation adaption and after. these numbers are important i think because it shows by how much we can improve by using data fitted to the blimp instead just using data from the manufacturer.
-\subsection{Convergence Regions}
+In figure~\ref{fig:err_cmp_real} the results of the real dataset are presented.\\
+It can be seen that the position estimation of the actuators is accurate to within \unit[2]{cm}.
+Center of gravity estimation is also very accurate.
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_pos.eps}
-\includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_angle.eps} %\\
+\includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_angle.eps}
 \includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_cog.eps}
 \includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_tensor.eps}
 \caption{Results for real system}
@@ -202,13 +211,14 @@ Here is a list of significant observations:
 \end{figure}
 
 \subsection{Simulation Improvement}
+\label{sub:sim_improvement}
 To test the influence of the optimized parameters on the system dynamics, one part of the dataset has been chosen for validation.
 First, the same inputs as in the real dataset were used for a simulation with the actuator configuration known from CAD data of the prototype\footnote{
 This information about actuator configuration is recently used on Skye system for control.}.
-Second, the inputs were applied for a simulation with the optimized actuator configuration.
+Second, the inputs were applied for a simulation with the optimized actuator configuration.\\
 In \cref{fig:result_sim_improve_and_error}, the angular acceleration of the real dataset is compared to the two simulation cases.
 During the steady state sections of the thrusters (green shaded), the error of the angular acceleration is reduced by more than a factor of two.
-As the transient behaviour of the thrusters was not included in the optimization, the according parts of the simulation was not improved much.
+As the transient behaviour of the thrusters was not included in the optimization, the according parts of the simulation was not improved much.\\
 Nevertheless, as the thruster dynamics is not considered in control so far, the knowledge about it would not help to increase the control performance.
 
 \begin{figure}[hbtp]
@@ -223,6 +233,7 @@ During the thruster transients (\textbf{plain}), the error of both simulations i
 \end{figure}
 
 \section{Ground Truth}
+\label{sec:ground_truth}
 For the experiments, the true actuator configuration is not available.
 To get at least some reference values, we measured the position of the actuation units with a \textsc{Leica Viva TS15} laser tracking system.\\
 The setup is shown in \cref{fig:leica_setup}.

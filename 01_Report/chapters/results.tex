@@ -81,19 +81,20 @@ Initial orientation offsets of the motors are acceptable up to \unit[120]{°}.
 The same observation can be made when using datasets from real measurements (compare \cref{fig:result_real_convergece_region}).
 %Further results using real measurements are showed in the next section.
 
+
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width = \textwidth]{images/results/convergence_analysis_init_deviation_sim_bar.eps}
 \caption{Failure rate using simulation data and different initial guess about actuation configuration.}
 \label{fig:result_sim_convergece_region}
-%\end{figure}
-%
-%\begin{figure}[hbtp]
+\end{figure}
+\begin{figure}[hbtp]
 \centering
 \includegraphics[width = \textwidth]{images/results/convergence_analysis_init_deviation_real_bar.eps}
 \caption{Failure rate using experiment data and different initial guess about actuation configuration.}
 \label{fig:result_real_convergece_region}
 \end{figure}
+
 
 \subsection{Estimation Confidence}
 \paragraph{Methods} ~\\
@@ -126,14 +127,14 @@ radius = 1.96 \cdot \sqrt{variance}
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU1.eps}
-\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU2.eps} \\
-\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU3.eps}
+%\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU1.eps}
+%\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU2.eps} \\
+%\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU3.eps}
 \includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU4.eps}
 \caption{Distribution of actuator position estimates. 16 datasets with 24 input vectors each and one sample per input vector.
 $\mathbf{+}$ represent the results used to measure the variance.
-\textbf{solid}: 95\% confidence interval calculated from multiple results. 
-\textbf{dashed}: 95\% confidence interval calculated from covariance matrix.}
+\textbf{dashed}: 95\% confidence interval calculated from covariance matrix.
+\textbf{solid}: 95\% confidence interval calculated from multiple results. }
 \label{fig:result_95pc_confidence}
 \end{figure}
 
@@ -174,7 +175,7 @@ Here is a list of significant observations:
 \item The position estimation is accurate within centimetres
 \item The angle error is lower than \unit[0.5]{°}
 \item The center of gravity estimation is accurate within millimetres
-\item When feeding the same number of data-points to the batch optimisation, the estimation error is higher when more parameters need to be estimated (default <-> AU1 <-> AU5)
+\item When feeding the same number of data-points to the batch optimisation, the estimation error is higher when more parameters need to be estimated (default $\leftrightarrow$ AU1 $\leftrightarrow$ AU5)
 \item Omitting aerodynamic drag from simulation does not improve the results by much. This supports our argumentation that we can neglect the aerodynamic effects on the rotations.
 \item Although a big COG shift decreases the accuracy of the actuator positions, the COG is still very accurately estimated. This decrease in error is not unexpected because in the parametrisation of the actuator positions we assume that the actuation units are equidistant to the center of gravity. With big COG shifts this is not the case any-more. However, Skye could not fly with such a big COG shift and thus must be tared. When taring it is important to know the actual COG. Following this argumentation it is not a problem that a big COG shift impacts the position estimation because the COG estimation is always accurate and we can thus detect such a situation and correct the COG before proceeding with estimating the actuator positions.
 \item For the 1 AU case the inertial tensor error is bigger because one actuator can only excite the system around two axes. This means that the tensor estimation is much less accurate.
@@ -191,10 +192,10 @@ Here is a list of significant observations:
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=.72]{images/results/err_cmp_real_pos.eps}
-\includegraphics[scale=.72]{images/results/err_cmp_real_angle.eps}\\
-\includegraphics[scale=.72]{images/results/err_cmp_real_cog.eps}
-\includegraphics[scale=.72]{images/results/err_cmp_real_tensor.eps}
+\includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_pos.eps}
+\includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_angle.eps} %\\
+\includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_cog.eps}
+\includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_tensor.eps}
 \caption{Results for real system}
 \label{fig:err_cmp_real}
 \end{figure}

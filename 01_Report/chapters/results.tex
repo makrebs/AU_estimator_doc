@@ -215,6 +215,35 @@ The errors inside the green shaded areas of figure~\ref{fig:result_sim_improve_a
 \end{figure}
 
 \section{Ground Truth}
-...Do not tell toooo much in this section. Nobody likes to read long reports. So just mention 'we did it' and show the results.
+For the experiments, the true actuator configuration is not available.
+To get at least some reference values, we measured the position of the actuation units with a \textsc{Leica Viva TS15} laser tracking system.\\
+The setup is shown in \cref{fig:leica_setup}.
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=0.8\textwidth]{images/leica/leica_setup.jpg}
+\caption{Setup with the \textsc{Leica} tracking system. Three of the four actuation units can be seen at once. To track the relative position of all of them, the blimp was rotated such that another combination of three actuators was visible.}
+\label{fig:leica_setup}
+\end{figure}
+With the tracking system, only three actuators can be seen at once.
+To track all of the actuators, multiple measurements from different views have been made.
+As a detectable feature, the center of the actuator's rotor has been used (see \cref{fig:leica_au_laser}).
 
-...
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=0.6\textwidth]{images/leica/leica_au_laser.jpg}
+\caption{The center of the rotor has been used for tracking.}
+\label{fig:leica_au_laser}
+\end{figure}
+
+The actuator had to be rotated such that this point was visible for the current view
+The resulting offset to the actuators z-axis was considered in the optimization problem,
+which was formulated to calculate the distance between the actuator units.
+This means, only the relative arrangement of the actuators was measured as 'ground-truth'\footnote{
+The absolute configuration of the actuators with respect to the IMU (which is essential for the control) would require the precise measurement of the position and orientation of the IMU too.}.
+The relative difference between the distance calculated from the \textsc{Leica} measurements and the distance calculated from our work are between 0.7 and 3.8\%.
+Nevertheless, a measurement of the actuator arrangement in the geometric space is disadvantaged to an estimate found using the onboard sensors for the use in the controller because the latter ones are also used for control.
+
+
+%...Do not tell toooo much in this section. Nobody likes to read long reports. So just mention 'we did it' and show the results.
+%
+%...

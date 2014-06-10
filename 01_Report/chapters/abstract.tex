@@ -8,13 +8,19 @@ Here comes the abstract \dots
 Similar to the recent conclusion version that is
 
 \textit{
-In this semester thesis, we have shown how parameters estimation can be applied to a multi-actuated blimp.
-We showed a possible paramterization of a blimp system model.
-Observation analysis showed which blimp properties are observable.
-Using a system model for rotational acceleration, either the scale of the motor position or the scale of the system's inertia tensor has to be known.
-Then it is possible to find an estimate of the motor configuration, the inertia tensor and the offset between the COG and COB can be found using nonlinear least squares optimization.
-A \textsc{Matlab} implementation of the Levenberg-Marquardt algorithm has been used for optimization.
-We briefly examined different input patterns.
-A sequence of random forward-backward step inputs has been found as being suitable to our application.
-Simulation and real blimp data have been generated/recorded and compared in batch optimization.
-}
+In this semester thesis, we present a system calibration framework for the actuation configuration of a multi-actuated blimp.
+To improve the system model used for control, the model parameters estimate of a spherical blimp optimized using onboard sensors.
+By that, the actuator allocation used for control can be calculated more precisely or even be updated over time.
+The optimization problem is formulated as a least-squares optimization problem of the angular acceleration of the blimp.
+Using data from both simulation and a real blimp, the actuation configuration and its certainty is calculated.
+That's it.. SOMETHING MISSING? XXXXXXXXXXXXXXXXXx
+
+%We showed a possible paramterization of a blimp system model.
+%Observation analysis showed which blimp properties are observable.
+%Using a system model for rotational acceleration, either the scale of the motor position or the scale of the system's inertia tensor has to be known.
+%Then it is possible to find an estimate of the motor configuration, the inertia tensor and the offset between the COG and COB can be found using nonlinear least squares optimization.
+%A \textsc{Matlab} implementation of the Levenberg-Marquardt algorithm has been used for optimization.
+%We briefly examined different input patterns.
+%A sequence of random forward-backward step inputs has been found as being suitable to our application.
+%Simulation and real blimp data have been generated/recorded and compared in batch optimization.
+%}

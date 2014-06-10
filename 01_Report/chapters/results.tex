@@ -1,15 +1,17 @@
 \chapter{Results}
 \label{chap:simulation_results}
-In this chapter, we present results for the estimation of actuation configuration for using both simulation data and data from the real system.
-Since the parameter space of the motor orientation is not very intuitive, we transform the parameter results (and its variance) to a more intuitive form such that we can compare them.
-One possibility would be to express the motor position in the Cartesian blimp frame $b$.
-But since the position of the motor on the hull has only two degrees of freedom, a representation in the three dimensional blimp frame is not that much more intuitive.
-A good solution is to express the actuation configuration in the tangential reference frames $t^k$ (see \cref{sub:coordinate_systems}).
+In this chapter, we present results for the estimation of actuation configuration for using both simulation data and data from the real system. \\
+
+Since the parameter space of the motor configuration is not very intuitive for error analysis,
+we transform the parameter results (and its variance) to a more intuitive form such that we can compare them.
+%One possibility would be to express the motor position in the Cartesian blimp frame $b$.
+%But since the position of the motor on the hull has only two degrees of freedom, a representation in the three dimensional blimp frame is not that much more intuitive.
+A good possibility is to express the actuation configuration in the tangential reference frames $t^k$ (see \cref{sub:coordinate_systems}).
 As the radius $r$ is not estimated, the estimation error in
-$\lbrace \mathbf{e}^{t^k}_z \rbrace$ is marginal.
+$\lbrace \mathbf{e}^{t^k}_z \rbrace$-direction is marginal.
 \\
 The error of the actuator arrangement is expressed by an error distance $e_{pos}^k$ for each motor $k$, which is approximated by the euclidean norm in the x-y plane of the tangential frame,
-and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' and estimated motor coordinate systems $\mathbf{e}_{m^k}^x$ and $\mathbf{e}_{t_k}^x$.
+and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' and estimated motor coordinate systems $\mathbf{e}_{m^k}^x$ and $\mathbf{e}_{t^k}^x$.
 
 \begin{figure}[hbtp]
 \centering
@@ -31,7 +33,9 @@ Unless otherwise stated, the presented statistical results imply an 25\% error m
 \section{Simulation}
 For the following sections, a dataset has been generated from simulation of a blimp that is similar to Skye with a \unit[1.37]{m} radius.
 The simulation includes aerodynamic drag as well as sensor noise.
-The dataset is \unit[850]{s} long and includes about the same number of input vectors than a real dataset from the blimp.
+The dataset is \unit[850]{s} long.
+The same input vectors than in the real dataset have been applied.
+%includes about the same number of input vectors than a real dataset from the blimp.
 
 \subsection{Convergence}
 \label{sec:sim_convergence}
@@ -43,9 +47,9 @@ Individual input vectors are applied to the system for a fixed amount of time. \
 The first concept of length is thus measured in number of different input vectors, number of input vectors for short.
 The second concept of length is the amount of data-samples are used during each of the different input vectors, number of samples per input vector for short. \\
 The number of input vectors is the more important length measure as will be shown later.
-It determines whether the parameters are observable at all. \\
+It determines whether the parameters are observable at all. XXXXXXXXXX\\
 The number of samples per input vector serves mainly to reduce the effect of the sensor noise on the results. \\
-Figure~\ref{fig:result_inputlength} shows the effects of different dataset lengths.
+\Cref{fig:result_inputlength} shows the effects of different dataset lengths.
 Below about 7 different input vectors no solution could be found. 
 The number of samples per input vector reduces the error because noise from the sensors is reduced.
 
@@ -75,7 +79,7 @@ is acceptable up to \unit[1]{m}.
 Initial orientation offsets of the motors are acceptable up to \unit[120]{°}.
 \\
 The same observation can be made when using datasets from real measurements (compare \cref{fig:result_real_convergece_region}).
-Further results using real measurements are showed in the next section.
+%Further results using real measurements are showed in the next section.
 
 \begin{figure}[hbtp]
 \centering
@@ -100,17 +104,20 @@ The second method does not rely on any assumptions about covariance matrices and
 To get enough experimental results bootstrapping as described in section~\ref{sec:bootstrapping_and_statistics} is used to generate 16 different datasets.
 
 \paragraph{Confidence from covariance matrix} ~\\
-As introduced in section~\ref{sec:sim_convergence} there are two measures of dataset length which influence the result in different ways.
+As introduced in \cref{sec:sim_convergence} there are two measures of dataset length which influence the result in different ways.
 The same applies to the confidence calculated from the covariance matrix.
-When using more samples per input vector the covariance matrix gets over-confident. (??BLA BLA EXPLAIN FURHTER??)
+When using multiple samples per input vector the covariance matrix gets over-confident.
 This means that the calculated variance is lower than the measured variance.
-When using just one sample per input vector the calculated and measured variance match.
+It is intuitively clear, that if we apply multiple times the same input vectors, we will not get more information about the actuation configuration.
+The data samples are not independent.
+When using just one sample per input vector, the calculated and measured variance match.
 
 \paragraph{Confidence from multiple results} ~\\
 As outline above the variance of the parameters has also been measured by evaluating multiple datasets generated from the same system and calculating the variance for each of the parameters.\\
-In figure~\ref{fig:result_95pc_confidence} the calculated variance is compared to the measured variance.
+
+In \cref{fig:result_95pc_confidence} the calculated variance is compared to the measured variance.
 The variances are illustrated with circles that represent the region in which the parameters reside with 95\% certainty.
-The size of the circles is determined with \eqref{eq:variance_to_95pc}.
+The size of the circles is determined with \cref{eq:variance_to_95pc}.
 
 \begin{equation}
 \label{eq:variance_to_95pc}
@@ -123,9 +130,9 @@ radius = 1.96 \cdot \sqrt{variance}
 \includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU2.eps} \\
 \includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU3.eps}
 \includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU4.eps}
-\caption{Distribution of actuator position estimates. 16 dataset with each 24 input vectors and one sample per input vector.
+\caption{Distribution of actuator position estimates. 16 datasets with 24 input vectors each and one sample per input vector.
 $\mathbf{+}$ represent the results used to measure the variance.
-\textbf{solid}: 95\% confidence interval calculated from measured variance. 
+\textbf{solid}: 95\% confidence interval calculated from multiple results. 
 \textbf{dashed}: 95\% confidence interval calculated from covariance matrix.}
 \label{fig:result_95pc_confidence}
 \end{figure}

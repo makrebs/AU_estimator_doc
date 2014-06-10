@@ -2,19 +2,20 @@
 \label{chap:simulation_results}
 In this chapter, we present results for the estimation of actuation configuration for using both simulation data and data from the real system. \\
 
-\section{Comparing results}
+\section{Comparing Results}
 Since the parameter space of the motor configuration is not very intuitive for error analysis,
-we transform the parameter results (and its variance) to a more intuitive form such that we can compare them.
+we transform the parameter results (and their variance) to a more intuitive form such that we can compare them.
 %One possibility would be to express the motor position in the Cartesian blimp frame $b$.
 %But since the position of the motor on the hull has only two degrees of freedom, a representation in the three dimensional blimp frame is not that much more intuitive.
-A good possibility is to express the actuation configuration in the tangential reference frames $t^k$ (see \cref{sub:coordinate_systems}).
+A good possibility is to express the actuation configuration in the tangential reference frames $t^k$ as introduced in \cref{sub:coordinate_systems}.
 As the radius $r$ is not estimated, the estimation error in
 $ \mathbf{e}_{t^k}^z $-direction is marginal.
 \\
 The error of the actuator arrangement is expressed by an error distance $e_{pos}^k$ for each motor $k$, which is approximated by the euclidean norm in the x-y plane of the tangential frame,
-and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' and estimated motor coordinate systems $\mathbf{e}_{m^k}^x$ and $\mathbf{e}_{t^k}^x$.
-
-XXXX Add description about tensor comparision
+and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' and estimated motor coordinate systems $\mathbf{e}_{m^k}^x$ and $\mathbf{e}_{t^k}^x$
+(see \ref{fig:tangential_frame}).
+\\
+To express the certainty of the inertia tensor estimate, the mean of the inertia tensor properties scaled with the determinant of the inertia tensor will be used in \cref{fig:err_cmp_sim,fig:err_cmp_real}.
 
 \begin{figure}[hbtp]
 \centering
@@ -23,13 +24,13 @@ XXXX Add description about tensor comparision
 \label{fig:tangential_frame}
 \end{figure}
 
-\section{Dataset bootstrapping for statistical analysis}
+\section{Dataset Bootstrapping for Statistical Analysis}
 \label{sec:bootstrapping_and_statistics}
 To be able to generate meaningful results we recorded a long data set with Skye which contains about 850 seconds of undisturbed data samples.
 To improve the accuracy of statistical results bootstrapping is applied to this large dataset.
-Moving block bootstrapping is applied because the dataset consists of time series data. (??cite??)
-The block stride is selected such that the dataset is divided in about 16 blocks.
-According to margin of error (??cite??) calculations, the certainty that the actual standard deviation lies within 25\% of the standard deviation of the results from 16 blocks is 95\%. \\
+Moving block bootstrapping is applied because the dataset consists of time series data.
+The block stride is selected such that the dataset is divided in about 16 blocks which
+leads to the certainty that the actual standard deviation lies within 25\% the calculated standard deviation with a certainty of 95\% \citep{WikiMaringOfError}. \\
 Unless otherwise stated, the presented statistical results imply an 25\% error margin.
 
 \section{Simulation}

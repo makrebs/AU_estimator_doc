@@ -202,15 +202,23 @@ Here is a list of significant observations:
 \end{figure}
 
 \subsection{Simulation Improvement}
-By feeding the same actuator inputs of one of the real datasets to the simulation it should be possible to accurately reproduce the same dataset.
-We can show that the default Skye model which has been used in the simulation of section~\ref{sub:est_perf} can be improved by using the results from the simulation to create the blimp mode.
-This is because the default Skye model is based on CAD data and the real blimp deviates from the CAD data due to manufacturing tolerances.\\
-The errors inside the green shaded areas of figure~\ref{fig:result_sim_improve_and_error} have been improved by roughly a factor of two.
+To test the influence of the optimized parameters on the system dynamics, one part of the dataset has been chosen for validation.
+First, the same inputs as in the real dataset were used for a simulation with the actuator configuration known from CAD data of the prototype\footnote{
+This information about actuator configuration is recently used on Skye system for control.}.
+Second, the inputs were applied for a simulation with the optimized actuator configuration.
+In \cref{fig:result_sim_improve_and_error}, the angular acceleration of the real dataset is compared to the two simulation cases.
+During the steady state sections of the thrusters (green shaded), the error of the angular acceleration is reduced by more than a factor of two.
+As the transient behaviour of the thrusters was not included in the optimization, the according parts of the simulation was not improved much.
+Nevertheless, as the thruster dynamics is not considered in control so far, the knowledge about it would not help to increase the control performance.
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[scale=0.8]{images/results/compare_alpha_x.eps}
-\caption{\textbf{Top}: \textbf{Red} is a section of alpha from the real system. \textbf{Blue} is the same section recreated by simulation with the default Skye simulation model. \textbf{Green} is the same section recreated by simulation with an Skye model which was adapted with the structure result from our batch optimisation. \textbf{Bottom}: The error of the recreated angular accelerations. We can see that the adapted simulation produces much better results. The error is high during input transients (the \textbf{white} areas of the plot). !!besser formuliere!!}
+\caption{Validation section of the dataset. \textbf{Top}: Blimp angular acceleration of the real dataset (\textbf{red}), simulation with (a priori) CAD knowledge about actuation configuration (\textbf{blue}), and simulation with (adapted) optimized actuation configuration knowledge (\textbf{green}).
+\textbf{Bottom}: Blimp angular acceleration difference between real dataset and the two simulation cases.
+During thruster steady-state (\textbf{shaded}, the simulation error using the adapted actuation configuration (\textbf{green}) is smaller than using the a priori estimate (\textbf{blue}).
+During the thruster transients (\textbf{plain}), the error of both simulations is larger.
+}
 \label{fig:result_sim_improve_and_error}
 \end{figure}
 

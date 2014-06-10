@@ -198,9 +198,7 @@ Friction drag was applied to the hull for rotational speed only.
 Together with the form drag of the actuation units, the friction drag of the hull acts as a damping moment on rotational movements.
 Form drag coefficients\footnote{
 Blimps like Skye are close to the drag crisis point of spheres ($Re\approx3e05$). Interpolation according to the actual velocity is used.} and virtual mass factor were introduced according to the literature \citep{Kundu2012}.
-The friction drag coefficient of the hull was determined such that the rotational aerodynamic resistance coincides with some reference measurements.
-NOOOOOOOOOOO THIS HAS NOT BEEN DONE?
-ALSO COMPARE WITH CHAPTER ABOVE.. XXXX
+The friction drag coefficient of the hull was determined such that the rotational resistance coincides with reference measurements.
 
 \subsection{Thruster Dynamics}
 \label{sub:thrust_dynamics}
@@ -209,19 +207,21 @@ The dynamic thruster model includes:
 \begin{itemize}
 \item thrust start-up delay
 \item thrust reaction delay
-\item minimum and startup thrust thresholds
+\item minimum and start-up thrust thresholds
 \item second order thrust motor dynamics
 \item rotation actuator maximum speed
 \item second order rotation actuator dynamics
 \end{itemize}
-Instead of trying to identify parameters with physical meanings (??ref to weichart??) a blackbox approach is used:
+The thruster dynamics has been implemented as a blackbox model.
 The minimal parameters needed to describe the listed properties of the thruster dynamics are matched to the test-bench measurements using an empirical approach.  \\
 Because the thruster dynamics are not critical to our application this yields sufficient accuracy.
 
 \subsection{Inertial Sensors Model}
 \label{sub:imu_model}
 Following the idea of the simulator framework the inertial sensors are also an object which is attached to the blimp assembly. \\
-The framework of the mechanical structure goes both ways and motion of the rigid body at the root of the structure is distributed to each of the leaf nodes in their respective coordinate systems. \\
+The tree-like framework of the simulation objects is bidirectional.
+While the mechanical properties of the leaves are used to determine the properties of the trunk,
+the motion of the rigid body at the root of the structure is distributed to each of the leaf nodes in their respective coordinate systems. \\
 The sensor object then only has to take the already transformed accelerations, velocities and orientations and store them.
 In this process the sensor object also adds noise to the sensor values.
 

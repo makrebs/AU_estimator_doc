@@ -106,9 +106,11 @@ If only rotational movement of the blimp is considered, integrating the wall she
 
 Nevertheless, this does not consider the drag of all components which are attached on the hull (e.g. actuation units or handles) which will have a significant effect on the aerodynamics.
 Measurements showed that the total aerodynamic drag is more than a magnitude smaller than the usual actuation moments (
-$\|\mathbf{M}^{aero}(\omega = \unit[0.8]{rad/s})\| \approx \unit[0.2]{Nm} \Leftrightarrow 
+$\|\mathbf{M}^{aero}(\omega = \unit[0.8]{rad/s})\| \approx \unit[0.2XXXX]{Nm} \Leftrightarrow 
 \| \mathbf{M}^{actuation}_{max} \| \approx \unit[15]{Nm}$
-). Therefore we neglect this term and do not further bother about its direction.
+). 
+Therefore we neglect this term and do not further bother about its direction.
+In section~\ref{sub:est_perf} we will show by simulation that it is indeed valid to neglect this term.
 
 %The position vector $\mathbf{p}^{m^k,cog}_{m^k}$ is expressed in motor coordinates too.
 %As shown in \cref{sub:par_position}, this simplifies the equation a lot if the motors are placed on a sphere. The motors forces $\mathbf{F}_{m^k}$ have only nonzero components in x and y direction (see figure \ref{fig:frames})
@@ -153,7 +155,7 @@ Blimp angular velocity & $\boldsymbol{\omega}$ 	& state \\
 Gravitation & $\mathbf{g}_w$ 					& known \\
 \hline
 \end{tabular}
-\caption{Classification of all variables of the system model equation. All variables that are subject of estimation are introduced as parameter.}
+\caption{Classification of all variables of the system model equation. All variables that are subject to estimation are introduced as parameter.}
 \label{tab:params}
 \end{table}
 
@@ -211,19 +213,20 @@ While minimal representations always suffer from a singularity (representation i
 
 Here we have to make the trade-off. Either we introduce one specific motor orientation which cannot be observed or we will have to solve a constraint optimization problem.
 Unconstraint optimization problems are much less demanding to solve.
-Therefore it is more convenient to choose a parameterization such that the motor orientation is not on the singularity.
+Therefore it is more convenient to choose a parameterization such that the motor orientation is not on the singularity.\\
 If a rough estimate of the motor orientation can be made, this can be used to introduce an intermediate coordinate frame, such that the true motor orientation will not be on the singularity with very heigh probability.
-Therefore, we go better with minimal representation for this problem\footnote{
+Therefore, we go with minimal representation for this problem\footnote{
 An alternative implementation with nonminmal representation (quaternions) using either hard or soft constraints showed worse performance than using minimal representation.
 }.
 
-Because of its computationally cheap and for optimization sufficiently smooth formula (see \cref{eq:rod_to_C}) to get the rotation matrix, we use Gibbs-Rodriquez parameters $\boldsymbol{\lambda}$. Starting from rotation angle $\varphi$ and rotation axis $\mathbf{n}$, Gibbs-Rodriquez parameters are defined as
+Because of its computationally cheap and for optimization sufficiently smooth formula to get the rotation matrix (see \cref{eq:rod_to_C}), we use Gibbs-Rodriquez parameters $\boldsymbol{\lambda}$. Starting from rotation angle $\varphi$ and rotation axis $\mathbf{n}$, these parameters are defined as:
 
 \begin{equation}
 \boldsymbol{\lambda} = \mathbf{n} \tan(\varphi/2) 
 \end{equation}
 
-and is singular for $\varphi = \pi$. The direction cosine transform is calculated as
+The singularity of the Gibbs-Rodriquez parameters lies at $\varphi = \pi$. 
+The direction cosine transform is calculated as
 
 \begin{equation}
 \label{eq:rod_to_C}
@@ -262,7 +265,7 @@ $\boldsymbol{\vartheta} = (\vartheta_1, \hdots, \vartheta_6)'$.
 \subsection{Observability}
 \label{sub:observability}
 One way to analytically show observability of a system is shown by \citet{hermann1977} using Lie algebra. 
-Here we do not show a proof of observability but argue which parameters are not observable must therefore be excluded from the optimization problem.
+Here we do not show a proof of observability but argue which parameters are not observable and must therefore be excluded from the optimization problem.
 %As we find an optimal solution for the remaining parameters, we can assume that they are observable.
 \\
 For convenience, we state the parameterized system model \cref{eq:sys_mod} again.
@@ -319,7 +322,7 @@ Motor POA radius & $r$ 						& known \\
 
 \section{Nonlinear Least Squares}
 As outlined above, our goal is to minimize the error between the measured and modelled angular acceleration.
-For normally distributed system model errors, the maximum-likelihood estimate of the parameters is equivalent to find the solution to the least squares problem \citep{Seber}.
+For normally distributed system model errors, the maximum-likelihood estimate of the parameters is equivalent to the solution of the least squares problem \citep{Seber}.
 In general, the cost function $S(\boldsymbol{\theta})$ for the ordinary nonlinear least squares problem is
 
 \begin{equation}
@@ -624,7 +627,7 @@ The derivative of the inverse tensor has been calculated with \textsc{Mupad}.
 % In XXX APPENDIX XY you can find another, analytically nicer parameterization of $\mathbf{J}$ with its derivative which has not been implemented for this work though.
 \\
 
-XXXXXXXXXXX REPLACE PARAGRAPHS BY A TABLE ??????????????
+XXXXXXXXXXX REPLACE PARAGRAPHS BY A TABLE ?????????????? -> NÖ
 
 \section{Confidence Region}
 \label{sec:confidence_region}
@@ -659,7 +662,7 @@ Note that \cref{eq:linear_ls_covariance} is basically the inverse formulation of
 Using the estimate of the parameter covariance \cref{eq:nlls_covariance} and the error propagation law \cref{eq:error_propagation_law}, we can calculate the covariance (and hence further statistics as confidence region) of our estimates.
 \\
 
-As an example, we apply the calculation of the motor position variance given the Rodriquez-Gibbs parameters $\boldsymbol{\lambda}$ of the the motor orientation.
+As an example, we apply the calculation of the motor position variance given the Gibbs-Rodriquez parameters $\boldsymbol{\lambda}$ of the the motor orientation.
 The motor position, expressed in blimp coordinates $b$, is
 \begin{equation*}
 \mathbf{p}^{m^k}_b = \mathbf{C}_{b,m^k}(\boldsymbol{\lambda}) \mathbf{p}^{m^k}_{m^k}

@@ -5,9 +5,9 @@
 Blimps are ideal vehicles for being used as aerial advertising medium. Especially eye-catching are specifically shaped blimps, e.g. blimps that have the shape of a mascot, car or any other commercial product (see figure \ref{fig:blimps}).
 As an alternative, conventionally shaped blimps can show imprints or banners.
 The arrangement of the actuators for those different shaped blimps varies a lot.
-In general, manual adjustment of the control algorithms is needed or the actuators have to be controlled manually at all.
+In general, manual adjustment of the control algorithms is needed or the actuators have to be controlled manually.
 Using some adequate sensors, it would be useful to determine the effect of an actuator on the movement of the blimp automatically.
-When such an algorithm is available, the blimp hull can be manufactured independently on the actuation which just can be attached to the blimp and the controller figures out the effect of its actuators by its own.
+When such an algorithm is available, the blimp hull can be manufactured independently on the actuation which just can be attached to the blimp and the controller figures out the effect of its actuators on its own.
 This is illustrated by \cref{fig:motivation}.
 
 \begin{figure}[hbtp]
@@ -38,7 +38,7 @@ If a first principle based model of the system is available, gray box modelling 
 Many aerospace and robotics tasks are solved using physical meaningful models.
 To determine the sensor alignments after launch shock, \citet{Shuster1991} estimate the rotation vector between multiple star tracker devices using batch optimization.
 \Citet{Bloesch2013} formulated a nonlinear least squares problem to estimate kinematic parameters of a legged robot.
-In depth studies using batch optimization have been made for intrinsic and extrinsic (stereo) camera calibration \citep[see]{Siegwart}.
+In depth studies using batch optimization have been made for intrinsic and extrinsic (stereo) camera calibration \citep[see XXX]{Siegwart}.
 In recent time, visual-inertia sensor calibration has found much attraction.
 Beside others, \citet{Hol2011} shows both batch and recursive estimation (Kalman Filter) for this task.
 
@@ -62,7 +62,7 @@ Its origin coincides with the center of the ideal spherical blimp.
 \item[The motor frames ($m^k$-frame)] (see \cref{fig:frames}, left) are aligned to each actuator units $k=1,...,N$.
 When the actuator is standing on a horizontal surface, the z-axis is defined to point downwards.
 The coordinate system origin is set to the base of the actuator such that the z-axis coincides with the rotation axe of the actuator.
-The x-axis is defined to be pointing in the direction of the thruster when its orientation angle $\alpha^k$ (see \cref{fig:motor_force}).
+The x-axis is defined to be pointing in the direction of the thruster when its orientation angle $\alpha^k$ is zero (see \cref{fig:motor_force}).
 %To put it another way, the thrust-force points in the x-axis direction when the actuator angle is zero.
 \item[The tangential reference frames ($t^k$-frame)] are used to express the estimated actuator configuration.
 If the true position and orientation of the motors is known (i.e. in simulation), $t^k$ is the coordinate frame for the true motor position and orientation, whereas $m^k$ is the frame for the estimated ones.
@@ -130,22 +130,21 @@ This is solved as a constraint optimization problem.
 An analytical solution for the linear mapping has been derived by \citet{Schaffner2012} using Lagrangian multipliers.
 For the constraints of this optimization problem, it is crucial to know the position and orientation of the motors.
 It is not trivial to get the actual actuation configuration precisely and which motivates this thesis.
-
-
-
+The current system uses the actuator position from CAD data of Skye. 
+As we will show later in this thesis we can improve the allocation by using the estimated positions instead.
 
 
 \section{Problem Evaluation}
 \label{sec:problem_evaluation}
 The main goal of this work is the \textit{Estimation of Actuation Configuration for a Multi-Actuated Blimp}.
-The need for a good estimate of the actuation configuration is mainly given by the calculation for the allocation part of the controller as described before.
+The need for a good estimate of the actuation configuration is mainly given by the allocation part of the controller as described before.
 Additional value can be achieved by estimating further properties, e.g. the offset between COG and COB.
 If this offset is known, it is possible to calculate the required taring weight apportionment to get any desired COG offset\footnote{
 In the simulation (see \cref{sec:simulation}), such an algorithm is already implemented to place the taring weights.
 }.
-\\
 
-As it becomes clear by reading related work \ref{sec:configuration_estimation}, there exist various methods for system calibration.
+\paragraph{Optimization Method Selection} ~\\
+As it becomes clear by reading related work in section~\ref{sec:configuration_estimation}, there exist various methods for system calibration.
 % DOES SYSTEM IDENTIFICATION INCLUDE ONLINE EXTIMATION?
 In general, online estimation techniques are preferred for dynamically changing properties (state estimation).
 Offline estimation is preferred for estimating constant properties (parameter estimation).
@@ -159,7 +158,16 @@ If the parameters change slowly over time, it is also possible to repeat the bat
 \\
 
 For the estimation of the actuation configurations, we assume the system states to be known.
-We will use the available information about the states from the online state estimator which is already implemented on the system.\\
+We will use the available information about the states from the online state estimator which is already implemented on the system.
+
+\paragraph{Restriction to Spherical Blimps} ~\\
+For the experimental validation in this thesis, we will use the Skye System.
+Since Skye is a spherical blimp we can only verify the algorithm for spherical systems.
+Because of this, we decided to focus the limited scope of a semester thesis on just spherical blimps. \\
+However, we designed the concept such that it could be extended with arbitrary actuator position estimation.
+Although it should be possible to estimate the positions, we wanted to create a solid foundation for such research.
+
+\paragraph{System Model Selection} ~\\
 For bulky, but rotation symmetric systems as blimps, aerodynamic effects have much more influence on the translational movements than on the rotational movements.
 Effects like flow separation, drag crisis or the inertia of the surrounding fluid mainly influence the translational movements.
 On rotational movements, aerodynamic effects have a much smaller impact.

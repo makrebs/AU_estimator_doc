@@ -74,8 +74,9 @@ where
 \section{Parameter Estimates}
 \label{sec:app_parameter_est}
 
+\begin{table}[H]
 \begin{tabular}{lcrrrc}
-Variable & Parameter & Mean & Var1 & Var2 & Unit \\
+Variable & Parameter & Mean & Std1 & Std2 & Unit \\
 \hline \hline
 AU 1 Orientation & $\lambda_1^1$ & -1.741915837 & 0.009166579 & 0.012530239 & $[-]$ \\
                  & $\lambda_1^1$ & -0.176579713 & 0.002681883 & 0.004968607 & $[-]$ \\
@@ -101,8 +102,38 @@ Center of Gravity & $\mathbf{p}_{b,x}^{cob,cog}$ & -0.000101592 & 0.00011136 & 0
                   & $\mathbf{p}_{b,y}^{cob,cog}$ & -2.53771E-05 & 0.000150175 & 0.00014934 & m \\
                   & $\mathbf{p}_{b,z}^{cob,cog}$ & -3.00404E-06 & 9.90231E-05 & 0.000147795 & m \\
 \hline
-
-
-
-
 \end{tabular}
+\caption{Optimization result of the parameters as defined in \cref{sec:parameterization}, \cref{tab:params_updated} for simulation data. Results have been calculated for 16 distinct datasets. \textbf{Mean} is the mean parameter estimate of the samples with standard deviation \textbf{Std1}. The mean over the expected standard deviation from the optimization residual is given as \textbf{Std2}.}
+\end{table}
+
+\begin{table}[H]
+\begin{tabular}{lcrrrc}
+Variable & Parameter & Mean & Std1 & Std2 & Unit \\
+\hline \hline
+AU 1 Orientation & $\lambda_1^1$ & -1.841689724 & 0.038953292 & 0.046525688 & $[-]$ \\
+                 & $\lambda_2^1$ & -0.252614018 & 0.013382649 & 0.015530261 & $[-]$ \\
+                 & $\lambda_3^1$ &  0.26987087 & 0.016083825 & 0.01614782 & $[-]$ \\
+AU 2 Orientation & $\lambda_1^2$ &  1.726674693 & 0.033042682 & 0.04142205 & $[-]$ \\
+                 & $\lambda_2^2$ & -0.017593159 & 0.01355598 & 0.012474474 & $[-]$ \\
+                 & $\lambda_3^2$ & -0.335327836 & 0.018041183 & 0.021212657 & $[-]$ \\
+AU 3 Orientation & $\lambda_1^3$ & -0.010025281 & 0.007923151 & 0.009106036 & $[-]$ \\
+                 & $\lambda_2^3$ & -0.182941004 & 0.00930763 & 0.011412447 & $[-]$ \\
+                 & $\lambda_3^3$ & -0.006427754 & 0.005374822 & 0.004353904 & $[-]$ \\
+AU 4 Orientation & $\lambda_1^4$ & -0.103928184 & 0.008785253 & 0.009708355 & $[-]$ \\
+                 & $\lambda_2^4$ &  0.984826536 & 0.016823497 & 0.020915549 & $[-]$ \\
+                 & $\lambda_3^4$ & -0.096597351 & 0.009209886 & 0.010746297 & $[-]$ \\
+\hline
+Inertia Tensor & $J_1$ & 14.70897958 & 0.135567324 & 0.26947353 & kg m$^2$ \\
+               & $J_2$ & 17.21843941 & 0.175921877 & 0.328509894 & kg m$^2$ \\
+               & $J_3$ & 16.40495373 & 0.168460164 & 0.415076368 & kg m$^2$ \\
+               & $J_4$ & 0.511843681 & 0.135145759 & 0.136563542 & kg m$^2$ \\
+               & $J_5$ & -0.05958936 & 0.126076425 & 0.145986446 & kg m$^2$ \\
+               & $J_6$ & 0.234369497 & 0.126702251 & 0.134153298 & kg m$^2$ \\
+\hline
+Center of Gravity & $\mathbf{p}_{b,x}^{cob,cog}$ & 0.000495015 & 0.00028417 & 0.00026949 & m \\
+                  & $\mathbf{p}_{b,y}^{cob,cog}$ & -0.000705644 & 0.000267855 & 0.000228525 & m \\
+                  & $\mathbf{p}_{b,z}^{cob,cog}$ & -0.000215293 & 0.000317137 & 0.000338427 & m \\
+\hline
+\end{tabular}
+\caption{Optimization result of the parameters as defined in \cref{sec:parameterization}, \cref{tab:params_updated} for real data. Results have been calculated for 16 distinct datasets. \textbf{Mean} is the mean parameter estimate of the samples with standard deviation \textbf{Std1}. The mean over the expected standard deviation from the optimization residual is given as \textbf{Std2}. }
+\end{table}

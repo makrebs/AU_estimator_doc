@@ -1,2 +1,25 @@
-\chapter{Conclusion}
+\chapter{Conclusion (draft)}
 \label{chap:conclusion}
+
+In this semester thesis, we have shown how parameters estimation can be applied to a multi-actuated blimp.
+We showed a possible paramterization of a blimp system model.
+Observation analysis showed which blimp properties are observable.
+Using a system model for rotational acceleration, either the scale of the motor position or the scale of the system's inertia tensor has to be known.
+Then it is possible to find an estimate of the motor configuration, the inertia tensor and the offset between the COG and COB can be found using nonlinear least squares optimization.
+A \textsc{Matlab} implementation of the Levenberg-Marquardt algorithm has been used for optimization.
+We briefly examined different input patterns.
+A sequence of random forward-backward step inputs has been found as being suitable to our application.
+Simulation and real blimp data have been generated/recorded and compared in batch optimization.
+
+\section{Actuation Configuration Estimate}
+XXX
+The \dots have been found with \dots accuracy
+
+
+\section{Application}
+Explain how results can be used for application.
+What steps are needed to apply in real use: \\
+1. Setup system \\
+2. Generate inputs for XX sec. \\
+3. Run matlab script. \\
+4. Upload actuation configuration information.

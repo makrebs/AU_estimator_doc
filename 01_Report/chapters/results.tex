@@ -139,6 +139,8 @@ $\mathbf{+}$ represent the results used to measure the variance.
 \end{figure}
 
 \subsection{Estimation Performance}
+\label{sub:est_perf}
+
 To test the performance our optimization framework, we defined five test cases.
 \begin{description}
 \item[Default] A simulation of a blimp that is comparable to the real Skye system. All 21 parameters as listed in \cref{tab:params_updated} are estimated. This is the same test case as in the previous sections.
@@ -200,7 +202,17 @@ Here is a list of significant observations:
 \label{fig:err_cmp_real}
 \end{figure}
 
-\subsection{Estimation Performance}
+\subsection{Simulation Improvement}
+By feeding the same actuator inputs of one of the real datasets to the simulation it should be possible to accurately reproduce the same dataset.
+We can show that the default Skye model which has been used in the simulation of section~\ref{sub:est_perf} can be improved by using the results from the simulation to create the blimp mode.
+This is because the default Skye model is based on CAD data and the real blimp deviates from the CAD data due to manufacturing tolerances.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width = \textwidth]{images/results/compare_alpha_x.eps}
+\caption{\textbf{Top}: red is a section of alpha from the real system}
+\label{fig:result_sim_improve_and_error}
+\end{figure}
 
 \section{Ground Truth}
 ...Do not tell toooo much in this section. Nobody likes to read long reports. So just mention 'we did it' and show the results.

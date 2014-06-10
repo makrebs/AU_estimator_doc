@@ -56,7 +56,7 @@ The number of samples per input vector reduces the error because noise from the 
 \centering
 \includegraphics[width = \textwidth]{images/results/input_length_vs_position_error.eps}
 \caption{Influence of the number of different input vectors on the mean position estimate error of the four AUs $e_{pos}$.
-When using less than about 7-10 input vectors, no solution was found.
+When using less than about 7 input vectors, no solution was found.
 Number of samples per input vector decreases the error by reducing the influence of sensor noise}
 \label{fig:result_inputlength}
 \end{figure}
@@ -72,7 +72,7 @@ It uses two metrics to distort the true parameters:
 The algorithm first rotates the actuator around its rotation axis by the given amount and then displaces it in a random direction on the hull surface by the requested amount. \\
 For a grid of different position and angle deviations the failure rate was determined with ten samples each.
 Figure~\ref{fig:result_sim_convergece_region} shows the result of this test.\\
-It can be seen, that an initial position offset of \textit{all} actuators in any random direction\footnote{
+It can be seen that an initial position offset of \textit{all} actuators in any random direction\footnote{
 The simulated blimp has a hull radius of \unit[1.37]{m} and therefore the distance between two of the tetrahedrally arranged actuation units is \unit[2.62]{m}.}
 is acceptable up to \unit[1]{m}.
 Initial orientation offsets of the motors are acceptable up to \unit[120]{°}.
@@ -204,12 +204,13 @@ Here is a list of significant observations:
 \subsection{Simulation Improvement}
 By feeding the same actuator inputs of one of the real datasets to the simulation it should be possible to accurately reproduce the same dataset.
 We can show that the default Skye model which has been used in the simulation of section~\ref{sub:est_perf} can be improved by using the results from the simulation to create the blimp mode.
-This is because the default Skye model is based on CAD data and the real blimp deviates from the CAD data due to manufacturing tolerances.
+This is because the default Skye model is based on CAD data and the real blimp deviates from the CAD data due to manufacturing tolerances.\\
+The errors inside the green shaded areas of figure~\ref{fig:result_sim_improve_and_error} have been improved by roughly a factor of two.
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width = \textwidth]{images/results/compare_alpha_x.eps}
-\caption{\textbf{Top}: red is a section of alpha from the real system}
+\includegraphics[scale=0.8]{images/results/compare_alpha_x.eps}
+\caption{\textbf{Top}: \textbf{Red} is a section of alpha from the real system. \textbf{Blue} is the same section recreated by simulation with the default Skye simulation model. \textbf{Green} is the same section recreated by simulation with an Skye model which was adapted with the structure result from our batch optimisation. \textbf{Bottom}: The error of the recreated angular accelerations. We can see that the adapted simulation produces much better results. The error is high during input transients (the \textbf{white} areas of the plot). !!besser formuliere!!}
 \label{fig:result_sim_improve_and_error}
 \end{figure}
 

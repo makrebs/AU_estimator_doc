@@ -11,10 +11,9 @@ describe the methods used to generate these datasets from a real blimp and also 
 The \textsc{MATLAB} implementation of the batch optimisation takes a dataset as the input and returns a set of optimal parameters estimated from the given dataset. \\
 A dataset is designed to be self contained. 
 Each dataset includes information about the structure of the system and a set of input vectors with their corresponding measurement vectors from the sensors. \\
-In the current implementation the structure contains the true values
-\footnote{True values are only known for the simulation datasets. 
+In the current implementation the structure contains the true values\footnote{True values are only known for the simulation datasets. 
 For datasets from the real blimp, the true values are not known and therefore replaced with values based on the CAD files of the blimp}
-for the motor positions and their coordinate system transformations, the blimp radius, the blimp mass and the inertial tensor as well as transformation matrices for the sensors. \\
+for the motor positions and their coordinate system transformations, the blimp radius, the blimp mass and the inertia tensor as well as transformation matrices for the sensors. \\
 The measurement data is stored in segments.
 A segment is a homogeneous sequence of continuously sampled actuator feedback vectors as well as measurement vectors.
 Because the real system exhibits transients upon changing inputs a boolean is also stored for each data-point which denotes whether the system has reached steady-state. \\
@@ -23,16 +22,16 @@ With this technique it is possible to easily cut away parts of segments which ha
 \section{Real System}
 \label{sec:real_system}
 To record data from a real blimp, experiments where conducted on the Skye System. \\
-To excite the system with actuator inputs which are suitable for batch optimisation we expanded both QGroundControl and the Skye specific PX4 Firmware with new functionality.
+To excite the system with actuator inputs which are suitable for batch optimisation, we expanded both QGroundControl and the Skye specific PX4 Firmware with new functionality.
 
 \subsection{Input Patterns}
 \label{sub:input_pattern}
-We tried a number of different approaches to input patterns. \\
+We tried a number of different approaches to input patterns.
 The basic idea behind the patterns is that we can apply each of these patterns independently to each other to the blimp.
 This allows us to reposition the blimp in the testing area as soon as it drifts away too much.
 In order to be able to apply as long of a sequence as possible the individual patterns need to be designed to not build up too much kinetic energy.\\
 Another aspect of the real system is that it takes time until the actuators have reached the desired orientation and thrust.
-The resulting transients are very hard to predict mainly because the thrust motor controller has no feedback and exhibits very high variability in its dynamic behaviour. \\
+The resulting transients are very hard to predict, mainly because the thrust motor controller has no feedback and exhibits very high variability in its dynamic behaviour. \\
 In addition to the unknown thruster dynamics the hull also reacts to load changes with vibrations that are detected by the sensors. \\
 By combining these constraints on the inputs, we came up with the following pattern scheme:
 \begin{enumerate}
@@ -41,7 +40,7 @@ By combining these constraints on the inputs, we came up with the following patt
 \item Apply same inputs in reverse for the same amount of time
 \end{enumerate}
 Using this scheme the system does not move too much while still providing good steady-state system response. \\
-For the input vectors themselves we considered a few options:\\
+For the input vectors themselves we considered a few options:
 \begin{enumerate}
 \item generate random desired angular accelerations and use allocation to generate input vectors for the thrusters, which result in only rotational acceleration
 \item use fixed thrust and select thruster angle from a uniform random number distribution
@@ -58,25 +57,27 @@ In \ref{eq:m_actuation} the $\mathbf{M}^{actuation}$ part is repeated for conven
 \end{equation}
 
 It becomes clear that if we use the allocation to feed $\mathbf{F}^k_{m^k}$, $\mathbf{C}_{b,m^k}$ and $\mathbf{p}^{m^k,cog}_{m^k}$ are completely unobservable.\\
+
 This leaves us with methods 2 and 3.
 It turns out that fully random method is better than the other one, because method 2 still only excites a limited sub-space of the input space. This is avoided with the fully random inputs provided by method 3.\\
 
 \subsection{Input Generation}
 \label{sub:input_generation}
 To avoid having to re-flash the firmware all the time, the inputs are generated inside \textsc{QGroundControl} and transmitted with a special direct actuator control message to the blimp.
-The firmware then just forwards the actuator commands to the actuators. \\
+The firmware then forwards the actuator commands to the actuators. \\
 This way all of the parameters like standard deviation and time intervals can be set from within the \textsc{QGroundControl} interface.
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=.9\linewidth]{images/qgc/QGroundControl_v_2.png}
-\caption{\textsc{QGroundControl} System input generation interface}
+\caption{\textsc{QGroundControl} system input generation interface}
 \label{fig:qgc_input_gen}
 \end{figure}
 
 \subsection{Testing Setup}
 \label{sub:testing_setup}
 Although the input patterns are designed to avoid large movements as good as possible, the blimp still needs to be catched after a number of such inputs. This leads us to the basic testing setup we used to record data: \\
+
 An operator is located at the ground station and a second operator is near the blimp.
 At the ground station there is a button to initiate one such input sequence.
 The operator at the blimp catches it as soon as it drifts too close to an obstacle. \\
@@ -85,7 +86,7 @@ This is including the time needed to reposition the blimp when it has drifted to
 
 \subsection{Data Acquisition}
 \label{sub:data_acquisition}
-For accurate feedback from the blimp the firmware was extended to offer a mode where it will transmit (??find name for this message??) the relevant sensor and actuator feedback data to the ground station. \\
+For accurate feedback from the blimp the firmware was extended to offer a mode where it will transmit the relevant sensor and actuator feedback data to the ground station. \\
 The new mode collects and transmits the following data to the ground station:
 \begin{enumerate}
 \item raw gyro
@@ -93,17 +94,17 @@ The new mode collects and transmits the following data to the ground station:
 \item angular rate from EKF
 \item angular acceleration from EKF
 \item orientation quaternion from EKF
-\item current thrust of each actuator
-\item current angle of each actuator
+\item current thrust of each actuator (from thrust signal that is passed to the thrust motor controller)
+\item current angle of each actuator (from angle motor-controller feedback)
 \end{enumerate}
 Because the actuator feedback loop runs at 25Hz the whole telemetry message is transmitted at that rate.
 To avoid problems with noise aliasing the sensor signals are run through a resampling filter. \\
-\textsc{QGroundControl} then writes these mavlink messages into a log file which is read by our \textsc{Matlab} code.
+\textsc{QGroundControl} then writes these mavlink messages into a log-file which is read by our \textsc{MATLAB} code.
 
 \subsection{Data Selection}
 \label{sub:data_selection}
 After a raw dataset has been recorded it needs to be preprocessed to be usable for our batch optimisation code.\\
-First after importing a raw dataset the regions where thrust transients are to be expected are marked in the dataset.
+First after importing a raw dataset, the regions where thrust transients are to be expected are marked in the dataset.
 This process is implemented with generous margins to eliminate problems with the batch optimisation. \\
 \begin{figure}[htbp]
 \centering
@@ -115,10 +116,10 @@ For this purpose a semi-automatic cutting tool was implemented.
 The tool first identifies the segments of interest and then displays each of them to the use for visual inspection.
 The user can then adjust the borders of the segments to cut away any undesired disturbances. \\
 Good and bad segments are easily distinguished by looking at the angular acceleration plot.
-An undisturbed system shows constant angular accelerations during the periods when the thrusters are active. \\
+An undisturbed system shows constant angular accelerations during the periods where the thrusters are active. \\
 Using this approach to recording a dataset from Skye, only about 50\% of the raw data from the session has to be discarded.
 The result is a dataset with undisturbed system response including transients.
-When the described transient removal is applied about 40\% of transient-free data remains.\\
+When the described transient removal is applied, about 40\% of transient-free data remains.\\
 To summarize: for 10 seconds of transient-free data about 50 seconds of raw data has to be collected.
 
 \begin{figure}[htbp]
@@ -157,7 +158,7 @@ Additionally, at the border of a discrete time step the simulator also calls a f
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{images/sim/sim_tree.eps}
-\caption{Tree like data-structure of simulation objects. Assembly parts (\textbf{gray}) have subparts (\textbf{white}) and hold additional information about their arrangement. Some parts includes states (\textbf{shaded}). The simulator interacts with the simulation objects and generates a dataset.}
+\caption{Tree like data-structure of simulation objects. Assembly parts (\textbf{gray}) have subparts (\textbf{white}) and hold additional information about their arrangement. Some parts include states (\textbf{shaded}). The simulator interacts with the simulation objects and generates a dataset.}
 \label{fig:sim_tree}
 \end{figure}
 
@@ -174,10 +175,10 @@ Each node in the tree represents an assembly of parts.
 With this methodology the blimp is actually an assembly of several parts. 
 In general it will include a hull, the electronics unit and a number of actuation units.
 Each of these parts are assemblies by themselves.
-The electronics unit could include for example the cover, a camera and the PX4 FMU, which simulates the sensors.\\
+The electronics unit could include for example the cover, a camera and the \textsc{PX4FMU}, which simulates the sensors.\\
 An actuation unit is also an assembly of for instance a battery, a taring weight and an actuator which simulates the actuator dynamics and generates the forces.\\
 This concept allows to have different types of components in a library which can then be used to build an arbitrary blimp.\\
-After the blimp has been assembled the mechanical properties of the parts at the leafs of the tree data-structure are recursively combined into their parent node.
+After the blimp has been assembled, the mechanical properties of the parts at the leafs of the tree data-structure are recursively combined into their parent node.
 This way the mechanical properties of the root node are recalculated.\\
 The taring routine uses the tree structure to calculate values for the taring weights located at the actuation units. 
 After taring is done, the changed mass of the taring weights cause the tree to recalculate the mechanical properties of the root node.
@@ -220,7 +221,7 @@ Because the thruster dynamics are not critical to our application this yields su
 \label{sub:imu_model}
 Following the idea of the simulator framework the inertial sensors are also an object which is attached to the blimp assembly. \\
 The tree-like framework of the simulation objects is bidirectional.
-While the mechanical properties of the leaves are used to determine the properties of the trunk,
+While the mechanical properties of the leaves are used to determine the properties of the root,
 the motion of the rigid body at the root of the structure is distributed to each of the leaf nodes in their respective coordinate systems. \\
 The sensor object then only has to take the already transformed accelerations, velocities and orientations and store them.
 In this process the sensor object also adds noise to the sensor values.

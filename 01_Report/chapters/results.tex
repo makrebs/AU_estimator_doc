@@ -8,7 +8,7 @@ we transform the parameter results (and its variance) to a more intuitive form s
 %But since the position of the motor on the hull has only two degrees of freedom, a representation in the three dimensional blimp frame is not that much more intuitive.
 A good possibility is to express the actuation configuration in the tangential reference frames $t^k$ (see \cref{sub:coordinate_systems}).
 As the radius $r$ is not estimated, the estimation error in
-$\lbrace \mathbf{e}^{t^k}_z \rbrace$-direction is marginal.
+$ \mathbf{e}_{t^k}^z $-direction is marginal.
 \\
 The error of the actuator arrangement is expressed by an error distance $e_{pos}^k$ for each motor $k$, which is approximated by the euclidean norm in the x-y plane of the tangential frame,
 and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' and estimated motor coordinate systems $\mathbf{e}_{m^k}^x$ and $\mathbf{e}_{t^k}^x$.
@@ -46,7 +46,7 @@ Individual input vectors are applied to the system for a fixed amount of time. \
 The first concept of length is thus measured in number of different input vectors, number of input vectors for short.
 The second concept of length is the amount of data-samples are used during each of the different input vectors, number of samples per input vector for short. \\
 The number of input vectors is the more important length measure as will be shown later.
-It determines whether the parameters are observable at all. XXXXXXXXXX\\
+It determines whether the parameters are observable at all. \\
 The number of samples per input vector serves mainly to reduce the effect of the sensor noise on the results. \\
 \Cref{fig:result_inputlength} shows the effects of different dataset lengths.
 Below about 7 different input vectors no solution could be found. 

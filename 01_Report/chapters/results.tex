@@ -103,8 +103,10 @@ The same observation can be made when using datasets from real measurements (com
 In this thesis two methods have been used to determine  the confidence of the parameters.
 The first method is outlined in section~\ref{sec:confidence_region} using the covariance matrices.
 After the batch optimization has found a set of optimal parameters, the covariance matrix of the parameters is calculated by the optimization residual.
-The covariance of the results is then calculated using error propagation and transformations. \\
+The covariance of the results is then calculated using error propagation and transformations.
+We will refer to this covariance as the \textit{calculated covariance}.\\
 The second method does not rely on any assumptions about covariance matrices and measures the parameter variance directly from multiple experimental results.
+We will refer to this covariance as the \textit{measured covariance}.
 To get enough experimental results bootstrapping as described in \cref{sec:bootstrapping_and_statistics} is used to generate 16 different datasets.
 
 \paragraph{Confidence from covariance matrix} ~\\
@@ -137,7 +139,7 @@ radius = 1.96 \cdot \sqrt{variance}
 \caption{Distribution of actuator position estimates. 16 datasets with 24 input vectors each and one sample per input vector.
 $\mathbf{+}$ represent the results used to measure the variance.
 \textbf{dashed}: 95\% confidence interval calculated from covariance matrix.
-\textbf{solid}: 95\% confidence interval calculated from multiple results. }
+\textbf{solid}: 95\% confidence interval calculated from multiple results. Result is taken from actuation unit number 4. See appendix \cref{fig:result_95pc_confidence_all} for the remaining ones.}
 \label{fig:result_95pc_confidence}
 \end{figure}
 
@@ -153,14 +155,14 @@ To test the performance of our optimization framework, we defined five test case
 \item[COG] Same blimp as in default, but with large additional weight at AU4 position. COG to COB offset is 10cm and yields a moment in the same magnitude as the actuation moment. This is used to estimate the error introduced by large COG shifts.
 \end{description}
 
-For each of these test cases the RMS error for 4 different parameters has been calculated.
+For each of these test cases the RMS error for 4 different parameter measures has been calculated.
 The samples for the RMS calculations are generated with the same method as described in section~\ref{sec:bootstrapping_and_statistics}.
 The used parameters are:
 \begin{enumerate}
 \item Position error of AU 4 in the tangential frame
 \item Angle error of AU 4 around the z axis of the tangential frame
-\item Center of gravity error in the blimp frame
-\item Tensor parameter vector error in percent
+\item COG offset error in the blimp frame
+\item Inertia tensor parameter vector error in percent
 \end{enumerate}
 
 Figure~\ref{fig:err_cmp_sim} shows the results of this analysis.
@@ -177,22 +179,29 @@ Figure~\ref{fig:err_cmp_sim} shows the results of this analysis.
 
 Here is a list of significant observations:
 \begin{itemize}
-\item The position estimation is accurate within centimetres
+\item The position estimation is accurate within centimeters
 \item The angle error is lower than \unit[0.5]{°}
 \item The center of gravity estimation is accurate within millimetres
-\item When feeding the same number of data-points to the batch optimization, the estimation error is higher when more parameters need to be estimated (default $\leftrightarrow$ AU1 $\leftrightarrow$ AU5)
+\item When feeding the same number of data-points to the batch optimization, the estimation error is higher when more parameters need to be estimated (default $\leftrightarrow$ 1 AU $\leftrightarrow$ 5 AU)
 \item Omitting aerodynamic drag from simulation does not improve the results by much. This supports our argumentation that we can neglect the aerodynamic effects on the rotations.
-\item Although a big COG shift decreases the accuracy of the actuator positions, the COG is still very accurately estimated. This decrease in error is not unexpected because in the parameterization of the actuator positions we assume that the actuation units are equidistant to the center of gravity. With big COG shifts this is not the case any-more. However, Skye could not fly with such a big COG shift and thus must be tared. When taring it is important to know the actual COG. Following this argumentation it is not a problem that a big COG shift impacts the position estimation because the COG estimation is always accurate and we can thus detect such a situation and correct the COG before proceeding with estimating the actuator positions.
-\item For the 1 AU case the inertial tensor error is bigger because one actuator can only excite the system around two axes. This means that the tensor estimation is much less accurate.
+\item Although a big COG shift decreases the accuracy of the actuator positions, the COG is still very accurately estimated.
+This decrease in error is not unexpected because in the parameterization of the actuator positions we assume that the actuation units are equidistant to the center of gravity.
+With big COG shifts this is not the case any-more.
+However, Skye would not be able to fly with such a big COG shift and thus must be tared.
+When taring it is important to know the actual COG.
+Following this argumentation it is not a problem that a big COG shift impacts the position estimation because the COG offset is accurately estimated even accurate if it is large.
+Thus such a situation can be detected and the the COG offset reduced by moving taring weights before proceeding with estimating the actuator positions.
+\item For the 1 AU case the inertia tensor error is bigger because a single actuator can excite the system only around two axes.
+This yields to an estimate of the inertia tensor that is much less accurate.
 \end{itemize}
 
 
 \section{Experiments}
 The data in this section was recorded with the Skye blimp as described in section~\ref{sec:real_system}.
-For the experimental results we use the standard deviation of the results.
-Standard deviation was chosen over root mean square error because coming up with a bias-free ground-truth is hard.
+For statistics, instead of calculating the RMS error we calculated the standard deviation of the results of multiple data sets.
+Standard deviation was chosen over RMS error because coming up with a bias-free ground-truth is hard.
 This will be discussed in more detail in section~\ref{sec:ground_truth}. \\
-By using the standard deviation as a estimation performance metric we implicitly assume that the mean of all estimations lie at the true value.
+By using the standard deviation as a estimation performance metric we implicitly assume that the mean of all estimations lies at the true value.
 With this setup it is not possible to measure estimator bias.
 We will show a different performance measure in section~\ref{sub:sim_improvement} which shows that the actuator configuration from the estimation result is more accurate than the default model we used for the simulation.
 

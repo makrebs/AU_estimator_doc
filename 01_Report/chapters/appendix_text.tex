@@ -71,6 +71,21 @@ where
 %\section{Derivative w.r.t. Inertia Tensor B}
 %XXX derivative w.r.t diagonal inertia tensor and rotation matrix (and it's inverse)
 
+\section{Actuation Unit Variance}
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU1.eps}
+\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU2.eps} \\
+\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU3.eps}
+\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU4.eps}
+\caption{Distribution of actuator position estimates. 16 datasets with 24 input vectors each and one sample per input vector.
+$\mathbf{+}$ represent the results used to measure the variance.
+\textbf{dashed}: 95\% confidence interval calculated from covariance matrix.
+\textbf{solid}: 95\% confidence interval calculated from multiple results. }
+\label{fig:result_95pc_confidence_all}
+\end{figure}
+
+
 \section{Parameter Estimates}
 \label{sec:app_parameter_est}
 

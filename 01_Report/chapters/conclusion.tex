@@ -1,24 +1,24 @@
-\chapter{Conclusion (draft)}
+\chapter{Conclusion}
 \label{chap:conclusion}
 
 In this thesis we showed a working method to determine the actuation configuration of a spherical blimp.
-On a real system like Skye, the presented method can determine the actuator configuration with a centimetre accuracy.
-Additionally hard to measure parameters like the inertial tensor and the offset between COG and COB can be determined as well.
+On a real system like Skye, the presented method can determine the actuator configuration with a centimeter accuracy.
+Additionally hard to measure parameters like the inertia tensor and the offset between COG and COB can be determined as well.
 To get to this point we showed a possible parametrization of a blimp system model.
 We then broke down which sensors to use and briefly examined which input vectors can be used to excite the system for identification.
 We then implemented a \textsc{Matlab} framework including a modular blimp simulator to test several different optimization algorithms.
 The final implementation used the Levenberg-Marquardt algorithm which showed fastest convergence.\\
 
 
-In this semester thesis, we have shown how parameters estimation can be applied to a multi-actuated blimp.
-We showed a possible paramterization of a blimp system model.
-Observation analysis showed which blimp properties are observable.
-Using a system model for rotational acceleration, either the scale of the motor position or the scale of the system's inertia tensor has to be known.
-Then it is possible to find an estimate of the motor configuration, the inertia tensor and the offset between the COG and COB can be found using nonlinear least squares optimization.
-A \textsc{Matlab} implementation of the Levenberg-Marquardt algorithm has been used for optimization.
-We briefly examined different input patterns.
-A sequence of random forward-backward step inputs has been found as being suitable to our application.
-Simulation and real blimp data have been generated/recorded and compared in batch optimization.
+%In this semester thesis, we have shown how parameters estimation can be applied to a multi-actuated blimp.
+%We showed a possible paramterization of a blimp system model.
+%Observation analysis showed which blimp properties are observable.
+%Using a system model for rotational acceleration, either the scale of the motor position or the scale of the system's inertia tensor has to be known.
+%Then it is possible to find an estimate of the motor configuration, the inertia tensor and the offset between the COG and COB can be found using nonlinear least squares optimization.
+%A \textsc{Matlab} implementation of the Levenberg-Marquardt algorithm has been used for optimization.
+%We briefly examined different input patterns.
+%A sequence of random forward-backward step inputs has been found as being suitable to our application.
+%Simulation and real blimp data have been generated/recorded and compared in batch optimization.
 
 \section{Actuation Configuration Estimate}
 XXX

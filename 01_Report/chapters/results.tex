@@ -42,13 +42,13 @@ The same input vectors than in the real dataset have been applied.
 
 \subsection{Convergence}
 \label{sec:sim_convergence}
-In this section we are going to discuss the convergence properties of the batch optimisation.
+In this section we are going to discuss the convergence properties of the batch optimization.
 
 \paragraph{Convergence w.r.t. dataset length} ~\\
-In this thesis the datasets used for the batch optimisation have two concepts of length.
+In this thesis the datasets used for the batch optimization have two concepts of length.
 Individual input vectors are applied to the system for a fixed amount of time. \\
-The first concept of length is thus measured in number of different input vectors, number of input vectors for short.
-The second concept of length is the amount of data-samples are used during each of the different input vectors, number of samples per input vector for short. \\
+The first concept of length is thus measured in number of different input vectors, \textit{number of input vectors} for short.
+The second concept of length is the amount of data-samples are used during each of the different input vectors, \textit{number of samples per input vector} for short. \\
 The number of input vectors is the more important length measure as will be shown later.
 It determines whether the parameters are observable at all. \\
 The number of samples per input vector serves mainly to reduce the effect of the sensor noise on the results. \\
@@ -67,15 +67,14 @@ Number of samples per input vector decreases the error by reducing the influence
 
 \paragraph{Convergence w.r.t. initial parameter estimate} ~\\
 The impact of the initial parameter estimate on the convergence of the batch optimization has been tested.
-In order to test convergence we implemented an algorithm which produces initial parameters from the true parameters.
-It uses two metrics to distort the true parameters:
+In order to test convergence, we generated a grid of initial parameters which differ from the true actuation configuration by the following two metrics:
 \begin{itemize}
 \item Position deviation of each actuator on the hull surface
 \item Rotation angle deviation of each actuator
 \end{itemize}
 The algorithm first rotates the actuator around its rotation axis by the given amount and then displaces it in a random direction on the hull surface by the requested amount. \\
 For a grid of different position and angle deviations the failure rate was determined with ten samples each.
-Figure~\ref{fig:result_sim_convergece_region} shows the result of this test.\\
+Figure \cref{fig:result_sim_convergece_region} shows the result of this test.\\
 It can be seen that an initial position offset of \textit{all} actuators in any random direction\footnote{
 The simulated blimp has a hull radius of \unit[1.37]{m} and therefore the distance between two of the tetrahedrally arranged actuation units is \unit[2.62]{m}.}
 is acceptable up to \unit[1]{m}.
@@ -103,7 +102,7 @@ The same observation can be made when using datasets from real measurements (com
 \paragraph{Methods} ~\\
 In this thesis two methods have been used to determine  the confidence of the parameters.
 The first method is outlined in section~\ref{sec:confidence_region} using the covariance matrices.
-After the batch optimisation has found a set of optimal parameters, the covariance matrix is propagated through the coordinate transformations used to represent results.
+After the batch optimization has found a set of optimal parameters, the covariance matrix is propagated through the coordinate transformations used to represent results.
 The second method does not rely on any assumptions about covariance matrices and measures the parameter variance directly from multiple experimental results.
 To get enough experimental results bootstrapping as described in section~\ref{sec:bootstrapping_and_statistics} is used to generate 16 different datasets.
 
@@ -180,9 +179,9 @@ Here is a list of significant observations:
 \item The position estimation is accurate within centimetres
 \item The angle error is lower than \unit[0.5]{°}
 \item The center of gravity estimation is accurate within millimetres
-\item When feeding the same number of data-points to the batch optimisation, the estimation error is higher when more parameters need to be estimated (default $\leftrightarrow$ AU1 $\leftrightarrow$ AU5)
+\item When feeding the same number of data-points to the batch optimization, the estimation error is higher when more parameters need to be estimated (default $\leftrightarrow$ AU1 $\leftrightarrow$ AU5)
 \item Omitting aerodynamic drag from simulation does not improve the results by much. This supports our argumentation that we can neglect the aerodynamic effects on the rotations.
-\item Although a big COG shift decreases the accuracy of the actuator positions, the COG is still very accurately estimated. This decrease in error is not unexpected because in the parametrisation of the actuator positions we assume that the actuation units are equidistant to the center of gravity. With big COG shifts this is not the case any-more. However, Skye could not fly with such a big COG shift and thus must be tared. When taring it is important to know the actual COG. Following this argumentation it is not a problem that a big COG shift impacts the position estimation because the COG estimation is always accurate and we can thus detect such a situation and correct the COG before proceeding with estimating the actuator positions.
+\item Although a big COG shift decreases the accuracy of the actuator positions, the COG is still very accurately estimated. This decrease in error is not unexpected because in the parameterization of the actuator positions we assume that the actuation units are equidistant to the center of gravity. With big COG shifts this is not the case any-more. However, Skye could not fly with such a big COG shift and thus must be tared. When taring it is important to know the actual COG. Following this argumentation it is not a problem that a big COG shift impacts the position estimation because the COG estimation is always accurate and we can thus detect such a situation and correct the COG before proceeding with estimating the actuator positions.
 \item For the 1 AU case the inertial tensor error is bigger because one actuator can only excite the system around two axes. This means that the tensor estimation is much less accurate.
 \end{itemize}
 

@@ -67,15 +67,14 @@ Number of samples per input vector decreases the error by reducing the influence
 
 \paragraph{Convergence w.r.t. initial parameter estimate} ~\\
 The impact of the initial parameter estimate on the convergence of the batch optimization has been tested.
-In order to test convergence we implemented an algorithm which produces initial parameters from the true parameters.
-It uses two metrics to distort the true parameters:
+In order to test convergence, we generated a grid of initial parameters which differ from the true actuation configuration by the following two metrics:
 \begin{itemize}
 \item Position deviation of each actuator on the hull surface
 \item Rotation angle deviation of each actuator
 \end{itemize}
 The algorithm first rotates the actuator around its rotation axis by the given amount and then displaces it in a random direction on the hull surface by the requested amount. \\
 For a grid of different position and angle deviations the failure rate was determined with ten samples each.
-Figure~\ref{fig:result_sim_convergece_region} shows the result of this test.\\
+Figure \cref{fig:result_sim_convergece_region} shows the result of this test.\\
 It can be seen that an initial position offset of \textit{all} actuators in any random direction\footnote{
 The simulated blimp has a hull radius of \unit[1.37]{m} and therefore the distance between two of the tetrahedrally arranged actuation units is \unit[2.62]{m}.}
 is acceptable up to \unit[1]{m}.

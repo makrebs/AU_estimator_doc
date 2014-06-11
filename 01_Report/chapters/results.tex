@@ -29,8 +29,8 @@ To express the certainty of the inertia tensor estimate, the mean of the inertia
 To be able to generate meaningful results we recorded a long dataset with Skye which contains about 850 seconds of undisturbed data samples.
 To improve the accuracy of statistical results bootstrapping is applied to this large dataset.
 Moving block bootstrapping is applied because the dataset consists of time series data.
-The block stride is selected such that the dataset is divided in about 16 blocks which
-leads to the certainty that the actual standard deviation lies within 25\% the calculated standard deviation with a certainty of 95\% \citep{WikiMaringOfError}. \\
+The block stride is selected such that the dataset is divided into 16 blocks.
+This leads to a certainty of 95\% that the actual standard deviation lies within 25\% of the calculated standard deviation \citep{WikiMarginOfError}. \\
 Unless otherwise stated, the presented statistical results imply an 25\% error margin.
 
 \section{Simulation}
@@ -45,13 +45,12 @@ The same input vectors than in the real dataset have been applied.
 In this section we are going to discuss the convergence properties of the batch optimization.
 
 \paragraph{Convergence w.r.t. dataset length} ~\\
-In this thesis the datasets used for the batch optimization have two concepts of length.
-Individual input vectors are applied to the system for a fixed amount of time. \\
+In this thesis the datasets used for the batch optimization have two concepts of length.\\
 The first concept of length is thus measured in number of different input vectors, \textit{number of input vectors} for short.
 The second concept of length is the amount of data-samples are used during each of the different input vectors, \textit{number of samples per input vector} for short. \\
 The number of input vectors is the more important length measure as will be shown later.
 It determines whether the parameters are observable at all. \\
-The number of samples per input vector serves mainly to reduce the effect of the sensor noise on the results. \\
+The number of samples per input vector serves mainly to reduce the effect of sensor noise on the results. \\
 \Cref{fig:result_inputlength} shows the effects of different dataset lengths.
 Below about 7 different input vectors no solution could be found. 
 The number of samples per input vector reduces the error because noise from the sensors is reduced.
@@ -119,8 +118,8 @@ When using just one sample per input vector, the calculated and measured varianc
 As outline above the variance of the parameters has also been measured by evaluating multiple datasets generated from the same system and calculating the variance for each of the parameters.\\
 
 In \cref{fig:result_95pc_confidence} the calculated variance is compared to the measured variance.
-The variances are illustrated with circles that represent the region in which the parameters reside with 95\% certainty.
-The size of the circles is determined with \cref{eq:variance_to_95pc}.
+The variances are illustrated with ellipses that represent the region in which the parameters reside with 95\% certainty.
+The size of the ellipses are determined with \cref{eq:variance_to_95pc}.
 
 \begin{equation}
 \label{eq:variance_to_95pc}
@@ -181,7 +180,12 @@ Here is a list of significant observations:
 \item The center of gravity estimation is accurate within millimetres
 \item When feeding the same number of data-points to the batch optimization, the estimation error is higher when more parameters need to be estimated (default $\leftrightarrow$ AU1 $\leftrightarrow$ AU5)
 \item Omitting aerodynamic drag from simulation does not improve the results by much. This supports our argumentation that we can neglect the aerodynamic effects on the rotations.
-\item Although a big COG shift decreases the accuracy of the actuator positions, the COG is still very accurately estimated. This decrease in error is not unexpected because in the parameterization of the actuator positions we assume that the actuation units are equidistant to the center of gravity. With big COG shifts this is not the case any-more. However, Skye could not fly with such a big COG shift and thus must be tared. When taring it is important to know the actual COG. Following this argumentation it is not a problem that a big COG shift impacts the position estimation because the COG estimation is always accurate and we can thus detect such a situation and correct the COG before proceeding with estimating the actuator positions.
+\item Although a big COG shift decreases the accuracy of the actuator position estimates, the COG is still very accurately estimated. 
+This decrease in error is not unexpected because in the parametrization of the actuator positions we assume that the actuation units are equidistant to the center of gravity. 
+With big COG shifts this is not the case any-more. 
+However, Skye could not fly with such a big COG shift and thus must be tared. 
+When taring it is important to know the actual COG. 
+Following this argumentation it is not a problem that a big COG shift impacts the position estimation because the COG estimation is always accurate and we can thus detect such a situation and correct the COG before proceeding with estimating the actuator positions.
 \item For the 1 AU case the inertial tensor error is bigger because one actuator can only excite the system around two axes. This means that the tensor estimation is much less accurate.
 \end{itemize}
 
@@ -254,7 +258,7 @@ As a detectable feature, the center of the actuator's rotor has been used (see \
 \label{fig:leica_au_laser}
 \end{figure}
 
-The actuator had to be rotated such that this point was visible for the current view
+The actuator had to be rotated such that this point was visible for the current view.
 The resulting offset to the actuators z-axis was considered in the optimization problem,
 which was formulated to calculate the distance between the actuator units.
 This means, only the relative arrangement of the actuators was measured as 'ground-truth'\footnote{

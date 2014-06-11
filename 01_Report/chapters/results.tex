@@ -74,7 +74,7 @@ In order to test convergence, we generated a grid of initial parameters which di
 \end{itemize}
 The algorithm first rotates the actuator around its rotation axis by the given amount and then displaces it in a random direction on the hull surface by the requested amount. \\
 For a grid of different position and angle deviations the failure rate was determined with ten samples each.
-Figure \cref{fig:result_sim_convergece_region} shows the result of this test.\\
+\Cref{fig:result_sim_convergece_region} shows the result of this test.\\
 It can be seen that an initial position offset of \textit{all} actuators in any random direction\footnote{
 The simulated blimp has a hull radius of \unit[1.37]{m} and therefore the distance between two of the tetrahedrally arranged actuation units is \unit[2.62]{m}.}
 is acceptable up to \unit[1]{m}.
@@ -102,9 +102,10 @@ The same observation can be made when using datasets from real measurements (com
 \paragraph{Methods} ~\\
 In this thesis two methods have been used to determine  the confidence of the parameters.
 The first method is outlined in section~\ref{sec:confidence_region} using the covariance matrices.
-After the batch optimization has found a set of optimal parameters, the covariance matrix is propagated through the coordinate transformations used to represent results.
+After the batch optimization has found a set of optimal parameters, the covariance matrix of the parameters is calculated by the optimization residual.
+The covariance of the results is then calculated using error propagation and transformations. \\
 The second method does not rely on any assumptions about covariance matrices and measures the parameter variance directly from multiple experimental results.
-To get enough experimental results bootstrapping as described in section~\ref{sec:bootstrapping_and_statistics} is used to generate 16 different datasets.
+To get enough experimental results bootstrapping as described in \cref{sec:bootstrapping_and_statistics} is used to generate 16 different datasets.
 
 \paragraph{Confidence from covariance matrix} ~\\
 As introduced in \cref{sec:sim_convergence} there are two measures of dataset length which influence the result in different ways.

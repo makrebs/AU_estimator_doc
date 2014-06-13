@@ -2,26 +2,29 @@
 \label{chap:introduction}
 
 \section{Motivation}
-Blimps are ideal vehicles for being used as aerial advertising medium. Especially eye-catching are specifically shaped blimps, e.g. blimps that have the shape of a mascot, car or any other commercial product (see figure \ref{fig:blimps}).
+Blimps are ideal vehicles for being used as an aerial advertising medium.
+Especially eye-catching are specifically shaped blimps, e.g. blimps that have the shape of a mascot, car or any other commercial product (see figure \ref{fig:blimps}).
 As an alternative, conventionally shaped blimps can show imprints or banners.
 The arrangement of the actuators for those different shaped blimps varies a lot.
 In general, manual adjustment of the control algorithms is needed or the actuators have to be controlled manually.
 Using some adequate sensors, it would be useful to determine the effect of an actuator on the movement of the blimp automatically.
-When such an algorithm is available, the blimp hull can be manufactured independently on the actuation which just can be attached to the blimp and the controller figures out the effect of its actuators on its own.
+When such an algorithm is available, the blimp hull can be manufactured independently on the actuation which just can be attached to the blimp.
+The actuators' effect on the system is then automatically detected by the identification algorithm and this knowledge used to control the system.
 This is illustrated by \cref{fig:motivation}.
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width=.4\linewidth]{images/CustomBull_Lg.jpg}
-\includegraphics[width=.4\linewidth]{images/CustomCar.jpg}
-\caption{Special shaped blimps are used for advertising \citep{rcblimps}.}
+\includegraphics[width=.45\linewidth]{images/CustomBull_Lg.jpg}
+\includegraphics[width=.45\linewidth]{images/CustomCar.jpg}
+\caption{Custom shaped blimps are used for advertising \citep{rcblimps}.}
 \label{fig:blimps}
 \end{figure}
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width=.85\linewidth]{images/motivation.png}
-\caption{The goal is to find an algorithm, that allow to take any blimp shape (\textit{left}) and put the actuation units (\textit{center}) on. The actuation configuration is then automatically detected, such that elegant movements can be performed without manual controller adjustments (\textit{right}).}
+\caption{The goal is to find an algorithm, that allows to take any blimp hull (\textbf{left}) and attach the actuation units (\textbf{center}).
+The actuation configuration is then automatically detected, such that elegant movements can be performed without manual controller adjustments (\textbf{right}).}
 \label{fig:motivation}
 \end{figure}
 
@@ -38,35 +41,36 @@ If a first principle based model of the system is available, gray box modelling 
 Many aerospace and robotics tasks are solved using physical meaningful models.
 To determine the sensor alignments after launch shock, \citet{Shuster1991} estimate the rotation vector between multiple star tracker devices using batch optimization.
 \Citet{Bloesch2013} formulated a nonlinear least squares problem to estimate kinematic parameters of a legged robot.
-In depth studies using batch optimization have been made for intrinsic and extrinsic (stereo) camera calibration \citep[see XXX]{Siegwart}.
+In depth studies using batch optimization have been made for intrinsic and extrinsic (stereo) camera calibration \citep[chap. 4]{Siegwart}.
 In recent time, visual-inertia sensor calibration has found much attraction.
-Beside others, \citet{Hol2011} shows both batch and recursive estimation (Kalman Filter) for this task.
+Beside others, \citet{Hol2011} showed both batch and recursive estimation (Kalman Filter) for this task.
 
 \section{Skye System Overview}
 The practical part of this work is done with the Skye System \citep{Skye2013}.\\
-Skye is a spherical blimp (\cref{fig:frames}, right) where the center of gravity coincides with the center of buoyancy.
+Skye is a spherical blimp (\cref{fig:frames}, right) where the center of gravity (COG) coincides with the center of buoyancy (COB).
 Four identical actuators (\cref{fig:frames}, left) are attached to the hull of Skye in a tetrahedral arrangement.
-Each of these actuators can rotate around their z-axis.
+Each of those actuator units consists of a static platform and part that can be rotated around the vertical axis.
 Mounted to the rotating part of the actuators there is an impeller which can generate thrust.
 % in the XY-plane along the direction it is currently pointed.
 This setup gives Skye the ability to move and rotate in all directions with more or less the same efficiency \citep[see][chap. 3]{Schaffner2012}.
 
 \subsection{Coordinate Systems}
 \label{sub:coordinate_systems}
-In this work we use different coordinate systems to represent the blimp states and the actuation properties (see \cref{fig:frames}).
+Different coordinate systems are used in this thesis to represent the blimp states and the actuation properties (see \cref{fig:frames}).
 \begin{description}
-\item[The world frame ($w$-frame] is a stationary frame in which the blimp is moving around.
-\item[The blimp frame ($b$-frame)] (see \cref{fig:frames}, right) is defined according to the onboard camera as a NED coordinate system. 
-When the camera is upright and pointing forward, the blimp coordinate system has the x-direction pointing into the direction of the camera and the z-direction pointing downwards.
+\item[The world frame ($w$-frame] is a stationary frame where the blimp is moving around.
+\item[The blimp frame ($b$-frame)] is a body fix frame of the blimp (see \cref{fig:frames}, right).
+When the camera is upright and pointing north, the it matches a north-east-down (NED) frame.
 Its origin coincides with the center of the ideal spherical blimp.
 \item[The motor frames ($m^k$-frame)] (see \cref{fig:frames}, left) are aligned to each actuator units $k=1,...,N$.
-When the actuator is standing on a horizontal surface, the z-axis is defined to point downwards.
+When the actuator is placed on a horizontal surface, $\mathbf{e}_{m^k}^z$ is defined to point downwards.
 The coordinate system origin is set to the base of the actuator such that the z-axis coincides with the rotation axe of the actuator.
-The x-axis is defined to be pointing in the direction of the thruster when its orientation angle $\alpha^k$ is zero (see \cref{fig:motor_force}).
+$\mathbf{e}_{m^k}^x$ is defined to be pointing in the direction of the thruster when its orientation angle $\alpha^k$ is zero (see \cref{fig:motor_force}).
 %To put it another way, the thrust-force points in the x-axis direction when the actuator angle is zero.
 \item[The tangential reference frames ($t^k$-frame)] are used to express the estimated actuator configuration.
-If the true position and orientation of the motors is known (i.e. in simulation), $t^k$ is the coordinate frame for the true motor position and orientation, whereas $m^k$ is the frame for the estimated ones.
-If the true position is not known (i.e. for real data), any close estimate to the true is taken for $t^k$ and serves as a common frame to compare multiple estimates.
+If the true position and orientation of the motors is known (e.g. in simulation), $t^k$ is the coordinate frame for the true motor position and orientation, whereas $m^k$ is the frame for the estimated ones.
+If the true position is not known (e.g. for real data), any close estimate to the true is taken for $t^k$ and serves as a common frame to compare multiple estimates.
+The use for this frame will become clear in \cref{sec:comparing_results}.
 \end{description}
 
 \begin{figure}[hbtp]

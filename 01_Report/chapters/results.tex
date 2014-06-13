@@ -3,6 +3,7 @@
 In this chapter, we present results for the estimation of actuation configuration for using both simulation data and data from the real system. \\
 
 \section{Comparing Results}
+\label{sec:comparing_results}
 Since the parameter space of the motor configuration is not very intuitive for error analysis,
 we transform the parameter results (and their variance) to a more intuitive form such that we can compare them.
 %One possibility would be to express the motor position in the Cartesian blimp frame $b$.
@@ -30,7 +31,7 @@ To be able to generate meaningful results we recorded a long dataset with Skye w
 To improve the accuracy of statistical results bootstrapping is applied to this large dataset.
 Moving block bootstrapping is applied because the dataset consists of time series data.
 The block stride is selected such that the dataset is divided in about 16 blocks which
-leads to the certainty that the actual standard deviation lies within 25\% the calculated standard deviation with a certainty of 95\% \citep{WikiMaringOfError}. \\
+leads to the certainty that the actual standard deviation lies within 25\% the calculated standard deviation with a certainty of 95\% \citep{WikiMarginOfError}. \\
 Unless otherwise stated, the presented statistical results imply an 25\% error margin.
 
 \section{Simulation}

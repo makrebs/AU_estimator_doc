@@ -4,7 +4,7 @@
 \Cref{fig:batch_opti} gives an overview on the batch optimization problem formulation.
 On one hand, the real system is fed with some specific inputs and the system behaviour is measured by the available sensors.
 On the other hand, virtual sensor measurements are calculated for the same inputs using a parameterized system model.
-The optimization algorithm has to be designed such that it estimates the parameters such that the difference between the real and virtual system output gets minimal.
+The optimization algorithm has to be designed to find the parameters that minimize the difference between the real and virtual system output gets minimal.
 \\
 
 %For that, we formulate a cost function
@@ -14,8 +14,8 @@ The optimization algorithm has to be designed such that it estimates the paramet
 %where $y_j$ are the measurements and $f_j(x_j, \theta)$ are the corresponding model outputs at time step $j$ and look for the parameters $\theta$ that minimize this function.
 %\\
 
-In the following, we will describe the system model and its parameters.
-Then we show a solution to the problem as a nonlinear least squares formulation and derive an analytical estimate for the parameter certainty.
+In the following section, the system model and its parameters are described.
+Further, the problem is transformed into nonlinear least squares form which can be solved by the Levenberg-Marquardt algorithm. Finally, an analytical estimate for the parameter certainty is derived.
 
 \begin{figure}[btp]
 \centering
@@ -53,9 +53,10 @@ It consists on the differential equations for the angular velocity $\boldsymbol{
 Skye is assumed as a rigid body.
 Active forces and moments with respect to its center of gravity are concentrated as $\mathbf{F}$ and $\mathbf{M}$ respectively.
 The total mass $\mathbf{\mathcal{M}}$ includes the rigid mass, helium mass as well as the virtual mass compensating for the inertia of the surrounding fluid.
-The moment of inertia (or inertia tensor) $\mathbf{J}$ does not contain a virtual part as long as we focus on sphere like blimps.
+The moment of inertia (or inertia tensor) $\mathbf{J}$ does not contain a virtual part as long as sphere like blimps are considered.
 \\
-For the optimization, we content ourself with the angular acceleration $\boldsymbol{\alpha}$ as outlined in \cref{sec:problem_evaluation} and will have a closer look at the corresponding equation now.
+For the optimization, only the angular acceleration $\boldsymbol{\alpha}$ is considered as outlined in \cref{sec:problem_evaluation}.
+Subsequently, a closer look at the corresponding equation is given.
 
 \begin{equation}
 \label{eq:angular_accel}
@@ -88,29 +89,37 @@ is first calculated in the local motor coordinate frames $m^k$ and then transfor
 The gravity term includes the offset $\mathbf{p}^{cob,cog}$ from COG to COB and 
 the gravitation force $m\mathbf{g}$. The gravitation force is only known in world coordinates $w$ and hence is transformed by the rotation matrix $\mathbf{C}_{b,w}$ from world coordinates $w$ to blimp coordinates $b$.
 
-The aerodynamic term can be modelled as aerodynamic friction. According to \citet{Kundu2012}, the wall shear stress is usually expressed in terms of the dimensionless skin friction coefficient $c_f$ as 
+The aerodynamic term can be modelled as aerodynamic friction.
+According to \citet{Kundu2012}, the wall shear stress is usually expressed in terms of the dimensionless skin friction coefficient $c_f$ as 
 \begin{equation*}
 \tau_{wall} = 
 \frac{1}{2} c_f \rho_{air} v^2 .
 \end{equation*}
-
-If only rotational movement of the blimp is considered, integrating the wall shear stress over the sphere leads to a moment counter acting the rotation with magnitude
-\begin{align*}
+The fluid velocity $v$ at the wall is composed by the angular and translational velocity of the blimp as well as the movement of the fluid itself.
+For simplification, we assume the the fluid to be at rest.
+The effect of the aerodynamic moment is dominated by the rotational movement of the blimp.
+Because the blimp is symmetric, a pure translation would not lead to a moment.
+If we assume the translational velocity much smaller than the angular velocity, it can be neglected and the wall shear stress can be integrated over the spherical hull. 
+\begin{equation}
+\begin{aligned}
 \| \mathbf{M}^{aero} \|
 &= \int_A \xi \tau_{wall} dA \\
 &= \frac{1}{2} c_f \rho_{air} \int_A \xi (\xi \omega)^2 dA \\
 &= \frac{1}{2} c_f \rho_{air} \omega^2 \int_{-r}^{r} (r^2-z^2)^{\frac{3}{2}} \sqrt{r^2-z^2} 2\pi dz \\
 &= \frac{1}{2} c_f \rho_{air} \omega^2 \frac{32}{15} \pi r^5
  = \frac{16}{15} c_f \rho_{air} \pi r^5 \omega^2
-\end{align*}
+\end{aligned}
+\end{equation}
 
 Nevertheless, this does not consider the drag of all components which are attached on the hull (e.g. actuation units or handles) which will have a significant effect on the aerodynamics.
+\\
+
 Measurements showed that the total aerodynamic drag is more than a magnitude smaller than the usual actuation moments (
-$\|\mathbf{M}^{aero}(\omega = \unit[0.8]{rad/s})\| \approx \unit[0.2XXXX]{Nm} \Leftrightarrow 
+$\|\mathbf{M}^{aero}(\omega = \unit[0.8]{rad/s})\| \approx \unit[0.2]{Nm} \Leftrightarrow 
 \| \mathbf{M}^{actuation}_{max} \| \approx \unit[15]{Nm}$
 ). 
 Therefore we neglect this term and do not further bother about its direction.
-In section~\ref{sub:est_perf} we will show by simulation that it is indeed valid to neglect this term.
+In \cref{sub:est_perf} we will show by simulation results that it is indeed valid to neglect this term.
 
 %The position vector $\mathbf{p}^{m^k,cog}_{m^k}$ is expressed in motor coordinates too.
 %As shown in \cref{sub:par_position}, this simplifies the equation a lot if the motors are placed on a sphere. The motors forces $\mathbf{F}_{m^k}$ have only nonzero components in x and y direction (see figure \ref{fig:frames})
@@ -160,9 +169,10 @@ Gravitation & $\mathbf{g}_w$ 					& known \\
 \label{tab:params}
 \end{table}
 
-Because every additional parameter makes the problem harder to solve, we must focus on parameterizing \textit{hard to measure} values.
-After an observability analysis in \cref{sub:observability}, we will present an updated table where unobservable parameters are replaced by \textit{easy to measure} values.
-%As we will show in \cref{sub:observability}, a scale error in the 'knowns' $m$ and $\mathbf{g}$ result in a scale error of the COG offset estimate $\mathbf{p}^{cob,cog}$ only.
+In order to state a feasible problem, it must be possible to detect all parameters of the system model.
+As the observability analysis in \cref{sub:observability} shows, the parameters in \cref{tab:params} are not independently observable.
+Therefore it is necessary to reduce the number of parameters and replace those parameters that can easily be measured as known.
+An updated classification of the variables will be shown in \cref{tab:params_updated}.
 \\
 
 There are several ways of how to represent the parameters.
@@ -281,11 +291,13 @@ For convenience, we state the parameterized system model \cref{eq:sys_mod} again
 
 The first important observation is, that the scale of the inertia tensor $\mathbf{J}$ is only jointly observable with the scale of the motor position vectors $\mathbf{p}^{m^k,cog}$ and the COG offset $\mathbf{p}^{cob,cog}$.
 If all those parameters have to be estimated, there exist infinite many solutions where the estimates are
-\begin{align*}
+\begin{equation}
+\begin{aligned}
  \hat{\mathbf{p}}^{m^k,cog} &= \gamma \mathbf{p}^{m^k,cog} \\
  \hat{\mathbf{p}}^{cob,cog} &= \gamma \mathbf{p}^{cob,cog} \\
  \hat{\mathbf{J}}           &= \frac{1}{\gamma} \mathbf{J}
-\end{align*}
+\end{aligned}
+\end{equation}
 for any real number $\gamma$.
 The problem becomes observable, when the scale of one of those parameters is fixed, i.e. either the norm of one vector or the determinant of the tensor is assumed to be known.
 Note that this scale can be chosen arbitrary with no impact on the motor orientation $\mathbf{C}_{b,m^k}$.
@@ -628,8 +640,6 @@ The derivative of the inverse tensor has been calculated with \textsc{Mupad}.
 % In XXX APPENDIX XY you can find another, analytically nicer parameterization of $\mathbf{J}$ with its derivative which has not been implemented for this work though.
 \\
 
-XXXXXXXXXXX REPLACE PARAGRAPHS BY A TABLE ?????????????? -> NÖ
-
 \section{Confidence Region}
 \label{sec:confidence_region}
 For having a rough idea about the certainty of the parameters found by batch optimization, the covariance matrix of the estimates for nonlinear least squares is calculated.
@@ -660,10 +670,10 @@ where
 Note that \cref{eq:linear_ls_covariance} is basically the inverse formulation of \cref{eq:error_propagation_law} where $\mathbf{V}_Y = \mathbf{I} \sigma^2$.
 \\
 
-Using the estimate of the parameter covariance \cref{eq:nlls_covariance} and the error propagation law \cref{eq:error_propagation_law}, we can calculate the covariance (and hence further statistics as confidence region) of our estimates.
+Using the estimate of the parameter covariance \cref{eq:nlls_covariance} and the error propagation law \cref{eq:error_propagation_law}, we can calculate the covariance (and hence further statistics as 95\% confidence region) of our estimates.
 \\
 
-As an example, we apply the calculation of the motor position variance given the Gibbs-Rodriquez parameters $\boldsymbol{\lambda}$ of the the motor orientation.
+As an example, we calculate the variance of the motor position given the variance of the Gibbs-Rodriquez parameters $\boldsymbol{\lambda}$.
 The motor position, expressed in blimp coordinates $b$, is
 \begin{equation*}
 \mathbf{p}^{m^k}_b = \mathbf{C}_{b,m^k}(\boldsymbol{\lambda}) \mathbf{p}^{m^k}_{m^k}
@@ -677,11 +687,11 @@ The covariance matrix $\mathbf{V}(\boldsymbol{\lambda})$ is calculated by \cref{
 \left(\frac{\partial \mathbf{p}^{m^k}_b}{\partial \boldsymbol{\lambda}'}\right)'
 \end{equation}
 
-To express the variance in another frame $t$ (we will use that in \cref{chap:simulation_results}), we can apply coordinate transformation for the covariance matrix and yield
+To express the variance in the tangential reference frame $t^k$ (we will use that in \cref{chap:simulation_results}), we can apply coordinate transformation for the covariance matrix and yield
 \begin{equation}
 \label{eq:variance_coordinates_tangential}
-\mathbf{V} (\mathbf{p}^{m^k}_t) = 
-\mathbf{C}_{t,b}
+\mathbf{V} (\mathbf{p}^{m^k}_{t^k}) = 
+\mathbf{C}_{t^k,b}
 \mathbf{V}(\boldsymbol{\lambda})
-\mathbf{C}_{t,b}'
+\mathbf{C}_{t^k,b}'
 \end{equation}

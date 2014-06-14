@@ -26,7 +26,7 @@ and
 
 \section{Derivative w.r.t. Gibbs-Rodriquez Parameters}
 \label{sec:app_dwrt_rodriquez}
-The derivative of the direction cosine transform \eqref{eq:rod_to_C} w.r.t. the Gibbs-Rodriquez parameters is
+Derivative of the rotation matrix \cref{eq:rod_to_C} w.r.t. the Gibbs-Rodriquez parameter:
 
 \begin{equation*}
 \frac{\partial \mathbf{C}}{\partial \lambda_1} = 
@@ -71,7 +71,26 @@ where
 %\section{Derivative w.r.t. Inertia Tensor B}
 %XXX derivative w.r.t diagonal inertia tensor and rotation matrix (and it's inverse)
 
-\section{Actuation Unit Variance}
+\chapter{Additional Plots}
+
+\section{Sensor Specification}
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width = \textwidth]{images/appendix/gyro_noise.eps}
+\caption{Measurement noise of MPU-6000 gyro. The RMS error is about $3.2 \cdot 10^{-4} rad/s$.}
+\label{fig:gyro_noise}
+
+\end{figure}
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width = \textwidth]{images/appendix/accel_noise.eps}
+\caption{Measurement noise of MPU-6000 accelerometer. The RMS error is about $8.2 \cdot 10^{-3} m/s^2$.}
+\label{fig:gyro_noise}
+\end{figure}
+
+
+
+\section{Actuation Unit Position Estimate Variance}
 \begin{figure}[hbtp]
 \centering
 \includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU1.eps}

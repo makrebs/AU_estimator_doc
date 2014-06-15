@@ -47,10 +47,10 @@ The same input vectors than in the real dataset have been applied.
 In this section we are going to discuss the convergence properties of the batch optimization.
 
 \paragraph{Convergence w.r.t. dataset length} ~\\
-In this thesis the datasets used for the batch optimization have two concepts of length.
+In this thesis the datasets used for the batch optimization employ two metrics of length.
 Individual input vectors are applied to the system for a fixed amount of time. \\
 The first concept of length is thus measured in number of different input vectors, \textit{number of input vectors} for short.
-The second concept of length is the amount of data-samples are used during each of the different input vectors, \textit{number of samples per input vector} for short. \\
+The second concept of length is the amount of data-samples used during each of the different input vectors, \textit{number of samples per input vector} for short. \\
 The number of input vectors is the more important length measure as will be shown later.
 It determines whether the parameters are observable at all. \\
 The number of samples per input vector serves mainly to reduce the effect of the sensor noise on the results. \\
@@ -141,7 +141,7 @@ radius = 1.96 \cdot \sqrt{variance}
 \caption{Distribution of actuator position estimates. 16 datasets with 24 input vectors each and one sample per input vector.
 $\mathbf{+}$ represent the results used to measure the variance.
 \textbf{dashed}: 95\% confidence interval calculated from covariance matrix.
-\textbf{solid}: 95\% confidence interval calculated from multiple results. Result is taken from actuation unit number 4. See appendix \cref{fig:result_95pc_confidence_all} for the remaining ones.}
+\textbf{solid}: 95\% confidence interval calculated from multiple results. The result is taken from actuation unit number 4. See Appendix \cref{fig:result_95pc_confidence_all} for the remaining ones.}
 \label{fig:result_95pc_confidence}
 \end{figure}
 

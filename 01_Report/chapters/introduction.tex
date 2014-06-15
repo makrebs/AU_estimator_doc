@@ -14,15 +14,15 @@ This is illustrated by \cref{fig:motivation}.
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width=.45\linewidth]{images/CustomBull_Lg.jpg}
-\includegraphics[width=.45\linewidth]{images/CustomCar.jpg}
+\includegraphics[width=.45\linewidth]{images/intro/CustomBull_Lg.jpg}
+\includegraphics[width=.45\linewidth]{images/intro/CustomCar.jpg}
 \caption{Custom shaped blimps are used for advertising \citep{rcblimps}.}
 \label{fig:blimps}
 \end{figure}
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width=.85\linewidth]{images/motivation.png}
+\includegraphics[width=.85\linewidth]{images/intro/motivation.png}
 \caption{The goal is to find an algorithm, that allows to take any blimp hull (\textbf{left}) and attach the actuation units (\textbf{center}).
 The actuation configuration is then automatically detected, such that elegant movements can be performed without manual controller adjustments (\textbf{right}).}
 \label{fig:motivation}
@@ -75,8 +75,9 @@ The use for this frame will become clear in \cref{sec:comparing_results}.
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width=.4\linewidth]{images/motor_frame.eps}
-\includegraphics[width=.4\linewidth]{images/blimp_frame.eps}
+\includegraphics[scale=.4]{images/intro/motor_frame.eps}
+\includegraphics[scale=.4]{images/intro/blimp_frame.eps} \\
+\includegraphics[scale=.4]{images/intro/world_frame.eps}
 \caption{\textbf{Left}: Motor coordinate frame $m^k$. When the thruster is not rotated, it directs in $\mathbf{e}^x_{m^k}$ direction. $\mathbf{e}^z_{m^k}$ directs to the bottom.
 \textbf{Right}: Blimp coordinate frame $b$. $\mathbf{e}^x_{b}$ directs to the camera which is mounted at the front. 
 $\mathbf{e}^z_{b}$ directs to the bottom.}
@@ -97,7 +98,7 @@ $\alpha^k$ is the orientation angle around $\mathbf{e}^{m^k}_z$ and $F^k$ is the
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width=.4\linewidth]{images/motor_force.eps}
+\includegraphics[width=.4\linewidth]{images/intro/motor_force.eps}
 \caption{Motor orientation angle $\alpha^k$ and thrust force $F^k$.}
 \label{fig:motor_force}
 \end{figure}
@@ -120,7 +121,7 @@ To get an understanding of the performance of this sensor we measured the noise 
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width=.9\linewidth]{images/system_loop_3.eps}
+\includegraphics[width=.9\linewidth]{images/intro/system_loop_3.eps}
 \caption{Skye control loop.}
 \label{fig:system_loop_3}
 \end{figure}

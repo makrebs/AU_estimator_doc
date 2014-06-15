@@ -2,7 +2,6 @@
 \label{chap:implementation}
 
 To feed the batch optimization, data needs to be collected.
-Data from simulation and from a real blimp are used in this work.
 The content of a dataset and its implementation in \textsc{Matlab} are explained first in this chapter.
 Then, the methods used to generate these datasets from a real blimp and from simulation are shown.
 
@@ -11,13 +10,13 @@ Then, the methods used to generate these datasets from a real blimp and from sim
 The \textsc{Matlab} implementation of the batch optimization takes a dataset as the input and returns a set of optimal parameters estimated from the given dataset. \\
 A dataset is designed to be self contained. 
 Each dataset includes information about the structure of the system and a set of input vectors with their corresponding measurement vectors from the sensors. \\
-In the current implementation the structure contains the true values\footnote{
+In the current implementation, the structure contains the true values\footnote{
 True values are only known for the simulation datasets. 
 For datasets from the real blimp, the true values are not known and therefore replaced with values based on the CAD files of the blimp.}
 for the motor positions and their coordinate system transformations, the blimp radius, the blimp mass and the inertia tensor as well as transformation matrices for the sensors. \\
 The measurement data is stored in segments.
 A segment is a homogeneous sequence of continuously sampled actuator feedback vectors as well as measurement vectors.
-Because the real system exhibits transients upon changing inputs a boolean is also stored for each data-point which denotes whether the system has reached steady-state. \\
+Because the real system exhibits transients upon changing inputs, a boolean is also stored for each data-point which denotes whether the system has reached steady-state. \\
 With this technique it is possible to easily cut away parts of segments which have disturbances in them while still preserving transient information.
 
 \section{Real System}
@@ -44,19 +43,19 @@ By combining these constraints on the inputs, we came up with the following patt
 \item Stop thrust and turn actuators in the opposite direction
 \item Apply same input vectors in reverse for the same amount of time
 \end{enumerate}
-Using this scheme, the velocity of the system yields nearly zero after the pattern when starting with zero velocity\footnote{To reach not only zero velocity but also zero position shift after the pattern, a \textit{forward-backward-backward-forward} pattern would be possible. However, this pattern needs double the time for execution and since only feed-forward control is applied, the position drift is not much smaller than for the shorter pattern.
+Using this scheme, the translational and angular velocity of the system yields nearly zero after the pattern\footnote{To reach not only zero angular velocity but also zero angular position shift after the pattern, a \textit{forward-backward-backward-forward} pattern would be possible. However, this pattern needs double the time for execution and since only feed-forward control is applied, the angular position drift is not much smaller than for the shorter pattern.
 }.
-This enables to sequently apply multiple of those patterns before the system must be repositioned.
+This enables to sequentially apply multiple of those patterns before the system must be repositioned.
 \\
 
 For the input vectors themselves, pseudo random sequences would be most promising.
-However, the elaboration of the optimal input sequences goes beyond the context of this work and we tested the following options:
+However, the elaboration of the optimal input sequences goes beyond the context of this thesis and we tested the following options:
 \begin{enumerate}[(a)]
 \item Generate normally distributed angular acceleration vectors and use allocation to generate input vectors for the thrusters (this leads to angular acceleration only and no translations)
 \item Use fixed thrust and select thruster angles from a uniform random number distribution
 \item Generate normally distributed thrust vectors and select thruster angles from a uniform random number distribution
 \end{enumerate}
-It figured out, that (a) is not persistent in excitation.
+It turns out, that (a) is not persistent in excitation.
 This actually becomes clear when having a look at $\mathbf{M}^{actuation}$ from \cref{eq:moments}.
 
 \begin{equation}
@@ -65,16 +64,16 @@ This actually becomes clear when having a look at $\mathbf{M}^{actuation}$ from 
 \end{equation}
 
 The allocation is basically the inversion of $\mathbf{C}_{b,m_k} ( \mathbf{p}^{m_k,cog}_{m_k})^\times$, i.e. a mapping $\mathbb{R}^{2N} \rightarrow \mathbb{R}^3$.
-If the allocation is used to feed $\mathbf{F}^k_{m_k}$, only a subspace of the domain of $\mathbf{F}^k_{m_k}$ is used and the problem yields unobservable.
+If the allocation is used to feed $\mathbf{F}^k_{m_k}$, only a subspace of the domain of $\mathbf{F}^k_{m_k}$ is used and the problem becomes unobservable.
 \\
 
 From the remaining options (b) and (c), it turns out that the variant with random thrust magnitude is better than the other one, because method (b) still only excites a sub-space of the input space.
-This is prevented using fully random inputs provided by method (c).
+This is prevented by using fully random inputs provided by method (c).
 
 \subsection{Input Generation}
 \label{sub:input_generation}
-To avoid having to re-flash the firmware all the time, the inputs are generated inside \textsc{QGroundControl} and directly forwarded to the actuators via the controller of the blimp.
-This way, all of the parameters like standard deviation and time intervals can be set from within the \textsc{QGroundControl} interface.
+To avoid having to re-flash the firmware all the time, the inputs are generated inside \textsc{QGroundControl} and directly forwarded to the actuators by the firmware of the blimp.
+This way, all of the parameters like standard deviation and time intervals can be set from within the custom widget in the \textsc{QGroundControl} interface.
 
 \begin{figure}[H]
 \centering
@@ -124,10 +123,8 @@ To avoid problems with noise aliasing the sensor signals are run through a resam
 \subsection{Data Selection}
 \label{sub:data_selection}
 After a raw dataset has been recorded it needs to be preprocessed to be usable for our batch optimization code.
-\Cref{fig:data_selection_long} shows a period of multiple segments of the dataset and \cref{fig:data_selection_short} shows one segment in more detail.
-\\
-
-First after importing a raw dataset, the regions where thrust transients are to be expected are marked in the dataset.
+\Cref{fig:data_selection_long} shows a period of multiple segments of the dataset and \cref{fig:data_selection_short} shows one segment in more detail.\\
+First after importing a raw dataset, the regions where thrust transients are to be expected are automatically marked in the dataset.
 This process is implemented with generous margins to eliminate problems with the batch optimization.
 
 \begin{figure}[htbp]
@@ -139,10 +136,10 @@ This process is implemented with generous margins to eliminate problems with the
 
 Then the segments where the blimp has been catched and repositioned need to be cut from the dataset. \\
 For this purpose a semi-automatic cutting tool was implemented (see \cref{fig:data_selection_short}). 
-The tool first identifies the segments of interest and then displays each of them to the use for visual inspection.
+The tool first identifies the segments of interest and then displays each of them to the user for visual inspection.
 The user can then adjust the borders of the segments to cut away any visible disturbances. \\
 Good and bad segments are easily distinguished by looking at the angular acceleration plot.
-An undisturbed system shows constant angular accelerations during the periods where the thrusters are active. \\
+An undisturbed system shows nearly constant angular accelerations during the periods where the thrusters are active. \\
 Using this approach to select datapoints within a dataset, only about 50\% of the raw data from the session has to be discarded.
 The result is a dataset with undisturbed system response including transients.
 When the described transient removal is applied, about 40\% of transient-free data remains.\\
@@ -202,14 +199,14 @@ The simulator uses the same motion equation as described in \cref{tab:sys_mod}.
 \subsection{Mechanical Properties}
 \label{sub:mech_properties}
 To calculate the mechanical properties, the blimp structure is represented in a tree like data-structure (see \cref{fig:sim_tree}).
-The root node of the tree is the actual rigid body object which is simulated by the simulator.
+The root node of the tree is the actual rigid body object whose dynamics are simulated.
 Each node in the tree represents an assembly of parts. \\
 
 With this methodology the blimp is actually an assembly of several parts. 
 In general it will include a hull, the electronics unit and a number of actuation units.
 Each of these parts are assemblies by themselves.
 The electronics unit could include for example the cover, a camera and the PX4FMU, which simulates the sensors.\\
-An actuation unit is also an assembly of for instance a battery, a taring weight and an actuator which simulates the actuator dynamics and generates the forces.\\
+An actuation unit is also an assembly of at least a battery, a taring weight and an actuator which simulates the actuator dynamics and generates the forces.\\
 This concept allows to have different types of components in a library which can then be used to build an arbitrary blimp. \\
 
 After the blimp has been assembled, the mechanical properties of the parts at the leafs of the tree data-structure are recursively combined into their parent node.
@@ -222,7 +219,7 @@ After taring is done, the changed mass of the taring weights cause the tree to r
 The aerodynamic effects are the most difficult part of modelling.
 Aerodynamic drag is usually separated into \textit{form drag}, \textit{wall friction drag}, \textit{interference drag}, \textit{lift-induced drag} and \textit{wave drag} which are listed in decreasing importance for blimp modelling\footnote{
 Wave drag describes compression effects of the fluid and is not relevant for subsonic speed.
-Lift-induced drag is also neglected because blimps we consider blimps as symmetric profiles without considerable angle of attack.
+Lift-induced drag is also neglected because we consider blimps as symmetric profiles without considerable angle of attack.
 Interference drag is assumed low, as the actuation units and other components on the blimp are much smaller than the hull and is therefore also neglected.
 }.\\
 
@@ -259,6 +256,6 @@ Following the idea of the simulator framework the inertial sensors are also an o
 The tree-like framework of the simulation objects is bidirectional.
 While the mechanical properties of the leaves are used to determine the properties of the root,
 the motion of the rigid body at the root of the structure is distributed to each of the leaf nodes in their respective coordinate systems. \\
-The sensor object then only has to take the already transformed accelerations, velocities and orientations and store them.
+The sensor object then only has to take the already transformed accelerations, velocities and orientation and store them.
 In this process the sensor object also adds noise to the sensor values.
 

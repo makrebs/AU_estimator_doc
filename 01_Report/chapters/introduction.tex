@@ -2,14 +2,15 @@
 \label{chap:introduction}
 
 \section{Motivation}
-Blimps are ideal vehicles for being used as an aerial advertising medium.
+Current Blimp technology relies on a design that is self stable in a desired orientation, thus enabling very simple control.
+This limits the movement of the blimp to very slow speeds and also makes them appear clumsy.
 Especially eye-catching are specifically shaped blimps, e.g. blimps that have the shape of a mascot, car or any other commercial product (see figure \ref{fig:blimps}).
-As an alternative, conventionally shaped blimps can show imprints or banners.
+%As an alternative, conventionally shaped blimps can show imprints or banners.
 The arrangement of the actuators for those different shaped blimps varies a lot.
 In general, manual adjustment of the control algorithms is needed or the actuators have to be controlled manually.
-Using some adequate sensors, it would be useful to determine the effect of an actuator on the movement of the blimp automatically.
-When such an algorithm is available, the blimp hull can be manufactured independently on the actuation which just can be attached to the blimp.
-The actuators' effect on the system is then automatically detected by the identification algorithm and this knowledge used to control the system.
+Our idea is to use some adequate sensors to determine the effect of the actuator on the movement of the blimp.
+When such an algorithm is available, the blimp hull can be manufactured independently on the actuation units which can then be attached to the blimp.
+The actuators' effect on the system is then automatically detected by the identification algorithm and this knowledge is used to control the system.
 This is illustrated by \cref{fig:motivation}.
 
 \begin{figure}[hbtp]
@@ -28,11 +29,9 @@ The actuation configuration is then automatically detected, such that elegant mo
 \label{fig:motivation}
 \end{figure}
 
-\section{Configuration Estimation}
-\label{sec:configuration_estimation}
-This work is on estimation of the actuation configuration for a multi-actuated blimp.
-It is motivated on our work on Skye, a spherical and omnidirectional blimp.
-Its design and control is described in detail in \citep{Skye2013} and briefly summarized below. \\
+\section{Related Work}
+\label{sec:rel_work}
+This thesis is on estimation of the actuation configuration for a multi-actuated blimp. \\
 Various work on thruster configuration estimation can be found for underwater robot systems.
 \Citet{Doniec} propose black-box model approach.
 They calculate an inverse model of the thrusters, i.e. a mapping from a desired rotation and position change of the robot to the thruster commands. After about 40 seconds of random walk, the inverse model is computed as the Moore-Penrose pseudoinverse of the collected input/output data.
@@ -46,7 +45,7 @@ In recent time, visual-inertia sensor calibration has found much attraction.
 Beside others, \citet{Hol2011} showed both batch and recursive estimation (Kalman Filter) for this task.
 
 \section{Skye System Overview}
-The experimental part of this work is done with the Skye System \citep{Skye2013}.\\
+The experimental part of this thesis is done with the Skye System \citep{Skye2013}.\\
 Skye is a spherical blimp (\cref{fig:frames}, right) where the center of gravity (COG) coincides with the center of buoyancy (COB).
 Four identical actuators (\cref{fig:frames}, left) are attached to the hull of Skye in a tetrahedral arrangement.
 Each of those actuator units consists of a static platform and part that can be rotated around the vertical axis.
@@ -58,10 +57,10 @@ This setup gives Skye the ability to move and rotate in all directions with more
 \label{sub:coordinate_systems}
 Different coordinate systems are used in this thesis to represent the blimp states and the actuation properties (see \cref{fig:frames}).
 \begin{description}
-\item[The world frame ($w$-frame)] is a stationary North-East-Down (NED) frame where the blimp is moving around (\cref{fig:frames}, bottom).
-\item[The blimp frame ($b$-frame)] is a body fix frame of the Skye system (\cref{fig:frames}, right).
-When the camera is upright and pointing north, the it matches a north-east-down (NED) frame.
-Its origin coincides with the center of the ideal spherical blimp.
+\item[The world frame ($w$-frame)] is a stationary North-East-Down (NED) frame (\cref{fig:frames}, bottom).
+\item[The blimp frame ($b$-frame)] is a blimp body fixed frame (\cref{fig:frames}, right).
+When the camera is upright and pointing north, it matches a north-east-down (NED) frame.
+Its origin coincides with the center of gravity of the blimp.
 \item[The motor frames ($m^k$-frame)] (\cref{fig:frames}, left) are aligned to each actuator units $k=1,...,N$.
 When the actuator is placed on a horizontal surface, $\mathbf{e}_{m^k}^z$ is defined to point downwards.
 The coordinate system origin is set to the base of the actuator such that the z-axis coincides with the rotation axe of the actuator.
@@ -94,7 +93,7 @@ F^k \sin(\alpha^k) \\
 \end{array}\right]
 \end{equation}
 as it is shown in \cref{fig:motor_force}.
-$\alpha^k$ is the orientation angle around $\mathbf{e}^{m^k}_z$ and $F^k$ is the thrust force magnitude.
+$\alpha^k$ is the orientation angle around $\mathbf{e}_{m^k}^z$ and $F^k$ is the thrust force magnitude.
 
 \begin{figure}[hbtp]
 \centering
@@ -111,11 +110,10 @@ which is connected via a \textsc{XBee} link to the PX4 autopilot.
 Piloting is possible by a 3D mouse from \textsc{3DConnexion} \citep[see][]{Krebs2012}.
 
 \subsection{Sensors}
-The sensors used for this work are part of the PX4FMU.
-Although there are some more sensors on the device, the most relevant sensor for this work is the MPU-6000 Six-Axis (Gyro + Accelerometer) MEMS MotionTracking™ Device.
+The sensors used for this thesis are part of the PX4FMU.
+Although there are some more sensors on the device, the most relevant sensor is the MPU-6000 Six-Axis (Gyro + Accelerometer) MEMS MotionTracking™ Device.
 This sensor measures angular velocities around three axes as well as translational acceleration in three directions. \\
-As we will explain later our algorithm mainly depends on the gyro sensor.
-To get an understanding of the performance of this sensor we measured the noise of the sensor to be about $3.2 \cdot 10^{-4}rad/s$ RMS (see Appendix \cref{fig:gyro_noise}).
+To get an understanding of the performance of the gyro of the MPU-6000, we measured the noise to be about $3.2 \cdot 10^{-4}rad/s$ RMS (see Appendix \cref{fig:gyro_noise}).
 
 \subsection{Allocation}
 
@@ -134,14 +132,13 @@ This mapping is designed to use minimal power consumption.
 This is solved as a constraint optimization problem.
 An analytical solution for the linear mapping has been derived by \citet{Schaffner2012} using Lagrangian multipliers.
 For the constraints of this optimization problem, it is crucial to know the position and orientation of the motors.
-It is not trivial to get the actual actuation configuration precisely.
-The current system uses the actuator position from CAD data of Skye. 
-As we will show later in this thesis we can improve the allocation by using the estimated positions instead.
+Because Skye is over \unit[2.5]{m} in diameter it is difficult to measure the actuation configuration precisely.
+The current system uses the actuator position from CAD data of Skye.
 
 
 \section{Problem Evaluation}
 \label{sec:problem_evaluation}
-The main goal of this work is the \textit{Estimation of Actuation Configuration for a Multi-Actuated Blimp}.
+The main goal of this thesis is the \textit{Estimation of Actuation Configuration for a Multi-Actuated Blimp}.
 The need for a good estimate of the actuation configuration is mainly given by the allocation part of the controller as described before.
 Additional value can be achieved by estimating further properties, e.g. the offset between COG and COB.
 If this offset is known, it is possible to calculate the required taring weight apportionment to get any desired COG offset\footnote{
@@ -149,13 +146,13 @@ In the simulation (see \cref{sec:simulation}), such an algorithm is already impl
 }.
 
 \paragraph{Optimization Method Selection} ~\\
-As it becomes clear by reading related work in section~\ref{sec:configuration_estimation}, there exist various methods for system calibration.
+As it becomes clear by reading related work in section~\ref{sec:rel_work}, there exist various methods for system calibration.
 % DOES SYSTEM IDENTIFICATION INCLUDE ONLINE EXTIMATION?
 In general, online estimation techniques are preferred for dynamically changing properties (state estimation).
 Offline estimation is preferred for estimating constant properties (parameter estimation).
 The actuation configuration is assumed to be constant over a significant period of the flight time.
-Therefore we will use offline estimation in this work.
-Nevertheless, a combined (online) estimator for parameters and states would be interesting but goes beyond the scope of this thesis.
+Therefore we will use offline estimation in this thesis.
+%Nevertheless, a combined (online) estimator for parameters and states would be interesting but goes beyond the scope of this thesis. (??chame de satz nöd wegloh??)
 \\
 
 Offline estimation means that we collect a batch of data and calculate the estimate of the actuation configuration out of this data.
@@ -179,8 +176,8 @@ The thoughts outlined in \cref{sub:observability} will serve as a useful base.
 For bulky, but rotation symmetric systems as blimps, aerodynamic effects have much more influence on the translational movements than on the rotational movements.
 Effects like flow separation, drag crisis or the inertia of the surrounding fluid mainly influence the translational movements.
 On rotational movements, aerodynamic effects have a much smaller impact.
-Since it is a difficult task to model aerodynamic effects and this would lead to many more unknown parameters, we decided to restrict ourself on the investigation of the rotational movement.
-We will see below that this approach is greatly capable of estimating the actuation configuration on a spherical blimp.
+Since it is a difficult task to model aerodynamic effects and this would lead to many more unknown parameters, we decided to restrict ourselves on the investigation of the rotational movement.
+%We will see below that this approach is greatly capable of estimating the actuation configuration on a spherical blimp.
 
 %...Title is \textsc{Estimation of Actuation Configuration for a Multi-Actuated Blimp}
 %...inside System Identification methods, why did we pick batch optimization

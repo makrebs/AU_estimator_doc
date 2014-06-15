@@ -115,14 +115,14 @@ The sensors used for this work are part of the PX4FMU.
 Although there are some more sensors on the device, the most relevant sensor for this work is the MPU-6000 Six-Axis (Gyro + Accelerometer) MEMS MotionTracking™ Device.
 This sensor measures angular velocities around three axes as well as translational acceleration in three directions. \\
 As we will explain later our algorithm mainly depends on the gyro sensor.
-To get an understanding of the performance of this sensor we measured the noise of the sensor to be about $3.2 \cdot 10^{-4}rad/s$ RMS (see \cref{fig:gyro_noise}).
+To get an understanding of the performance of this sensor we measured the noise of the sensor to be about $3.2 \cdot 10^{-4}rad/s$ RMS (see Appendix \cref{fig:gyro_noise}).
 
 \subsection{Allocation}
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[width=.9\linewidth]{images/intro/system_loop_3.eps}
-\caption{Skye control loop.}
+\includegraphics[width=.9\linewidth]{images/intro/system_loop.eps}
+\caption{Skye control loop. The allocation transforms the blimp control force and moment to the actuator signals. Good knowledge about the actuator configuration is required to achieve precise control.}
 \label{fig:system_loop_3}
 \end{figure}
 

@@ -184,6 +184,11 @@ Here is a list of significant observations:
 \item The position estimation is accurate within centimeters
 \item The angle error is lower than \unit[0.5]{°}
 \item The center of gravity estimation is accurate within millimetres
+\end{itemize}
+The impact on the system model (\ref{eq:sys_mod}) was analysed to get an idea about the size of these accuracies.
+It turns out that a change of a parameters from figure~\ref{fig:err_cmp_sim} by the corresponding RMS error yields a decrease of the system model accuracy of about 0.2\%.\\
+Other observations include:
+\begin{itemize}
 \item When feeding the same number of data-points to the batch optimization, the estimation error is higher when more parameters need to be estimated (default $\leftrightarrow$ 1 AU $\leftrightarrow$ 5 AU)
 \item Omitting aerodynamic drag from simulation does not improve the results by much. This supports our argumentation that we can neglect the aerodynamic effects on the rotations.
 \item Although a big COG shift decreases the accuracy of the actuator positions, the COG is still very accurately estimated.

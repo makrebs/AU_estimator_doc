@@ -2,17 +2,18 @@
 \label{chap:implementation}
 
 To feed the batch optimization, data needs to be collected.
-In this work we used both data from simulation and from a real blimp.
-In this chapter we will first define what a dataset is and then 
-describe the methods used to generate these datasets from a real blimp and also from simulation.
+Data from simulation and from a real blimp are used in this work.
+The content of a dataset and its implementation in \textsc{Matlab} are explained first in this chapter.
+Then, the methods used to generate these datasets from a real blimp and from simulation are shown.
 
 \section{Dataset}
 \label{sec:dataset}
-The \textsc{MATLAB} implementation of the batch optimisation takes a dataset as the input and returns a set of optimal parameters estimated from the given dataset. \\
+The \textsc{Matlab} implementation of the batch optimization takes a dataset as the input and returns a set of optimal parameters estimated from the given dataset. \\
 A dataset is designed to be self contained. 
 Each dataset includes information about the structure of the system and a set of input vectors with their corresponding measurement vectors from the sensors. \\
-In the current implementation the structure contains the true values\footnote{True values are only known for the simulation datasets. 
-For datasets from the real blimp, the true values are not known and therefore replaced with values based on the CAD files of the blimp}
+In the current implementation the structure contains the true values\footnote{
+True values are only known for the simulation datasets. 
+For datasets from the real blimp, the true values are not known and therefore replaced with values based on the CAD files of the blimp.}
 for the motor positions and their coordinate system transformations, the blimp radius, the blimp mass and the inertia tensor as well as transformation matrices for the sensors. \\
 The measurement data is stored in segments.
 A segment is a homogeneous sequence of continuously sampled actuator feedback vectors as well as measurement vectors.
@@ -22,67 +23,85 @@ With this technique it is possible to easily cut away parts of segments which ha
 \section{Real System}
 \label{sec:real_system}
 To record data from a real blimp, experiments where conducted on the Skye System. \\
-To excite the system with actuator inputs which are suitable for batch optimisation, we expanded both QGroundControl and the Skye specific PX4 Firmware with new functionality.
+To excite the system with actuator inputs which are suitable for batch optimization, we expanded both \textsc{QGroundControl} and the Skye specific PX4 firmware with new functionality.
 
 \subsection{Input Patterns}
 \label{sub:input_pattern}
 We tried a number of different approaches to input patterns.
-The basic idea behind the patterns is that we can apply each of these patterns independently to each other to the blimp.
-This allows us to reposition the blimp in the testing area as soon as it drifts away too much.
-In order to be able to apply as long of a sequence as possible the individual patterns need to be designed to not build up too much kinetic energy.\\
-Another aspect of the real system is that it takes time until the actuators have reached the desired orientation and thrust.
-The resulting transients are very hard to predict, mainly because the thrust motor controller has no feedback and exhibits very high variability in its dynamic behaviour. \\
-In addition to the unknown thruster dynamics the hull also reacts to load changes with vibrations that are detected by the sensors. \\
-By combining these constraints on the inputs, we came up with the following pattern scheme:
+There are two main goals for the design of the input pattern:
 \begin{enumerate}
+\item The input must be \textbf{persistent of excitation}. Basically, that means that thrust magnitude and direction of the input forces must be uncorrelated.
+\item The input must be \textbf{applicable}. Because there are obstacles in the surroundings of the blimp (ground, hangar walls, etc.), the movements should be as small as possible.
+\end{enumerate}
+
+Another aspect of the real system is that it takes some time until the actuators have reached the desired orientation and thrust.
+Those transients are very hard to estimate, mainly because the thrust motor controller has no feedback and exhibits very high variability in its dynamic behaviour.
+In addition to the unknown thruster dynamics, the hull also reacts to load changes with vibrations that influence the IMU measurements. \\
+
+By combining these constraints on the inputs, we came up with the following pattern scheme:
+\begin{enumerate}[(i)]
 \item Apply input vector to system for a fixed amount of time
 \item Stop thrust and turn actuators in the opposite direction
-\item Apply same inputs in reverse for the same amount of time
+\item Apply same input vectors in reverse for the same amount of time
 \end{enumerate}
-Using this scheme the system does not move too much while still providing good steady-state system response. \\
-For the input vectors themselves we considered a few options:
-\begin{enumerate}
-\item generate random desired angular accelerations and use allocation to generate input vectors for the thrusters, which result in only rotational acceleration
-\item use fixed thrust and select thruster angle from a uniform random number distribution
-\item randomize thrust from a random number sequence with given mean and standard deviation and select thruster angle from a uniform random number distribution
+Using this scheme, the velocity of the system yields nearly zero after the pattern when starting with zero velocity\footnote{To reach not only zero velocity but also zero position shift after the pattern, a \textit{forward-backward-backward-forward} pattern would be possible. However, this pattern needs double the time for execution and since only feed-forward control is applied, the position drift is not much smaller than for the shorter pattern.
+}.
+This enables to sequently apply multiple of those patterns before the system must be repositioned.
+\\
+
+For the input vectors themselves, pseudo random sequences would be most promising.
+However, the elaboration of the optimal input sequences goes beyond the context of this work and we tested the following options:
+\begin{enumerate}[(a)]
+\item Generate normally distributed angular acceleration vectors and use allocation to generate input vectors for the thrusters (this leads to angular acceleration only and no translations)
+\item Use fixed thrust and select thruster angles from a uniform random number distribution
+\item Generate normally distributed thrust vectors and select thruster angles from a uniform random number distribution
 \end{enumerate}
-The idea behind 1. is to further reduce the amount the blimp moves by removing the translatory forces all together. 
-However this approach does not work.\\
-The allocation is designed to solve the $\mathbf{M}^{actuation}$ part of the moments equation~\ref{eq:moments} and produce a mapping $\mathbf{M}^{actuation} \rightarrow \mathbf{F}^k_{m_k}$.(??ref to some skye work??)\\
-In \ref{eq:m_actuation} the $\mathbf{M}^{actuation}$ part is repeated for convenience.
+It figured out, that (a) is not persistent in excitation.
+This actually becomes clear when having a look at $\mathbf{M}^{actuation}$ from \cref{eq:moments}.
 
 \begin{equation}
 \label{eq:m_actuation}
 \mathbf{M}^{actuation} = \sum_{k=1}^N  \left[  \mathbf{C}_{b,m_k} \left( \mathbf{p}^{m_k,cog}_{m_k} \times \mathbf{F}^k_{m_k} \right)  \right]
 \end{equation}
 
-It becomes clear that if we use the allocation to feed $\mathbf{F}^k_{m^k}$, $\mathbf{C}_{b,m^k}$ and $\mathbf{p}^{m^k,cog}_{m^k}$ are completely unobservable.\\
+The allocation is basically the inversion of $\mathbf{C}_{b,m_k} ( \mathbf{p}^{m_k,cog}_{m_k})^\times$, i.e. a mapping $\mathbb{R}^{2N} \rightarrow \mathbb{R}^3$.
+If the allocation is used to feed $\mathbf{F}^k_{m_k}$, only a subspace of the domain of $\mathbf{F}^k_{m_k}$ is used and the problem yields unobservable.
+\\
 
-This leaves us with methods 2 and 3.
-It turns out that fully random method is better than the other one, because method 2 still only excites a limited sub-space of the input space. This is avoided with the fully random inputs provided by method 3.\\
+From the remaining options (b) and (c), it turns out that the variant with random thrust magnitude is better than the other one, because method (b) still only excites a sub-space of the input space.
+This is prevented using fully random inputs provided by method (c).
 
 \subsection{Input Generation}
 \label{sub:input_generation}
-To avoid having to re-flash the firmware all the time, the inputs are generated inside \textsc{QGroundControl} and transmitted with a special direct actuator control message to the blimp.
-The firmware then forwards the actuator commands to the actuators. \\
-This way all of the parameters like standard deviation and time intervals can be set from within the \textsc{QGroundControl} interface.
+To avoid having to re-flash the firmware all the time, the inputs are generated inside \textsc{QGroundControl} and directly forwarded to the actuators via the controller of the blimp.
+This way, all of the parameters like standard deviation and time intervals can be set from within the \textsc{QGroundControl} interface.
 
-\begin{figure}[hbtp]
+\begin{figure}[H]
 \centering
-\includegraphics[width=.9\linewidth]{images/qgc/QGroundControl_v_2.png}
-\caption{\textsc{QGroundControl} system input generation interface}
+\includegraphics[width=.9\textwidth]{images/qgc/QGroundControl_v_2.png}
+\caption{\textsc{QGroundControl} input generation interface. Time intervals and random number specifications can easily be changed. The transmission of the input sequence can be started and stopped.}
 \label{fig:qgc_input_gen}
 \end{figure}
 
-\subsection{Testing Setup}
+\begin{figure}[H]
+\centering
+\includegraphics[width=.9\textwidth]{images/foto_testing_setup.jpg}
+\caption{Test setup for data generation. One operator initiates the input pattern at the ground station (not visible), the second operator repositions the blimp when it approaches too close to an obstacle after some input sequence.}
+\label{fig:test_setup}
+\end{figure}
+
+\subsection{Test Setup}
 \label{sub:testing_setup}
-Although the input patterns are designed to avoid large movements as good as possible, the blimp still needs to be catched after a number of such inputs. This leads us to the basic testing setup we used to record data: \\
+Although the input patterns are designed to avoid large movements as good as possible, the blimp still needs to be catched after a number of such inputs.
+This leads us to the basic testing setup we used to record data: \\
 
 An operator is located at the ground station and a second operator is near the blimp.
-At the ground station there is a button to initiate one such input sequence.
-The operator at the blimp catches it as soon as it drifts too close to an obstacle. \\
-With this setup it was possible to initiate an input sequence roughly every 6 seconds. 
+At the ground station there is a button to initiate one such input pattern.
+The second operator at the blimp catches it as soon as it drifts too close to an obstacle (see \cref{fig:test_setup}). \\
+With this setup it was possible to initiate an input patterns roughly every 6 seconds. 
 This is including the time needed to reposition the blimp when it has drifted too much.
+
+
 
 \subsection{Data Acquisition}
 \label{sub:data_acquisition}
@@ -103,9 +122,9 @@ To avoid problems with noise aliasing the sensor signals are run through a resam
 
 \subsection{Data Selection}
 \label{sub:data_selection}
-After a raw dataset has been recorded it needs to be preprocessed to be usable for our batch optimisation code.\\
+After a raw dataset has been recorded it needs to be preprocessed to be usable for our batch optimization code.\\
 First after importing a raw dataset, the regions where thrust transients are to be expected are marked in the dataset.
-This process is implemented with generous margins to eliminate problems with the batch optimisation. \\
+This process is implemented with generous margins to eliminate problems with the batch optimization. \\
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.8]{images/interactive_cut/interactive_cut_long_modified.eps}
@@ -129,7 +148,7 @@ To summarize: for 10 seconds of transient-free data about 50 seconds of raw data
 \textbf{Grey} regions are discarded, \textbf{green} regions show steady-state response.
 The legend of the thrust and angle plot has been removed for clarity. The important thing about this plot is that the traces with smooth transitions are the angles from the individual actuators and the other traces show the thrust force of each actuator.
 Disturbances can be clearly seen in the greyed out areas.
-The batch optimisation algorithm will use only the data from the green regions.}
+The batch optimization algorithm will use only the data from the green regions.}
 \end{figure}
 
 \section{Simulation}

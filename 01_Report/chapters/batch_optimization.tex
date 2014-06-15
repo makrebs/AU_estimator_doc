@@ -4,7 +4,7 @@
 \Cref{fig:batch_opti} gives an overview on the batch optimization problem formulation.
 On one hand, the real system is fed with some specific inputs and the system behaviour is measured by the available sensors.
 On the other hand, virtual sensor measurements are calculated for the same inputs using a parameterized system model.
-The optimization algorithm has to be designed to find the parameters that minimize the difference between the real and virtual system output gets minimal.
+The optimization algorithm has to be designed to find the parameters that minimize the difference between the real and virtual system outputs.
 \\
 
 %For that, we formulate a cost function
@@ -91,10 +91,10 @@ the gravitation force $m\mathbf{g}$. The gravitation force is only known in worl
 
 The aerodynamic term can be modelled as aerodynamic friction.
 According to \citet{Kundu2012}, the wall shear stress is usually expressed in terms of the dimensionless skin friction coefficient $c_f$ as 
-\begin{equation*}
+\begin{equation}
 \tau_{wall} = 
 \frac{1}{2} c_f \rho_{air} v^2 .
-\end{equation*}
+\end{equation}
 The fluid velocity $v$ at the wall is composed by the angular and translational velocity of the blimp as well as the movement of the fluid itself.
 For simplification, we assume the the fluid to be at rest.
 The effect of the aerodynamic moment is dominated by the rotational movement of the blimp.
@@ -115,7 +115,7 @@ Nevertheless, this does not consider the drag of all components which are attach
 \\
 
 Measurements showed that the total aerodynamic drag is more than a magnitude smaller than the usual actuation moments (
-$\|\mathbf{M}^{aero}(\omega = \unit[0.8]{rad/s})\| \approx \unit[0.2]{Nm} \Leftrightarrow 
+$\|\mathbf{M}^{aero}(\omega = \unit[0.8]{rad/s})\| \approx \unit[0.04]{Nm} \Leftrightarrow 
 \| \mathbf{M}^{actuation}_{max} \| \approx \unit[15]{Nm}$
 ). 
 Therefore we neglect this term and do not further bother about its direction.
@@ -146,7 +146,7 @@ Inserting \cref{eq:moments} into \cref{eq:angular_accel}, we get the model for t
 - \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right) \nonumber
 \end{align}
 
-Every variable in \cref{eq:sys_mod} must be classified as being part of the system state $\mathbf{x}$, the input $\mathbf{u}$, the parameter $\boldsymbol{\theta}$ or as a (constant) known variable\footnote{In this work we only use time invariant variables.
+Every variable in \cref{eq:sys_mod} must be classified as being part of the system state $\mathbf{x}$, the input $\mathbf{u}$, the parameter $\boldsymbol{\theta}$ or as a (constant) known variable\footnote{In this thesis we only use time invariant variables.
 Continuous time variables can be added to batch optimization e.g. by using spline functions as shown in \citep{Furgale2012}.}.
 The variables of the system model can be classified as shown in table \ref{tab:params}.
 
@@ -165,7 +165,7 @@ Blimp angular velocity & $\boldsymbol{\omega}$ 	& state \\
 Gravitation & $\mathbf{g}_w$ 					& known \\
 \hline
 \end{tabular}
-\caption{Classification of all variables of the system model equation. All variables that are subject to estimation are introduced as parameter.}
+\caption{Classification of all variables of the system model equation. All variables which are subject to estimation are introduced as parameter.}
 \label{tab:params}
 \end{table}
 
@@ -349,7 +349,7 @@ for
 $i=1,...,n$ distinct observations.
 For our problem, we group the observations to the three dimensional angular acceleration measurement vector $\mathbf{y}_j$ and the corresponding system model function\footnote{
 To solve the optimization problem, we do not distinguish between inputs $\mathbf{u}$ and states $\mathbf{x}$.
-In the remaining of this chapter, we will use $\mathbf{x}$ for states \textit{and} inputs for better readability and consistency with the literature.}
+In the remaining of this chapter, we will use $\mathbf{x}$ for states \textit{and} inputs for better readability and consistency with the literature. XXX vilicht doch nöd als footnote?}
 $\mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})$ from \cref{eq:sys_mod}
 
 \begin{equation}

@@ -110,33 +110,40 @@ The new mode collects and transmits the following data to the ground station:
 \begin{enumerate}
 \item raw gyro
 \item raw accelerometer
-\item angular rate from EKF
 \item angular acceleration from EKF
+\item angular rate from EKF
 \item orientation quaternion from EKF
-\item current thrust of each actuator (from thrust signal that is passed to the thrust motor controller)
-\item current angle of each actuator (from angle motor-controller feedback)
+\item thrust of each actuator (from thrust signal that is passed to the thrust motor controller)
+\item orientation angle of each actuator (from motor encoder)
 \end{enumerate}
-Because the actuator feedback loop runs at 25Hz the whole telemetry message is transmitted at that rate.
-To avoid problems with noise aliasing the sensor signals are run through a resampling filter. \\
-\textsc{QGroundControl} then writes these mavlink messages into a log-file which is read by our \textsc{MATLAB} code.
+The actuator feedback loop runs at \unit[25]{Hz}.
+Hence the whole telemetry message is transmitted at that rate.
+To avoid problems with noise aliasing the sensor signals are run through a resampling filter.\\
+\textsc{QGroundControl} then writes these mavlink messages into a log-file that serves as an input for generating a dataset for the optimization with \textsc{Matlab}.
 
 \subsection{Data Selection}
 \label{sub:data_selection}
-After a raw dataset has been recorded it needs to be preprocessed to be usable for our batch optimization code.\\
+After a raw dataset has been recorded it needs to be preprocessed to be usable for our batch optimization code.
+\Cref{fig:data_selection_long} shows a period of multiple segments of the dataset and \cref{fig:data_selection_short} shows one segment in more detail.
+\\
+
 First after importing a raw dataset, the regions where thrust transients are to be expected are marked in the dataset.
-This process is implemented with generous margins to eliminate problems with the batch optimization. \\
+This process is implemented with generous margins to eliminate problems with the batch optimization.
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.8]{images/interactive_cut/interactive_cut_long_modified.eps}
-\caption{Except of dataset after transient marking}
+\caption{Except of dataset after transient marking. \textbf{Gray} regions are the values out interest (no inputs for a time longer than a threshold). \textbf{White} regions are the thrust transient parts which are discarded. \textbf{Green} regions are the remaining data which is used for batch optimization.}
+\label{fig:data_selection_long}
 \end{figure}
+
 Then the segments where the blimp has been catched and repositioned need to be cut from the dataset. \\
-For this purpose a semi-automatic cutting tool was implemented. 
+For this purpose a semi-automatic cutting tool was implemented (see \cref{fig:data_selection_short}). 
 The tool first identifies the segments of interest and then displays each of them to the use for visual inspection.
-The user can then adjust the borders of the segments to cut away any undesired disturbances. \\
+The user can then adjust the borders of the segments to cut away any visible disturbances. \\
 Good and bad segments are easily distinguished by looking at the angular acceleration plot.
 An undisturbed system shows constant angular accelerations during the periods where the thrusters are active. \\
-Using this approach to recording a dataset from Skye, only about 50\% of the raw data from the session has to be discarded.
+Using this approach to select datapoints within a dataset, only about 50\% of the raw data from the session has to be discarded.
 The result is a dataset with undisturbed system response including transients.
 When the described transient removal is applied, about 40\% of transient-free data remains.\\
 To summarize: for 10 seconds of transient-free data about 50 seconds of raw data has to be collected.
@@ -145,34 +152,40 @@ To summarize: for 10 seconds of transient-free data about 50 seconds of raw data
 \centering
 \includegraphics[scale=0.8]{images/interactive_cut/interactive_cut_detail_modified.eps}
 \caption{Cutting tool displaying one segment of the dataset. 
-\textbf{Grey} regions are discarded, \textbf{green} regions show steady-state response.
-The legend of the thrust and angle plot has been removed for clarity. The important thing about this plot is that the traces with smooth transitions are the angles from the individual actuators and the other traces show the thrust force of each actuator.
-Disturbances can be clearly seen in the greyed out areas.
-The batch optimization algorithm will use only the data from the green regions.}
+The \textbf{green} regions which are used for the batch optimization do only contain data with steady-state thrust. 
+The \textbf{white} thrust transient regions are defined with a generous margin.
+As there is no feedback about the thrust motor, this data is discarded.
+Vibrations of the hull caused by load changes are also visible in these regions.
+Disturbances can be clearly seen in the \textbf{grey} regions.
+}
+\label{fig:data_selection_short}
 \end{figure}
 
 \section{Simulation}
 \label{sec:simulation}
-We also implemented a blimp simulator for several reasons:
+A blimp simulator was implemented for several reasons:
 \begin{itemize}
 \item fast turn around time for generating new datasets
-\item effects like noise and drag can be easily turned on and off
-\item arbitrary blimp configurations can be created
+\item disturbance (like sensor noise or aerodynamic drag) can be turned on and off
+\item different blimp configurations can be evaluated without having a new prototype
 \end{itemize}
-We then came up with a list of requirements:
+
+Combining those reasons with the properties of the data selection procedure (see \cref{sub:data_selection}), the following requirements were considered for the simulation:
 \begin{itemize}
 \item include aerodynamic drag
 \item include sensor noise
 \item include thruster dynamics
 \item allow for easy reconfiguration of the blimp
 \end{itemize}
-These requirements led us to the following implementation with object oriented \textsc{MATLAB} code:\\
+The simulation was implemented as object oriented \textsc{Matlab} code.
+\Cref{fig:sim_tree} gives an overview about the code architecture.
+% XXXXXXXXX add reference to UML diagram in appendix here
 
 The blimp is built with objects that interact with each other.
-Each of these objects can have continuous and discrete states.\\
+Each of these objects can have continuous and discrete states.
 The simulator then interacts with the objects over a standardized interface.
 At each time-step the simulator updates the states of the objects and then calls a function on each object to calculate the derivatives of the continuous states.
-Additionally, at the border of a discrete time step the simulator also calls a function on the objects to get the next discrete states.\\
+Additionally, at the border of a discrete time step the simulator also calls a function on the objects to get the next discrete states.
 
 \begin{figure}[htbp]
 \centering
@@ -183,20 +196,22 @@ Additionally, at the border of a discrete time step the simulator also calls a f
 
 \subsection{Motion Equation}
 \label{sub:motion_equation}
-At the core of the blimp simulation is a the rigid body dynamics model. \\
-The simulator uses the same motion equation as described in table~\ref{tab:sys_mod}.\\
+At the core of the blimp simulation is a the rigid body dynamics model. 
+The simulator uses the same motion equation as described in \cref{tab:sys_mod}.
 
 \subsection{Mechanical Properties}
 \label{sub:mech_properties}
-To calculate the mechanical properties, the blimp structure is represented in a tree like data-structure. (See figure~\ref{fig:sim_tree})\\
-The root node of the tree is the actual rigid body object which is simulated by the simulator.\\
-Each node in the tree represents an assembly of parts.
+To calculate the mechanical properties, the blimp structure is represented in a tree like data-structure (see \cref{fig:sim_tree}).
+The root node of the tree is the actual rigid body object which is simulated by the simulator.
+Each node in the tree represents an assembly of parts. \\
+
 With this methodology the blimp is actually an assembly of several parts. 
 In general it will include a hull, the electronics unit and a number of actuation units.
 Each of these parts are assemblies by themselves.
-The electronics unit could include for example the cover, a camera and the \textsc{PX4FMU}, which simulates the sensors.\\
+The electronics unit could include for example the cover, a camera and the PX4FMU, which simulates the sensors.\\
 An actuation unit is also an assembly of for instance a battery, a taring weight and an actuator which simulates the actuator dynamics and generates the forces.\\
-This concept allows to have different types of components in a library which can then be used to build an arbitrary blimp.\\
+This concept allows to have different types of components in a library which can then be used to build an arbitrary blimp. \\
+
 After the blimp has been assembled, the mechanical properties of the parts at the leafs of the tree data-structure are recursively combined into their parent node.
 This way the mechanical properties of the root node are recalculated.\\
 The taring routine uses the tree structure to calculate values for the taring weights located at the actuation units. 
@@ -209,20 +224,22 @@ Aerodynamic drag is usually separated into \textit{form drag}, \textit{wall fric
 Wave drag describes compression effects of the fluid and is not relevant for subsonic speed.
 Lift-induced drag is also neglected because blimps we consider blimps as symmetric profiles without considerable angle of attack.
 Interference drag is assumed low, as the actuation units and other components on the blimp are much smaller than the hull and is therefore also neglected.
-}.
+}.\\
 
-We modelled form drag for translational movements and friction drag for rotational movements as quadratic functions w.r.t. to the velocity.
-Further, a virtual mass factor was considered for the hull to consider the inertia of the surrounding fluid.
-Form drag was applied to the hull and the actuation units which are represented by cylinders with appropriate dimension.
-Friction drag was applied to the hull for rotational speed only.
-Together with the form drag of the actuation units, the friction drag of the hull acts as a damping moment on rotational movements.
+We modelled \textit{form drag} for translational movements and \textit{friction drag} for rotational movements as quadratic functions w.r.t. to the velocity.
+Further, a \textit{virtual mass factor} was considered for the hull to consider the inertia of the surrounding fluid.
+\textit{Form drag} was applied to the hull and the actuation units which are represented by cylinders with appropriate dimension.
+\textit{Friction drag} was applied to the hull for rotational speed only.
+Together with the form drag of the actuation units, the friction drag of the hull acts as a damping moment on rotational movements.\\
+
 Form drag coefficients\footnote{
-Blimps like Skye are close to the drag crisis point of spheres ($Re\approx3e05$). Interpolation according to the actual velocity is used.} and virtual mass factor were introduced according to the literature \citep{Kundu2012}.
+Blimps like Skye are close to the drag crisis point of spheres ($Re\approx3e05$). Interpolation of the drag coefficient according to the actual velocity is used.}
+and virtual mass factor were introduced according to the literature \citep{Kundu2012}.
 The friction drag coefficient of the hull was determined such that the rotational resistance coincides with reference measurements.
 
 \subsection{Thruster Dynamics}
 \label{sub:thrust_dynamics}
-The actuator has been modelled according to test-bench measurements\footnote{Test-bench measurements have been done by Daniel Meier} of the thruster.
+The actuator has been modelled according to test-bench measurements\footnote{The use of test-bench measurements are by courtesy of Daniel Meier.} of the thruster.
 The dynamic thruster model includes:
 \begin{itemize}
 \item thrust start-up delay

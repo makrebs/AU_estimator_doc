@@ -58,11 +58,11 @@ This setup gives Skye the ability to move and rotate in all directions with more
 \label{sub:coordinate_systems}
 Different coordinate systems are used in this thesis to represent the blimp states and the actuation properties (see \cref{fig:frames}).
 \begin{description}
-\item[The world frame ($w$-frame] is a stationary frame where the blimp is moving around.
-\item[The blimp frame ($b$-frame)] is a body fix frame of the blimp (see \cref{fig:frames}, right).
+\item[The world frame ($w$-frame)] is a stationary North-East-Down (NED) frame where the blimp is moving around (\cref{fig:frames}, bottom).
+\item[The blimp frame ($b$-frame)] is a body fix frame of the Skye system (\cref{fig:frames}, right).
 When the camera is upright and pointing north, the it matches a north-east-down (NED) frame.
 Its origin coincides with the center of the ideal spherical blimp.
-\item[The motor frames ($m^k$-frame)] (see \cref{fig:frames}, left) are aligned to each actuator units $k=1,...,N$.
+\item[The motor frames ($m^k$-frame)] (\cref{fig:frames}, left) are aligned to each actuator units $k=1,...,N$.
 When the actuator is placed on a horizontal surface, $\mathbf{e}_{m^k}^z$ is defined to point downwards.
 The coordinate system origin is set to the base of the actuator such that the z-axis coincides with the rotation axe of the actuator.
 $\mathbf{e}_{m^k}^x$ is defined to be pointing in the direction of the thruster when its orientation angle $\alpha^k$ is zero (see \cref{fig:motor_force}).

@@ -40,8 +40,25 @@ It takes about two minutes to record this amount of data.
 This is mainly due to the transient behaviour of the trusters.
  
 \paragraph{Automatic Taring Calculation}~\\
-If the displacement between the center of gravity and the center of buoyancy is known, the required placement of the taring weights can be calculated to eliminate this COG offset.
+If the displacement between the center of gravity and the center of buoyancy $\mathbf{p}^{cob,cog}$ is known, the required mass for the taring weights $m^{tar^k}$ at the given positions $\mathbf{p}^{tar^k}$can be calculated to eliminate this COG offset.
+This can be achieved by solving the following linear system of equations:
 
+\begin{equation}
+\left[\begin{array}{ccc}
+\mathbf{p}^{tar^1} & \mathbf{p}^{tar^2} & \cdots \\
+1 & 1 & \cdots
+\end{array} \right]
+\left[\begin{array}{c}
+m^{tar^1} \\
+m^{tar^2} \\
+\vdots
+\end{array} \right]
+=
+\left[\begin{array}{c}
+m^{blimp} \mathbf{p}^{cob,cog} \\
+m^{taring~total}
+\end{array} \right]
+\end{equation}
 
 \section{Acknowledgement}
 We would like to express our gratitude to Prof. Dr. Roland Yves Siegwart for enabling this thesis and his commitment for the Skye project.

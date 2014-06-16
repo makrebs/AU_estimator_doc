@@ -187,7 +187,7 @@ We will show our choice in the sections below.
 \label{sub:par_position}
 In general, the motor position is a vector in the three dimensional space.
 It points from the blimp's COG to the thruster's point of attack.
-\begin{equation*}
+\begin{equation}
 \mathbf{p}^{m^k,cog}
 =
 \left[ \begin{array}{c}
@@ -196,7 +196,7 @@ p^{m^k,cog}_2 \\
 p^{m^k,cog}_3
 \end{array} \right]
 \in \mathbb{R}^3
-\end{equation*}
+\end{equation}
 If we restrict the blimp hull to a perfect sphere, the ideal motor position vector space reduce to those vectors with length $r$.
 The radius $r$ is the distance from the blimp's COG to the thruster's point of attack.
 It is equal for all motors and the motor position expressed in the local motor frame $m^k$ (see figure \ref{fig:frames}) reduces to
@@ -569,14 +569,14 @@ In the following, we use the shorthand notation $\mathbf{f}$
 instead of $\mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})$.
 
 We state again the system model from \cref{eq:sys_mod} and calculate the derivative w.r.t. the parameters as following.
-\begin{equation*}
+\begin{equation}
 \mathbf{f}
 = \mathbf{J}_b^{-1} \left( 
 \sum_{k=1}^N  \left[  \mathbf{C}_{b,m^k} \left( \mathbf{p}^{m^k,cog}_{m^k} \times \mathbf{F}^k_{m^k} \right)  \right]
 -
 \left( \mathbf{p}^{cob,cog}_b \times (\mathbf{C}_{b,w}m\mathbf{g}_w) \right)
 - \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right)
-\end{equation*}
+\end{equation}
 
 
 \paragraph{Derivative w.r.t Motor Orientation\\}
@@ -682,9 +682,9 @@ Using the estimate of the parameter covariance \cref{eq:nlls_covariance} and the
 
 As an example, we calculate the variance of the motor position given the variance of the Gibbs-Rodriquez parameters $\boldsymbol{\lambda}$.
 The motor position, expressed in blimp coordinates $b$, is
-\begin{equation*}
+\begin{equation}
 \mathbf{p}^{m^k}_b = \mathbf{C}_{b,m^k}(\boldsymbol{\lambda}) \mathbf{p}^{m^k}_{m^k}
-\end{equation*}
+\end{equation}
 
 The covariance matrix $\mathbf{V}(\boldsymbol{\lambda})$ is calculated by \cref{eq:nlls_covariance} and hence we get the error propagation by \cref{eq:error_propagation_law} as
 \begin{equation}

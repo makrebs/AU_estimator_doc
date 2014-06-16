@@ -55,11 +55,8 @@ The second metric of length is the amount of data-samples used during each of th
 The number of input vectors is the more important length measure as will be shown later.
 It determines whether the parameters are observable at all. \\
 The number of samples per input vector serves mainly to reduce the effect of the sensor noise on the results. \\
-\Cref{fig:result_inputlength} shows the effects of different dataset lengths.
-Below about 7 different input vectors no solution could be found. 
-The number of samples per input vector reduces the error because noise from the sensors is reduced.
 
-\begin{figure}[hbtp]
+\begin{figure}[H]
 \captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width = \textwidth]{images/results/input_length_vs_position_error.eps}
@@ -68,6 +65,11 @@ When using less than about 7 input vectors, no solution was found.
 Number of samples per input vector decreases the error by reducing the influence of sensor noise}
 \label{fig:result_inputlength}
 \end{figure}
+
+\Cref{fig:result_inputlength} shows the effects of different dataset lengths.
+Below about 7 different input vectors no solution could be found. 
+The number of samples per input vector reduces the error because noise from the sensors is reduced.
+
 
 \paragraph{Convergence w.r.t. initial parameter estimate} ~\\
 The impact of the initial parameter estimate on the convergence of the batch optimization has been tested.
@@ -84,25 +86,21 @@ The simulated blimp has a hull radius of \unit[1.37]{m} and therefore the distan
 is acceptable up to \unit[1]{m}.
 Initial orientation offsets of the motors are acceptable up to \unit[120]{°}.
 \\
-The same observation can be made when using datasets from real measurements (compare \cref{fig:result_real_convergece_region}).
-It can be deduced that the residual behaves well around the global minimum. 
-There are no local minima up to the acceptable initial offsets.
-Another observation is that the residual of the real datasets behaves almost as well as the residual of the simulated datasets.
-This shows that the model fits the real world rather well.
-%Further results using real measurements are showed in the next section.
+A similar result for the convergence region is found when using datasets from real measurements (compare \cref{fig:result_real_convergece_region}).
+This outcome is as expected and means that the simulation to generate the dataset describes the real system well enough to test the batch optimization.
 
 \begin{figure}[hbtp]
 \captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width = \textwidth]{images/results/convergence_analysis_init_deviation_sim_bar.eps}
-\caption{Failure rate using simulation data and different initial guess about actuation configuration.}
+\caption{Failure rate using simulation data and varying initial guess about actuation configuration.}
 \label{fig:result_sim_convergece_region}
 \end{figure}
 \begin{figure}[hbtp]
 \captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width = \textwidth]{images/results/convergence_analysis_init_deviation_real_bar.eps}
-\caption{Failure rate using experiment data and different initial guess about actuation configuration.}
+\caption{Failure rate using experiment data and varying initial guess about actuation configuration.}
 \label{fig:result_real_convergece_region}
 \end{figure}
 
@@ -169,16 +167,16 @@ To test the performance of our optimization framework, we defined five test case
 \end{description}
 
 For each of these test cases the RMS error for 4 different parameter measures has been calculated.
-The samples for the RMS calculations are generated with the same method as described in section~\ref{sec:bootstrapping_and_statistics}.
-The used parameters are:
+The samples for the RMS calculations are generated with the same method as described in \cref{sec:bootstrapping_and_statistics}.
+The analyzed parameters are:
 \begin{enumerate}
 \item Position error of AU 4 in the tangential frame
-\item Angle error of AU 4 around the z axis of the tangential frame
+\item Angle error of AU 4 around the z-axis in the tangential frame
 \item COG offset error in the blimp frame
 \item Inertia tensor parameter vector error in percent
 \end{enumerate}
 
-Figure~\ref{fig:err_cmp_sim} shows the results of this analysis.
+\Cref{fig:err_cmp_sim} shows the results of this analysis.
 
 \begin{figure}[hbtp]
 \captionsetup{width=0.9\textwidth}
@@ -197,20 +195,18 @@ Here is a list of significant observations:
 \item The angle error is lower than \unit[0.5]{°}
 \item The center of gravity estimation is accurate within millimetres
 \end{itemize}
-The impact on the system model (\ref{eq:sys_mod}) was analysed to get an idea about the size of these accuracies.
-It turns out that a change of a parameters from figure~\ref{fig:err_cmp_sim} by the corresponding RMS error yields a decrease of the system model accuracy of about 0.2\%.\\
-Other observations include:
+A variation of the system model parameters by the scale of their RMS accuracy induces a change of the angular acceleration of 0.2\% on average.
+
+%The impact on the system model (\ref{eq:sys_mod}) was analysed to get an idea about the size of these accuracies.
+%It turns out that a change of a parameters from figure~\ref{fig:err_cmp_sim} by the corresponding RMS error yields a decrease of the system model accuracy of about 0.2\%.\\
+Further observations include:
 \begin{itemize}
-\item When feeding the same number of data-points to the batch optimization, the estimation error is higher when more parameters need to be estimated (default $\leftrightarrow$ 1 AU $\leftrightarrow$ 5 AU)
+\item When feeding the same number of data-points to the batch optimization, the estimation error is higher when more parameters need to be estimated (default~$\leftrightarrow$~1~AU~$\leftrightarrow$~5~AU)
 \item Omitting aerodynamic drag from simulation does not improve the results by much. This supports our argumentation that we can neglect the aerodynamic effects on the rotations.
-\item Although a big COG shift decreases the accuracy of the actuator positions, the COG is still very accurately estimated.
-The system model (\ref{eq:sys_mod}) reveals that the decrease of the accuracy of the actuator positions is expected because the actuation units are assumed to be equidistant to the center of gravity.
-%This decrease in error is not unexpected because in the parameterization of the actuator positions we assume that the actuation units are equidistant to the center of gravity.
-With big COG shifts this is not the case any-more.
-However, Skye would not be able to fly with such a big COG shift and thus must be tared.
-When taring it is important to know the actual COG.
-Following this argumentation it is not a problem that a big COG shift impacts the position estimation because the COG offset is accurately estimated even if it is large.
-Thus such a situation can be detected and the the COG offset reduced by moving taring weights before proceeding with estimating the actuator positions.
+\item Although a big COG shift decreases the accuracy of the actuator positions, the COG itself is still very accurately estimated.
+The increased uncertainty in the parameter estimates using big COG shift is due to the system model assumption that the actuation units are placed spherical around the COG.
+This assumption only holds if the COG shift is zero.
+However, a system like used in this simulation with a COG shift of \unit[10]{cm} is not applicable for Skye anyway as the moment released by the COG offset exceeds the actuation power.
 \item For the 1 AU case the inertia tensor error is bigger because a single actuator can excite the system only around two axes.
 This yields to an estimate of the inertia tensor that is much less accurate.
 \end{itemize}
@@ -226,9 +222,9 @@ With this setup it is not possible to measure estimator bias.
 We will show a different performance measure in section~\ref{sub:sim_improvement} which shows that the actuator configuration from the estimation result is more accurate than the default model we used for the simulation.
 
 \subsection{Estimation Performance}
-In figure~\ref{fig:err_cmp_real} the results of the real dataset are presented.\\
-It can be seen that the position estimation of the actuators is accurate to within \unit[2]{cm}.
-Center of gravity estimation is also very accurate.
+In \cref{fig:err_cmp_real} the results of the real dataset are compared to the results of the simulation dataset.
+The variance of the parameters is larger than in the simulation, but in the same order of magnitude.
+E.g., the estimate of the actuator positions is accurate within \unit[2]{cm}.
 
 \begin{figure}[hbtp]
 \captionsetup{width=0.9\textwidth}
@@ -237,7 +233,7 @@ Center of gravity estimation is also very accurate.
 \includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_angle.eps}
 \includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_cog.eps}
 \includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_tensor.eps}
-\caption{Results for real system}
+\caption{Results for real system compared with the (default) simulation}
 \label{fig:err_cmp_real}
 \end{figure}
 

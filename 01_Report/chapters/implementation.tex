@@ -43,10 +43,10 @@ By combining these constraints on the inputs, we came up with the following patt
 \item Stop thrust and turn actuators in the opposite direction
 \item Apply same input vectors in reverse for the same amount of time
 \end{enumerate}
-Using this scheme, the translational and angular velocity of the system yields nearly zero after the pattern\footnote{To reach not only zero angular velocity but also zero angular position shift after the pattern, a \textit{forward-backward-backward-forward} pattern would be possible.
-However, this pattern needs double the time for execution and since only feed-forward control is applied, the angular position drift is not much smaller than for the shorter pattern.
-XXXXXXXXXXXXXXx what is an angular position drift ????
+Using this scheme, the angular velocity of the system yields nearly zero after the pattern and the translational velocity remains small\footnote{The translational velocity is not totally cancelled by the reverse thrust because the system has not the same orientation during the reverse input.
+But since the rotations remain small and translations are strongly damped, the final translational velocity remains low.
 }.
+
 This enables to sequentially apply multiple of those patterns before the system must be repositioned.
 \\
 
@@ -169,7 +169,7 @@ Disturbances can be clearly seen in the \textbf{grey} regions.
 A blimp simulator was implemented for several reasons:
 \begin{itemize}
 \item fast turn around time for generating new datasets
-\item disturbance (like sensor noise or aerodynamic drag) can be turned on and off
+\item disturbances (like sensor noise or aerodynamic drag) can be turned on and off
 \item different blimp configurations can be evaluated without having a new prototype
 \end{itemize}
 

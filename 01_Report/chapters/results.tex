@@ -17,7 +17,7 @@ The error of the actuator arrangement is expressed by an error distance $e_{pos}
 and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' and estimated motor coordinate systems $\mathbf{e}_{m^k}^x$ and $\mathbf{e}_{t^k}^x$
 (see \ref{fig:tangential_frame}).
 \\
-To express the certainty of the inertia tensor estimate, the mean of the inertia tensor properties scaled with the determinant of the inertia tensor will be used in \cref{fig:err_cmp_sim,fig:err_cmp_real}.
+To express the certainty of the inertia tensor estimate, the relative error of the inertia tensor parameters will be used in \cref{fig:err_cmp_sim,fig:err_cmp_real}. ($\left(result-true \right)/norm(true)$)
 
 \begin{figure}[hbtp]
 \centering
@@ -49,8 +49,8 @@ In this section we are going to discuss the convergence properties of the batch 
 \paragraph{Convergence w.r.t. dataset length} ~\\
 In this thesis the datasets used for the batch optimization employ two metrics of length.
 Individual input vectors are applied to the system for a fixed amount of time. \\
-The first concept of length is thus measured in number of different input vectors, \textit{number of input vectors} for short.
-The second concept of length is the amount of data-samples used during each of the different input vectors, \textit{number of samples per input vector} for short. \\
+The first metric of length is thus measured in number of different input vectors, \textit{number of input vectors} for short.
+The second metric of length is the amount of data-samples used during each of the different input vectors, \textit{number of samples per input vector} for short. \\
 The number of input vectors is the more important length measure as will be shown later.
 It determines whether the parameters are observable at all. \\
 The number of samples per input vector serves mainly to reduce the effect of the sensor noise on the results. \\
@@ -83,8 +83,11 @@ is acceptable up to \unit[1]{m}.
 Initial orientation offsets of the motors are acceptable up to \unit[120]{°}.
 \\
 The same observation can be made when using datasets from real measurements (compare \cref{fig:result_real_convergece_region}).
+It can be deduced that the residual behaves well around the global minimum. 
+There are no local minima up to the acceptable initial offsets.
+Another observation is that the residual of the real datasets behaves almost as well as the residual of the simulated datasets.
+This shows that the model fits the real world rather well.
 %Further results using real measurements are showed in the next section.
-
 
 \begin{figure}[hbtp]
 \centering
@@ -109,22 +112,22 @@ The covariance of the results is then calculated using error propagation and tra
 We will refer to this covariance as the \textit{calculated covariance}.\\
 The second method does not rely on any assumptions about covariance matrices and measures the parameter variance directly from multiple experimental results.
 We will refer to this covariance as the \textit{measured covariance}.
-To get enough experimental results bootstrapping as described in \cref{sec:bootstrapping_and_statistics} is used to generate 16 different datasets.
+To get enough experimental results, bootstrapping as described in \cref{sec:bootstrapping_and_statistics} is used to generate 16 different datasets.
 
 \paragraph{Confidence from covariance matrix} ~\\
-As introduced in \cref{sec:sim_convergence} there are two measures of dataset length which influence the result in different ways.
+As introduced in \cref{sec:sim_convergence} there are two metrics of dataset length which influence the result in different ways.
 The same applies to the confidence calculated from the covariance matrix.
 When using multiple samples per input vector the covariance matrix gets over-confident.
-This means that the calculated variance is lower than the measured variance.
+This means that the \textit{calculated covariance} is lower than the \textit{measured covariance}.
 It is intuitively clear, that if we apply multiple times the same input vectors, we will not get more information about the actuation configuration.
 The data samples are not independent.
-When using just one sample per input vector, the calculated and measured variance match.
+When using just one sample per input vector, the \textit{calculated} and \textit{measured covariance} match.
 
 \paragraph{Confidence from multiple results} ~\\
-As outline above the variance of the parameters has also been measured by evaluating multiple datasets generated from the same system and calculating the variance for each of the parameters.\\
+As outline above the covariance of the parameters has also been measured by evaluating multiple datasets generated from the same system and calculating the covariance for each of the parameters.\\
 
-In \cref{fig:result_95pc_confidence} the calculated variance is compared to the measured variance.
-The variances are illustrated with circles that represent the region in which the parameters reside with 95\% certainty.
+In \cref{fig:result_95pc_confidence} the \textit{calculated covariance} is compared to the \textit{measured covariance}.
+The covariances\footnote{actually just the diagonal entries of the covariance matrix are used to draw the circles} are illustrated with circles that represent the region in which the parameters reside with 95\% certainty.
 The size of the circles is determined with \cref{eq:variance_to_95pc}.
 
 \begin{equation}
@@ -141,7 +144,7 @@ radius = 1.96 \cdot \sqrt{variance}
 \caption{Distribution of actuator position estimates. 16 datasets with 24 input vectors each and one sample per input vector.
 $\mathbf{+}$ represent the results used to measure the variance.
 \textbf{dashed}: 95\% confidence interval calculated from covariance matrix.
-\textbf{solid}: 95\% confidence interval calculated from multiple results. The result is taken from actuation unit number 4. See Appendix \cref{fig:result_95pc_confidence_all} for the remaining ones.}
+\textbf{solid}: 95\% confidence interval calculated from multiple results. The result is taken from actuation unit number 4. See Appendix \cref{fig:result_95pc_confidence_all} for the remaining actuation units.}
 \label{fig:result_95pc_confidence}
 \end{figure}
 
@@ -192,11 +195,12 @@ Other observations include:
 \item When feeding the same number of data-points to the batch optimization, the estimation error is higher when more parameters need to be estimated (default $\leftrightarrow$ 1 AU $\leftrightarrow$ 5 AU)
 \item Omitting aerodynamic drag from simulation does not improve the results by much. This supports our argumentation that we can neglect the aerodynamic effects on the rotations.
 \item Although a big COG shift decreases the accuracy of the actuator positions, the COG is still very accurately estimated.
-This decrease in error is not unexpected because in the parameterization of the actuator positions we assume that the actuation units are equidistant to the center of gravity.
+The system model (\ref{eq:sys_mod}) reveals that the decrease of the accuracy of the actuator positions is expected because the actuation units are assumed to be equidistant to the center of gravity.
+%This decrease in error is not unexpected because in the parameterization of the actuator positions we assume that the actuation units are equidistant to the center of gravity.
 With big COG shifts this is not the case any-more.
 However, Skye would not be able to fly with such a big COG shift and thus must be tared.
 When taring it is important to know the actual COG.
-Following this argumentation it is not a problem that a big COG shift impacts the position estimation because the COG offset is accurately estimated even accurate if it is large.
+Following this argumentation it is not a problem that a big COG shift impacts the position estimation because the COG offset is accurately estimated even if it is large.
 Thus such a situation can be detected and the the COG offset reduced by moving taring weights before proceeding with estimating the actuator positions.
 \item For the 1 AU case the inertia tensor error is bigger because a single actuator can excite the system only around two axes.
 This yields to an estimate of the inertia tensor that is much less accurate.
@@ -230,9 +234,9 @@ Center of gravity estimation is also very accurate.
 \subsection{Simulation Improvement}
 \label{sub:sim_improvement}
 To test the influence of the optimized parameters on the system dynamics, one part of the dataset has been chosen for validation.
-First, the same inputs as in the real dataset were used for a simulation with the actuator configuration known from CAD data of the prototype\footnote{
+\textit{First}, the same inputs as in the real dataset were used for a simulation with the actuator configuration known from CAD data of the prototype\footnote{
 This information about actuator configuration is recently used on Skye system for control.}.
-Second, the inputs were applied for a simulation with the optimized actuator configuration.\\
+\textit{Second}, the inputs were applied to a simulation with the optimized actuator configuration.\\
 In \cref{fig:result_sim_improve_and_error}, the angular acceleration of the real dataset is compared to the two simulation cases.
 During the steady state sections of the thrusters (green shaded), the error of the angular acceleration is reduced by more than a factor of two.
 As the transient behaviour of the thrusters was not included in the optimization, the according parts of the simulation was not improved much.\\
@@ -243,7 +247,7 @@ Nevertheless, as the thruster dynamics is not considered in control so far, the 
 \includegraphics[scale=0.8]{images/results/compare_alpha_x.eps}
 \caption{Validation section of the dataset. \textbf{Top}: Blimp angular acceleration of the real dataset (\textbf{red}), simulation with (a priori) CAD knowledge about actuation configuration (\textbf{blue}), and simulation with (adapted) optimized actuation configuration knowledge (\textbf{green}).
 \textbf{Bottom}: Blimp angular acceleration difference between real dataset and the two simulation cases.
-During thruster steady-state (\textbf{shaded}, the simulation error using the adapted actuation configuration (\textbf{green}) is smaller than using the a priori estimate (\textbf{blue}).
+During thruster steady-state (\textbf{green shaded}), the simulation error using the adapted actuation configuration (\textbf{green}) is smaller than using the a priori estimate (\textbf{blue}).
 During the thruster transients (\textbf{plain}), the error of both simulations is larger.
 }
 \label{fig:result_sim_improve_and_error}
@@ -271,10 +275,10 @@ As a detectable feature, the center of the actuator's rotor has been used (see \
 \label{fig:leica_au_laser}
 \end{figure}
 
-The actuator had to be rotated such that this point was visible for the current view
+The actuator had to be rotated such that this point was visible for the current view.
 The resulting offset to the actuators z-axis was considered in the optimization problem,
 which was formulated to calculate the distance between the actuator units.
-This means, only the relative arrangement of the actuators was measured as 'ground-truth'\footnote{
+This means only the relative arrangement of the actuators was measured as 'ground-truth'\footnote{
 The absolute configuration of the actuators with respect to the IMU (which is essential for the control) would require the precise measurement of the position and orientation of the IMU too.}.
 The relative difference between the distance calculated from the \textsc{Leica} measurements and the distance calculated from our work are between 0.7 and 3.8\%.
 Nevertheless, a measurement of the actuator arrangement in the geometric space is disadvantaged to an estimate found using the onboard sensors for the use in the controller because the latter ones are also used for control.

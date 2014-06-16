@@ -2,8 +2,9 @@
 \label{chap:introduction}
 
 \section{Motivation}
-Current Blimp technology relies on a design that is self stable in a desired orientation, thus enabling very simple control.
-This limits the movement of the blimp to very slow speeds and also makes them appear clumsy.
+%Current Blimp technology relies on a design that is self stable in a desired orientation, thus enabling very simple control.
+%This limits the movement of the blimp to very slow speeds and also makes them appear clumsy.
+Blimps are ideal vehicles for being used as an aerial advertising medium.
 Especially eye-catching are specifically shaped blimps, e.g. blimps that have the shape of a mascot, car or any other commercial product (see figure \ref{fig:blimps}).
 %As an alternative, conventionally shaped blimps can show imprints or banners.
 The arrangement of the actuators for those different shaped blimps varies a lot.
@@ -31,7 +32,7 @@ The actuation configuration is then automatically detected, such that elegant mo
 
 \section{Related Work}
 \label{sec:rel_work}
-This thesis is on estimation of the actuation configuration for a multi-actuated blimp. \\
+This thesis is on estimation of the actuation configuration for a multi-actuated blimp. 
 Various work on thruster configuration estimation can be found for underwater robot systems.
 \Citet{Doniec} propose black-box model approach.
 They calculate an inverse model of the thrusters, i.e. a mapping from a desired rotation and position change of the robot to the thruster commands. After about 40 seconds of random walk, the inverse model is computed as the Moore-Penrose pseudoinverse of the collected input/output data.
@@ -45,12 +46,14 @@ In recent time, visual-inertia sensor calibration has found much attraction.
 Beside others, \citet{Hol2011} showed both batch and recursive estimation (Kalman Filter) for this task.
 
 \section{Skye System Overview}
-The experimental part of this thesis is done with the Skye System \citep{Skye2013}.\\
+The experimental part of this thesis is done with the Skye System \citep{Skye2013}.
 Skye is a spherical blimp (\cref{fig:frames}, right) where the center of gravity (COG) coincides with the center of buoyancy (COB).
 Four identical actuators (\cref{fig:frames}, left) are attached to the hull of Skye in a tetrahedral arrangement.
 Each of those actuator units consists of a static platform and part that can be rotated around the vertical axis.
 Mounted to the rotating part of the actuators there is an impeller which can generate thrust.
 % in the XY-plane along the direction it is currently pointed.
+\\
+
 This setup gives Skye the ability to move and rotate in all directions with more or less the same efficiency \citep[see][chap. 3]{Schaffner2012}.
 
 \subsection{Coordinate Systems}

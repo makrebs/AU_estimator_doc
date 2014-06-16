@@ -115,8 +115,12 @@ Nevertheless, this does not consider the drag of all components which are attach
 \\
 
 Measurements showed that the total aerodynamic drag is more than a magnitude smaller than the usual actuation moments (
-$\|\mathbf{M}^{aero}(\omega = \unit[0.8]{rad/s})\| \approx \unit[0.04]{Nm} \Leftrightarrow 
+$\|\mathbf{M}^{aero}(\omega = \unit[0.8]{rad/s})\| \approx \unit[0.2]{Nm} \Leftrightarrow 
 \| \mathbf{M}^{actuation}_{max} \| \approx \unit[15]{Nm}$
+% on the norm(omega) plot of FREE dataset (seconds 112-122) there is a decrease from 0.91 to 0.78 rad/s within 10 seconds. Hence the angular acceleration is 0.013 rad/s^2.
+% alpha = J^-1 * M
+% Therefore M = J*alpha = 0.13 Nm 
+% We consider some margin and write ~ 0.2 Nm
 ). 
 Therefore we neglect this term and do not further bother about its direction.
 In \cref{sub:est_perf} we will show by simulation results that it is indeed valid to neglect this term.
@@ -349,7 +353,8 @@ for
 $i=1,...,n$ distinct observations.
 For our problem, we group the observations to the three dimensional angular acceleration measurement vector $\mathbf{y}_j$ and the corresponding system model function\footnote{
 To solve the optimization problem, we do not distinguish between inputs $\mathbf{u}$ and states $\mathbf{x}$.
-In the remaining of this chapter, we will use $\mathbf{x}$ for states \textit{and} inputs for better readability and consistency with the literature. XXX vilicht doch nöd als footnote?}
+In the remaining of this chapter, we will use $\mathbf{x}$ for states \textit{and} inputs for better readability and consistency with the literature.}
+% XXX vilicht doch nöd als footnote? Doch! Da isch ideal als fuassnote will's a reini asichtssach isch..
 $\mathbf{f}(\mathbf{x}_j, \boldsymbol{\theta})$ from \cref{eq:sys_mod}
 
 \begin{equation}

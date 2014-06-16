@@ -91,7 +91,6 @@ where
 \end{figure}
 
 
-
 \section{Actuation Unit Position Estimate Variance}
 \begin{figure}[hbtp]
 \captionsetup{width=0.9\textwidth}
@@ -100,11 +99,25 @@ where
 \includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU2.eps} \\
 \includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU3.eps}
 \includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU4.eps}
-\caption{Distribution of actuator position estimates. 16 datasets with 24 input vectors each and one sample per input vector.
+\caption{Distribution of actuator position estimates from simulation dataset. 16 datasets with 24 input vectors each and one sample per input vector.
 $\mathbf{+}$ represent the results used to measure the variance.
 \textbf{dashed}: 95\% confidence interval calculated from covariance matrix.
 \textbf{solid}: 95\% confidence interval calculated from multiple results. }
 \label{fig:result_95pc_confidence_all}
+\end{figure}
+
+\begin{figure}[hbtp]
+\captionsetup{width=0.9\textwidth}
+\centering
+\includegraphics[width = 0.45\textwidth]{images/results/real_confidence_95_interval_AU1.eps}
+\includegraphics[width = 0.45\textwidth]{images/results/real_confidence_95_interval_AU2.eps} \\
+\includegraphics[width = 0.45\textwidth]{images/results/real_confidence_95_interval_AU3.eps}
+\includegraphics[width = 0.45\textwidth]{images/results/real_confidence_95_interval_AU4.eps}
+\caption{Distribution of actuator position estimates from real dataset. 16 datasets with 24 input vectors each and one sample per input vector.
+$\mathbf{+}$ represent the results used to measure the variance.
+\textbf{dashed}: 95\% confidence interval calculated from covariance matrix.
+\textbf{solid}: 95\% confidence interval calculated from multiple results. }
+\label{fig:result_95pc_real_confidence_all}
 \end{figure}
 
 

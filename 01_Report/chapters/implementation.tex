@@ -78,6 +78,7 @@ To avoid having to re-flash the firmware all the time, the inputs are generated 
 This way, all of the parameters like standard deviation and time intervals can be set from within the custom widget in the \textsc{QGroundControl} interface.
 
 \begin{figure}[H]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width=.9\textwidth]{images/qgc/QGroundControl_v_2.png}
 \caption{\textsc{QGroundControl} input generation interface. Time intervals and random number specifications can easily be changed. The transmission of the input sequence can be started and stopped.}
@@ -85,6 +86,7 @@ This way, all of the parameters like standard deviation and time intervals can b
 \end{figure}
 
 \begin{figure}[H]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width=.9\textwidth]{images/foto_testing_setup.jpg}
 \caption{Test setup for data generation. One operator initiates the input pattern at the ground station (not visible), the second operator repositions the blimp when it approaches too close to an obstacle after some input sequence.}
@@ -130,6 +132,7 @@ First after importing a raw dataset, the regions where thrust transients are to 
 This process is implemented with generous margins to eliminate problems with the batch optimization.
 
 \begin{figure}[htbp]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[scale=0.8]{images/interactive_cut/interactive_cut_long_modified.eps}
 \caption{Except of dataset after transient marking. \textbf{Gray} regions are the values out interest (no inputs for a time longer than a threshold). \textbf{White} regions are the thrust transient parts which are discarded. \textbf{Green} regions are the remaining data which is used for batch optimization.}
@@ -148,6 +151,7 @@ When the described transient removal is applied, about 40\% of the remaining dat
 To summarize: for 10 seconds of transient-free data about 50 seconds of raw data has to be collected.
 
 \begin{figure}[htbp]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[scale=0.8]{images/interactive_cut/interactive_cut_detail_modified.eps}
 \caption{Cutting tool displaying one segment of the dataset. 
@@ -187,6 +191,7 @@ At each time-step the simulator updates the states of the objects and then calls
 Additionally, at the border of a discrete time step the simulator also calls a function on the objects to get the next discrete states.
 
 \begin{figure}[htbp]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width=0.9\textwidth]{images/sim/sim_tree.eps}
 \caption{Tree like data-structure of simulation objects. Assembly parts (\textbf{gray}) have subparts (\textbf{white}) and hold additional information about their arrangement. Some parts include states (\textbf{shaded}). The simulator interacts with the simulation objects and generates a dataset.}

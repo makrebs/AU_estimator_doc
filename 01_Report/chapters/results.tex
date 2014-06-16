@@ -17,9 +17,10 @@ The error of the actuator arrangement is expressed by an error distance $e_{pos}
 and an error angle $e_{angle}$, which is the angle between x-axes of the 'true' and estimated motor coordinate systems $\mathbf{e}_{m^k}^x$ and $\mathbf{e}_{t^k}^x$
 (see \ref{fig:tangential_frame}).
 \\
-To express the certainty of the inertia tensor estimate, the relative error of the inertia tensor parameters will be used in \cref{fig:err_cmp_sim,fig:err_cmp_real}. ($\left(result-true \right)/norm(true)$)
+To express the certainty of the inertia tensor estimate, the relative error of the inertia tensor parameters will be used in \cref{fig:err_cmp_sim,fig:err_cmp_real}.
 
 \begin{figure}[hbtp]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width = 0.7\textwidth]{images/tangential_frame.eps}
 \caption{The \textit{tangential frame} is the coordinate frame of the motor at its \textit{true} position. If the true position is not known, an estimate is used. In any case, its $\lbrace \mathbf{e}^x_{m^k} , \mathbf{e}^y_{m^k} \rbrace$ plane will be tangential to the spherical hull such that an error of the arrangement can be approximated by the euclidean norm in the tangential coordinate frame.}
@@ -59,6 +60,7 @@ Below about 7 different input vectors no solution could be found.
 The number of samples per input vector reduces the error because noise from the sensors is reduced.
 
 \begin{figure}[hbtp]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width = \textwidth]{images/results/input_length_vs_position_error.eps}
 \caption{Influence of the number of different input vectors on the mean position estimate error of the four AUs $e_{pos}$.
@@ -90,12 +92,14 @@ This shows that the model fits the real world rather well.
 %Further results using real measurements are showed in the next section.
 
 \begin{figure}[hbtp]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width = \textwidth]{images/results/convergence_analysis_init_deviation_sim_bar.eps}
 \caption{Failure rate using simulation data and different initial guess about actuation configuration.}
 \label{fig:result_sim_convergece_region}
 \end{figure}
 \begin{figure}[hbtp]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width = \textwidth]{images/results/convergence_analysis_init_deviation_real_bar.eps}
 \caption{Failure rate using experiment data and different initial guess about actuation configuration.}
@@ -139,6 +143,7 @@ radius = 1.96 \cdot \sqrt{variance}
 \end{equation}
 
 \begin{figure}[hbtp]
+\captionsetup{width=0.9\textwidth}
 \centering
 %\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU1.eps}
 %\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU2.eps} \\
@@ -176,6 +181,7 @@ The used parameters are:
 Figure~\ref{fig:err_cmp_sim} shows the results of this analysis.
 
 \begin{figure}[hbtp]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[scale=.72]{images/results/err_cmp_sim_pos.eps}
 \includegraphics[scale=.72]{images/results/err_cmp_sim_angle.eps}
@@ -225,6 +231,7 @@ It can be seen that the position estimation of the actuators is accurate to with
 Center of gravity estimation is also very accurate.
 
 \begin{figure}[hbtp]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_pos.eps}
 \includegraphics[width=0.24\textwidth]{images/results/err_cmp_real_angle.eps}
@@ -246,6 +253,7 @@ As the transient behaviour of the thrusters was not included in the optimization
 Nevertheless, as the thruster dynamics is not considered in control so far, the knowledge about it would not help to increase the control performance.
 
 \begin{figure}[hbtp]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[scale=0.8]{images/results/compare_alpha_x.eps}
 \caption{Validation section of the dataset. \textbf{Top}: Blimp angular acceleration of the real dataset (\textbf{red}), simulation with (a priori) CAD knowledge about actuation configuration (\textbf{blue}), and simulation with (adapted) optimized actuation configuration knowledge (\textbf{green}).
@@ -262,6 +270,7 @@ For the experiments, the true actuator configuration is not available.
 To get at least some reference values, we measured the position of the actuation units with a \textsc{Leica Viva TS15} laser tracking system.\\
 The setup is shown in \cref{fig:leica_setup}.
 \begin{figure}[hbtp]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width=0.8\textwidth]{images/leica/leica_setup.jpg}
 \caption{Setup with the \textsc{Leica} tracking system. Three of the four actuation units can be seen at once. To track the relative position of all of them, the blimp was rotated such that another combination of three actuators was visible.}
@@ -272,6 +281,7 @@ To track all of the actuators, multiple measurements from different views have b
 As a detectable feature, the center of the actuator's rotor has been used (see \cref{fig:leica_au_laser}).
 
 \begin{figure}[hbtp]
+\captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[width=0.6\textwidth]{images/leica/leica_au_laser.jpg}
 \caption{The center of the rotor has been used for tracking.}

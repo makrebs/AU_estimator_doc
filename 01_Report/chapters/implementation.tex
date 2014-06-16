@@ -139,17 +139,6 @@ This process is implemented with generous margins to eliminate problems with the
 \label{fig:data_selection_long}
 \end{figure}
 
-Then the segments where the blimp has been catched and repositioned need to be cut from the dataset. \\
-For this purpose a semi-automatic cutting tool was implemented (see \cref{fig:data_selection_short}). 
-The tool first identifies the segments of interest and then displays each of them to the user for visual inspection.
-The user can then adjust the borders of the segments to cut away any visible disturbances. \\
-Good and bad segments are easily distinguished by looking at the angular acceleration plot.
-An undisturbed system shows nearly constant angular accelerations during the periods where the thrusters are active. \\
-Using this approach to select datapoints within a dataset, only about 50\% of the raw data from the session has to be discarded.
-The result is a dataset with undisturbed system response including transients.
-When the described transient removal is applied, about 40\% of the remaining data remains.\\
-To summarize: for 10 seconds of transient-free data about 50 seconds of raw data has to be collected.
-
 \begin{figure}[htbp]
 \captionsetup{width=0.9\textwidth}
 \centering
@@ -163,6 +152,19 @@ Disturbances can be clearly seen in the \textbf{grey} regions.
 }
 \label{fig:data_selection_short}
 \end{figure}
+
+
+Then the segments where the blimp has been catched and repositioned need to be cut from the dataset. \\
+For this purpose a semi-automatic cutting tool was implemented (see \cref{fig:data_selection_short}). 
+The tool first identifies the segments of interest and then displays each of them to the user for visual inspection.
+The user can then adjust the borders of the segments to cut away any visible disturbances. \\
+Good and bad segments are easily distinguished by looking at the angular acceleration plot.
+An undisturbed system shows nearly constant angular accelerations during the periods where the thrusters are active. \\
+Using this approach to select datapoints within a dataset, only about 50\% of the raw data from the session has to be discarded.
+The result is a dataset with undisturbed system response including transients.
+When the described transient removal is applied, about 40\% of the remaining data remains.\\
+To summarize: for 10 seconds of transient-free data about 50 seconds of raw data has to be collected.
+
 
 \section{Simulation}
 \label{sec:simulation}

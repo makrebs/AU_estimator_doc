@@ -30,7 +30,9 @@ Further, the problem is transformed into nonlinear least squares form which can 
 A system model for Skye has been stated in \citep{Weichart2012} and is summarized in table \ref{tab:sys_mod}.
 
 \begin{table}[htb!]
+\captionsetup{width=0.9\textwidth}
 \centering
+\caption{Equations of motion for Skye}
 $\begin{array}{ll}
 \toprule
 \dot{\boldsymbol{\omega}}_b^b &= \mathbf{J}_b^{-1} \left( \mathbf{M}_b  - \boldsymbol{\omega}_b^b \times \mathbf{J}_b \boldsymbol{\omega}_b^b \right) \\
@@ -46,7 +48,6 @@ $\begin{array}{ll}
 
 \bottomrule
 \end{array}$
-\caption{Equations of motion for Skye}
 \label{tab:sys_mod}
 \end{table}
 
@@ -156,7 +157,9 @@ Continuous time variables can be added to batch optimization e.g. by using splin
 The variables of the system model can be classified as shown in table \ref{tab:params}.
 
 \begin{table}[htb!]
+\captionsetup{width=0.9\textwidth}
 \centering
+\caption{Classification of all variables of the system model equation. All variables which are subject to estimation are introduced as parameter.}
 \begin{tabular}{lll}
 \hline
 Motor position & $\mathbf{p}^{m^k,cog}_{m^k}$ 	& param \\
@@ -170,7 +173,6 @@ Blimp angular velocity & $\boldsymbol{\omega}$ 	& state \\
 Gravitation & $\mathbf{g}_w$ 					& known \\
 \hline
 \end{tabular}
-\caption{Classification of all variables of the system model equation. All variables which are subject to estimation are introduced as parameter.}
 \label{tab:params}
 \end{table}
 
@@ -227,7 +229,8 @@ or nonminimal represented by $p>3$ parameters and $p-3$ constraints
 While minimal representations always suffer from a singularity (representation is not \textit{bijective}), nonminimal representations generally do not contain a singularity.
 \\
 
-Here we have to make the trade-off. Either we introduce one specific motor orientation which cannot be observed or we will have to solve a constraint optimization problem.
+Here, a trade-off as to be made.
+Either, one specific motor orientation which cannot be observed is introduced or a constraint optimization problem must be solved.
 Unconstraint optimization problems are much less demanding to solve.
 Therefore it is more convenient to choose a parameterization such that the motor orientation is not on the singularity.\\
 If a rough estimate of the motor orientation can be made, this can be used to introduce an intermediate coordinate frame, such that the true motor orientation will not be on the singularity with very heigh probability.
@@ -319,7 +322,9 @@ In contrast to the COG offset $\mathbf{p}^{cob,cog}_{b}$, the mass $m$ can easil
 The updated classification of the variables from table \ref{tab:params} is shown in table \ref{tab:params_updated}.
 
 \begin{table}[htb!]
+\captionsetup{width=0.9\textwidth}
 \centering
+\caption{Updated variable classification for the system model. Like this, all parameters are observable.}
 \begin{tabular}{lll}
 \hline
 Motor orientation & $\mathbf{C}_{b,m^k}$ 	& param \\
@@ -333,10 +338,8 @@ Blimp mass & $m$ 							& known \\
 Motor POA radius & $r$ 						& known \\
 \hline
 \end{tabular}
-\caption{Updated variable classification for the system model. Like this, all parameters are observable.}
 \label{tab:params_updated}
 \end{table}
-
 
 \section{Nonlinear Least Squares}
 As outlined above, our goal is to minimize the error between the measured and modelled angular acceleration.
@@ -674,7 +677,7 @@ where
 \item[] $\mathbf{G}_X  $ is the Jacobian matrix of any function $\mathbf{g}$ w.r.t. $X$;
 \end{itemize}
 
-Note that \cref{eq:linear_ls_covariance} is basically the inverse formulation of \cref{eq:error_propagation_law} where $\mathbf{V}_Y = \mathbf{I} \sigma^2$.
+Note that \cref{eq:linear_ls_covariance} is basically the inverse formulation of \cref{eq:error_propagation_law} where $\mathbf{V}_Y~=~\mathbf{I} \sigma^2$.
 \\
 
 Using the estimate of the parameter covariance \cref{eq:nlls_covariance} and the error propagation law \cref{eq:error_propagation_law}, we can calculate the covariance (and hence further statistics as 95\% confidence region) of our estimates.

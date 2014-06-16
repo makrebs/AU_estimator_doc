@@ -68,7 +68,7 @@ Number of samples per input vector decreases the error by reducing the influence
 
 \Cref{fig:result_inputlength} shows the effects of different dataset lengths.
 Below about 7 different input vectors no solution could be found. 
-The number of samples per input vector reduces the error because noise from the sensors is reduced.
+The number of samples per input vector influences the error because the sensor noise is reduced with increasing number of samples per input vector.
 
 
 \paragraph{Convergence w.r.t. initial parameter estimate} ~\\
@@ -80,7 +80,7 @@ In order to test convergence, we generated a grid of initial parameters which di
 \end{itemize}
 The algorithm first rotates the actuator around its rotation axis by the given amount and then displaces it in a random direction on the hull surface by the requested amount. \\
 For a grid of different position and angle deviations the failure rate was determined with ten samples each.
-\Cref{fig:result_sim_convergece_region} shows the result of this test.\\
+\Cref{fig:result_sim_convergece_region} shows the result of this test.
 It can be seen that an initial position offset of \textit{all} actuators in any random direction\footnote{
 The simulated blimp has a hull radius of \unit[1.37]{m} and therefore the distance between two of the tetrahedrally arranged actuation units is \unit[2.62]{m}.}
 is acceptable up to \unit[1]{m}.
@@ -89,33 +89,36 @@ Initial orientation offsets of the motors are acceptable up to \unit[120]{°}.
 A similar result for the convergence region is found when using datasets from real measurements (compare \cref{fig:result_real_convergece_region}).
 This outcome is as expected and means that the simulation to generate the dataset describes the real system well enough to test the batch optimization.
 
-\begin{figure}[hbtp]
+\begin{figure}[H]
 \captionsetup{width=0.9\textwidth}
 \centering
-\includegraphics[width = 0.9\textwidth]{images/results/convergence_analysis_init_deviation_sim_bar.eps}
+\includegraphics[width = 0.85\textwidth]{images/results/convergence_analysis_init_deviation_sim_bar.eps}
 \caption{Failure rate using simulation data and varying initial guess about actuation configuration.}
 \label{fig:result_sim_convergece_region}
 \end{figure}
-\begin{figure}[hbtp]
+
+
+The convergence region depends on the 'surface' of the residual norm $\|\mathbf{r}\|$ from \cref{eq:cost_ols}.
+If there are no local minima between the initial guess and the global minimum, the optimization algorithm will find the global minimum.\\
+\begin{figure}[H]
 \captionsetup{width=0.9\textwidth}
 \centering
-\includegraphics[width = 0.9\textwidth]{images/results/convergence_analysis_init_deviation_real_bar.eps}
+\includegraphics[width = 0.85\textwidth]{images/results/convergence_analysis_init_deviation_real_bar.eps}
 \caption{Failure rate using experiment data and varying initial guess about actuation configuration.}
 \label{fig:result_real_convergece_region}
 \end{figure}
 
-The convergence region depends on the 'surface' of the residual norm $\|\mathbf{r}\|$ from \cref{eq:cost_ols}.
-If there are no local minima between the initial guess and the global minimum, the optimization algorithm will find the global minimum.
+
 \Cref{fig:resnorm_ang_pos_dev} shows the contour of the residual norm if one of the four actuation units is deviated in position or angle.
 It can be seen that there is no local minimum near the global minimum.
 This is only the case if the configuration of the remaining actuation units is known.
 As is has been shown in \cref{fig:result_sim_convergece_region}, the optimization algorithm does not converge to the global minimum if \textit{all} actuation units are deviated.
 
-\begin{figure}[hbtp]
+\begin{figure}[H]
 \captionsetup{width=0.9\textwidth}
 \centering
-\includegraphics[width = 0.9\textwidth]{images/results/resnorm_ang_pos_dev.eps}
-\caption{Residual norm plot for varying position and angle of one actuation unit. The configuration of the other three actuation unit is set to the true value. There are no local minima within the close region to the global minimum.}
+\includegraphics[width = 0.85\textwidth]{images/results/resnorm_ang_pos_dev.eps}
+\caption{Residual norm plot for varying position and angle deviation of one actuation unit. The configuration of the other three actuation unit is set to the true value. There are no local minima within the close region to the global minimum.}
 \label{fig:resnorm_ang_pos_dev}
 \end{figure}
 
@@ -143,6 +146,21 @@ When using just one sample per input vector, the \textit{calculated} and \textit
 \paragraph{Confidence from multiple results} ~\\
 As outline above the covariance of the parameters has also been measured by evaluating multiple datasets generated from the same system and calculating the covariance for each of the parameters.\\
 
+\begin{figure}[H]
+\captionsetup{width=0.9\textwidth}
+\centering
+%\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU1.eps}
+%\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU2.eps} \\
+%\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU3.eps}
+\includegraphics[width = 0.5\textwidth]{images/results/confidence_95_interval_AU4.eps}
+\caption{Distribution of actuator position estimates. 16 datasets with 24 input vectors each and one sample per input vector.
+$\mathbf{+}$ represent the results used to measure the variance.
+\textbf{dashed}: 95\% confidence interval calculated from covariance matrix.
+\textbf{solid}: 95\% confidence interval calculated from multiple results. The result is taken from actuation unit number 4. See Appendix \cref{fig:result_95pc_confidence_all} for the remaining actuation units.}
+\label{fig:result_95pc_confidence}
+\end{figure}
+
+
 In \cref{fig:result_95pc_confidence} the \textit{calculated covariance} is compared to the \textit{measured covariance}.
 The covariances\footnote{
 Actually just the diagonal entries of the covariance matrix are used to draw the ellipses.
@@ -154,20 +172,6 @@ The size of the circles is determined with \cref{eq:variance_to_95pc}.
 \label{eq:variance_to_95pc}
 radius = 1.96 \cdot \sqrt{variance}
 \end{equation}
-
-\begin{figure}[hbtp]
-\captionsetup{width=0.9\textwidth}
-\centering
-%\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU1.eps}
-%\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU2.eps} \\
-%\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU3.eps}
-\includegraphics[width = 0.45\textwidth]{images/results/confidence_95_interval_AU4.eps}
-\caption{Distribution of actuator position estimates. 16 datasets with 24 input vectors each and one sample per input vector.
-$\mathbf{+}$ represent the results used to measure the variance.
-\textbf{dashed}: 95\% confidence interval calculated from covariance matrix.
-\textbf{solid}: 95\% confidence interval calculated from multiple results. The result is taken from actuation unit number 4. See Appendix \cref{fig:result_95pc_confidence_all} for the remaining actuation units.}
-\label{fig:result_95pc_confidence}
-\end{figure}
 
 \subsection{Estimation Performance}
 \label{sub:est_perf}
@@ -193,7 +197,7 @@ The analyzed parameters are:
 
 \Cref{fig:err_cmp_sim} shows the results of this analysis.
 
-\begin{figure}[hbtp]
+\begin{figure}[H]
 \captionsetup{width=0.9\textwidth}
 \centering
 \includegraphics[scale=.72]{images/results/err_cmp_sim_pos.eps}
@@ -203,6 +207,7 @@ The analyzed parameters are:
 \caption{Results for simulator}
 \label{fig:err_cmp_sim}
 \end{figure}
+
 
 Here is a list of significant observations:
 \begin{itemize}
